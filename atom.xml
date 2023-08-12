@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>bd7xzz</title>
+  
+  
+  <link href="http://example.com/atom.xml" rel="self"/>
+  
+  <link href="http://example.com/"/>
+  <updated>2023-08-03T12:00:12.079Z</updated>
+  <id>http://example.com/</id>
+  
+  <author>
+    <name>li jiang</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>WebServer--上篇</title>
+    <link href="http://example.com/2023/07/27/Project/WebServer/"/>
+    <id>http://example.com/2023/07/27/Project/WebServer/</id>
+    <published>2023-07-26T16:00:00.000Z</published>
+    <updated>2023-08-03T12:00:12.079Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;p&gt;本项目地址：&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="项目" scheme="http://example.com/categories/%E9%A1%B9%E7%9B%AE/"/>
+    
+    
+    <category term="网络编程" scheme="http://example.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>基于跳表实现的STL-style关联容器</title>
+    <link href="http://example.com/2023/07/21/Project/SkipList/"/>
+    <id>http://example.com/2023/07/21/Project/SkipList/</id>
+    <published>2023-07-20T16:00:00.000Z</published>
+    <updated>2023-08-02T13:17:43.771Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;p&gt;本项目地址：&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="项目" scheme="http://example.com/categories/%E9%A1%B9%E7%9B%AE/"/>
+    
+    
+    <category term="STL" scheme="http://example.com/tags/STL/"/>
+    
+    <category term="跳表" scheme="http://example.com/tags/%E8%B7%B3%E8%A1%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>回溯算法</title>
+    <link href="http://example.com/2023/07/18/Algorithm/%E5%9B%9E%E6%BA%AF/"/>
+    <id>http://example.com/2023/07/18/Algorithm/%E5%9B%9E%E6%BA%AF/</id>
+    <published>2023-07-17T16:00:00.000Z</published>
+    <updated>2023-08-02T03:43:00.503Z</updated>
+    
+    
+    <summary type="html">&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;场景：常用于组合、切割（字符串）、子集、排列、棋盘等&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;思想：可抽象成N叉树&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;树宽为所处理的集合大小&lt;/li&gt;
+&lt;li&gt;树深即为递归的深度&lt;/li&gt;
+&lt;li&gt;本质上是递归嵌套循环&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;三步走策略&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;确定参数（通常较多，且一般有两个引用参数用于收集中间过程和结果）和返回值（通常是void）&lt;/li&gt;
+&lt;li&gt;确定递归终止条件（叶子节点收集结果）&lt;/li&gt;
+&lt;li&gt;单层搜索逻辑（for循环），且一定要注意回撤操作&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;模版&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight cpp&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;type&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;backTrace&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(参数...)&lt;/span&gt; &lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (递归终止条件) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        收集结果（叶子节点）;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; (集合中的元素) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        处理节点;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        递归函数;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        撤销处理的节点;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+&lt;li&gt;去重操作(40)&lt;ul&gt;
+&lt;li&gt;场景：集合中的元素存在重复，但要求解集是不能包含重复的组合。&lt;/li&gt;
+&lt;li&gt;需要先对原集合进行排序，还需要辅助数组used记录集合中元素是否被使用(0或1)。&lt;figure class=&quot;highlight cpp&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;sort&lt;/span&gt;(nums.&lt;span class=&quot;built_in&quot;&gt;begin&lt;/span&gt;(), nums.&lt;span class=&quot;built_in&quot;&gt;end&lt;/span&gt;());&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;vector&amp;lt;&lt;span class=&quot;type&quot;&gt;bool&lt;/span&gt;&amp;gt; &lt;span class=&quot;title&quot;&gt;used&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(nums.size(), &lt;span class=&quot;literal&quot;&gt;false&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;树层去重：去重逻辑在for循环中若前一个元素与当前元素相同，且前一个元素的使用状态为未使用used[i-1]&amp;#x3D;0，则此时出现树层重复，直接continue不处理。&lt;figure class=&quot;highlight cpp&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;type&quot;&gt;int&lt;/span&gt; i = startIndex; i &amp;lt; nums.&lt;span class=&quot;built_in&quot;&gt;size&lt;/span&gt;(); ++i) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;// 树层去重操作&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (i &amp;gt; &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt; &amp;amp;&amp;amp; nums[i&lt;span class=&quot;number&quot;&gt;-1&lt;/span&gt;] == nums[i] &amp;amp;&amp;amp; !used[i&lt;span class=&quot;number&quot;&gt;-1&lt;/span&gt;]) &lt;span class=&quot;keyword&quot;&gt;continue&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    used[i] = &lt;span class=&quot;literal&quot;&gt;true&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    ...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    used[i] = &lt;span class=&quot;literal&quot;&gt;false&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;树枝去重&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="算法" scheme="http://example.com/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+    <category term="回溯" scheme="http://example.com/tags/%E5%9B%9E%E6%BA%AF/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>设计模式</title>
+    <link href="http://example.com/2023/05/31/%E5%85%AB%E8%82%A1/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    <id>http://example.com/2023/05/31/%E5%85%AB%E8%82%A1/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</id>
+    <published>2023-05-30T16:00:00.000Z</published>
+    <updated>2023-08-03T07:04:36.496Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;h2 id=&quot;Singleton单例模式&quot;&gt;&lt;a href=&quot;#Singleton单例模式&quot; class=&quot;headerlink&quot; title=&quot;Singleton单例模式&quot;&gt;&lt;/a&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="八股" scheme="http://example.com/categories/%E5%85%AB%E8%82%A1/"/>
+    
+    
+    <category term="设计模式" scheme="http://example.com/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>网络编程</title>
+    <link href="http://example.com/2023/05/29/%E5%85%AB%E8%82%A1/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    <id>http://example.com/2023/05/29/%E5%85%AB%E8%82%A1/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/</id>
+    <published>2023-05-28T16:00:00.000Z</published>
+    <updated>2023-08-04T13:51:33.924Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;h2 id=&quot;1-网络编程的一般步骤&quot;&gt;&lt;a href=&quot;#1-网络编程的一般步骤&quot; class=&quot;headerlink&quot; title=&quot;1. 网络编程的一般步骤&quot;&gt;&lt;/a&gt;1.</summary>
+        
+      
+    
+    
+    
+    <category term="八股" scheme="http://example.com/categories/%E5%85%AB%E8%82%A1/"/>
+    
+    
+    <category term="网络编程" scheme="http://example.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis速查手册</title>
+    <link href="http://example.com/2023/05/28/Redis/%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/"/>
+    <id>http://example.com/2023/05/28/Redis/%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/</id>
+    <published>2023-05-27T16:00:00.000Z</published>
+    <updated>2023-07-14T14:57:49.595Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;h2 id=&quot;基本操作&quot;&gt;&lt;a href=&quot;#基本操作&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
+    
+    
+    <category term="速查手册" scheme="http://example.com/tags/%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>C++基础</title>
+    <link href="http://example.com/2023/05/25/CPP/CPP%E5%9F%BA%E7%A1%80/"/>
+    <id>http://example.com/2023/05/25/CPP/CPP%E5%9F%BA%E7%A1%80/</id>
+    <published>2023-05-24T16:00:00.000Z</published>
+    <updated>2023-08-04T06:27:59.268Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;h2 id=&quot;1-C和C-的区别&quot;&gt;&lt;a href=&quot;#1-C和C-的区别&quot; class=&quot;headerlink&quot; title=&quot;1. C和C++的区别&quot;&gt;&lt;/a&gt;1.</summary>
+        
+      
+    
+    
+    
+    <category term="C++" scheme="http://example.com/categories/C/"/>
+    
+    
+    <category term="语法基础" scheme="http://example.com/tags/%E8%AF%AD%E6%B3%95%E5%9F%BA%E7%A1%80/"/>
+    
+  </entry>
+  
+</feed>

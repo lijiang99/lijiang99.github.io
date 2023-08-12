@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>网络编程 |  bd7xzz</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="bd7xzz" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-八股/网络编程"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  网络编程
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/05/29/%E5%85%AB%E8%82%A1/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" class="article-date">
+  <time datetime="2023-05-28T16:00:00.000Z" itemprop="datePublished">2023-05-29</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%85%AB%E8%82%A1/">八股</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">4.3k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">15 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <span id="more"></span>
+
+<h2 id="1-网络编程的一般步骤"><a href="#1-网络编程的一般步骤" class="headerlink" title="1. 网络编程的一般步骤"></a>1. 网络编程的一般步骤</h2><ul>
+<li>TCP<ul>
+<li>服务端<ul>
+<li>socket创建套接字、bind绑定IP和端口号、listen监听连接请求</li>
+<li>accept受理连接请求，并返回新的套接字、在新的套接字上用recv&#x2F;send收发数据、close关闭套接字</li>
+</ul>
+</li>
+<li>客户端：socket创建套接字、connect发起连接请求、recv&#x2F;send收发数据、close关闭套接字</li>
+</ul>
+</li>
+<li>UDP<ul>
+<li>服务端：socket创建套接字、bind绑定IP和端口号、recvfrom&#x2F;sendto收发数据、close关闭套接字</li>
+<li>客户端：socket创建套接字、recvfrom&#x2F;sendto收发数据、close关闭套接字</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-IO多路复用"><a href="#2-IO多路复用" class="headerlink" title="2. IO多路复用"></a>2. IO多路复用</h2><ul>
+<li>IO多路复用的原理是在一个进程（线程）中同时监听多个IO（socket）事件，从而避免为每个请求都分配一个进程（线程）。</li>
+<li>在Linux中，IO复用的方式有select、poll、epoll这三个系统调用。</li>
+<li>select<ul>
+<li>将已连接的socket都放入一个文件描述符集合，然后通过遍历集合来检查是否有网络事件产生，时间复杂度为O(n)。</li>
+<li>底层使用BitMap实现，因此文件描述符的个数会受到限制（默认最大为1024）。</li>
+</ul>
+</li>
+<li>poll<ul>
+<li>本质上与select无太大区别，都是使用线性结构存储文件描述符</li>
+<li>但使用动态数组，从而突破了select的文件描述符个数限制，但仍会受到系统文件描述符个数限制。</li>
+</ul>
+</li>
+<li>epoll<ul>
+<li>epoll_create创建epoll对象epfd，再通过epoll_ctl将需要监听的socket添加到epfd，最后用epoll_wait等待数据。 </li>
+<li>内核使用红黑树跟踪所有待检测的文件描述符，每次只需通过epoll_ctl传入一个待检测的文件描述符，无需像select&#x2F;poll一样传入整个socket集合。</li>
+<li>epoll_wait采用回调的方式，内核检测到就绪事件，会触发回调函数来将其插入就绪事件队列，不需要像select&#x2F;poll一样轮询整个socket集合，时间复杂度为O(1)。</li>
+<li>epoll_wait效率未必比select&#x2F;poll高，当活动连接多时回调函数会被频繁触发，epoll_wait适用于连接多但活动少的情况。</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-epoll中的LT和ET的区别（epoll默认LT）"><a href="#3-epoll中的LT和ET的区别（epoll默认LT）" class="headerlink" title="3. epoll中的LT和ET的区别（epoll默认LT）"></a>3. epoll中的LT和ET的区别（epoll默认LT）</h2><ul>
+<li>两种模式的事件通知方式不同，LT持续通知直到事件处理完毕，ET只通知一次，不管事件是否处理完毕。</li>
+<li>LT模式下，读事件触发，可以按需收取字节数，不用一次性把数据收取干净；ET模式下，必须把数据收取干净。</li>
+<li>LT可自由决定每次收取多少数据，但可能导致多次触发；ET触发次数少效率更高，但每次都必须将数据接收完。</li>
+</ul>
+<h2 id="4-IO模型（粗分两种，细分五种）"><a href="#4-IO模型（粗分两种，细分五种）" class="headerlink" title="4. IO模型（粗分两种，细分五种）"></a>4. IO模型（粗分两种，细分五种）</h2><ul>
+<li>同步IO：在IO事件发生后，由应用程序（用户）自行执行IO读写操作。<ul>
+<li>阻塞&#x2F;非阻塞IO、信号驱动IO（进程运行并不阻塞，直到收到信号再处理IO事件）、IO复用。</li>
+</ul>
+</li>
+<li>异步IO：由内核通过缓冲区位置直接对IO执行读写操作，且IO读写操作总是立即返回，不论IO是否阻塞。</li>
+<li>简言之，同步IO向程序通知IO就绪事件，而异步IO则向程序通知IO完成事件。</li>
+</ul>
+<h2 id="5-事件处理模型Reactor-x2F-Proactor"><a href="#5-事件处理模型Reactor-x2F-Proactor" class="headerlink" title="5. 事件处理模型Reactor&#x2F;Proactor"></a>5. 事件处理模型Reactor&#x2F;Proactor</h2><ul>
+<li>Reactor通常基于同步IO，Proactor则基于异步IO。</li>
+<li>Reactor: 主线程只负责监听文件描述符上是否有事件发生，有就立刻通知工作线程，除此之外，主线程不做任何其他工作。</li>
+<li>Proactor: 主线程执行数据读写操作，读写完成后，主线程向工作线程通知完成事件，那么从工作线程角度来看，它已经获得数据读写的结果，接下来就只要对读写结果进行逻辑处理即可。</li>
+</ul>
+<h2 id="6-并发编程模式"><a href="#6-并发编程模式" class="headerlink" title="6. 并发编程模式"></a>6. 并发编程模式</h2><ul>
+<li>并发编程模式是指IO处理单元和多个逻辑单元间协调完成工作，主要有半同步&#x2F;半异步模式和领导者&#x2F;追随者模式。<ul>
+<li>半同步&#x2F;半异步模式：<ul>
+<li>与IO同步&#x2F;异步概念不同，此处同步指程序完全按代码的顺序执行，异步则指程序的执行需由系统事件（中断&#x2F;信号等）驱动。异步效率高，实时性强，适合嵌入式，但复杂难调试，不适于大量并发。同步效率相对较低，但逻辑简单。因此对于服务器这种既要求实时性，又要求并发，就该同时使用同步线程和异步线程。</li>
+<li>在半同步&#x2F;半异步模式中，异步线程处理IO事件（监听客户请求）并插入请求队列，然后通过同步线程读取并处理请求对象。结合考虑事件处理模式（Reactor&#x2F;Proactor）和IO模型（同步&#x2F;异步IO），则半同步&#x2F;半异步模式就存在多种变体。<ul>
+<li>半同步&#x2F;半反应堆：异步线程只有主线程，负责监听socket事件并插入连接到请求队列，工作线程处理队列中的任务。  <div align="center" style=transform:scale(0.7)>
+  <img src="/images/半同步半反应堆模式.png"/>
+  </div></li>
+<li>高效半同步&#x2F;半异步模式：主线程只管理监听socket，连接socket由工作线程管理，无请求队列，因此没有对队列进行存取时的加锁操作，从而提高效率。每个线程都工作在异步模式，所以非严格意义上的半同步&#x2F;半异步模式。  <div align="center" style=transform:scale(0.7)>
+  <img src="/images/高效的半同步半异步模式.png"/>
+  </div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>领导者&#x2F;追随者模式：<ul>
+<li>任意时间点，只有一个领导者，负责监听IO事件，其他线程为追随者。若当前领导者检测到IO事件，首先从线程池推举出新领导者，然后再处理IO事件。此时新领导者等待新IO事件，旧领导者处理先前的IO事件，二者实现并发。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="7-多进程和多线程的区别"><a href="#7-多进程和多线程的区别" class="headerlink" title="7. 多进程和多线程的区别"></a>7. 多进程和多线程的区别</h2><ul>
+<li>线程是轻量级的进程，执行效率和进程差不多，但消耗的系统资源更少。</li>
+<li>进程有自己独立的地址空间，多个线程共用同一个地址空间。<ul>
+<li>同一地址空间线程独享：栈区、寄存器（内核中管理）</li>
+<li>同一地址空间线程共享：代码段、堆区、全局数据区、打开的文件（文件描述符表）</li>
+</ul>
+</li>
+<li>进程是资源分配的最小单位，线程是操作系统调度的最小单位。<ul>
+<li>每个进程对应一个虚拟空间，一个进程只能抢占一个CPU时间片。</li>
+<li>一个地址空间可划分出多个线程，在有效资源的基础上，可抢占更多CPU时间片。</li>
+</ul>
+</li>
+<li>CPU的调度和切换：线程上下文切换比进程要快的多<ul>
+<li>上下文切换：进程&#x2F;线程分时复用时间片，切换前会将上一个任务的状态保存，下次切换回该任务会加载状态继续运行。</li>
+<li>线程更廉价，启动快，退出也快。</li>
+</ul>
+</li>
+<li>多任务程序优先使用线程，但线程也不是越多越好。<ul>
+<li>文件IO操作：文件IO对CPU使用率不高，因此可分时复用时间片，线程数&#x3D;2 * CPU核心数。</li>
+<li>处理复杂算法：CPU进行运算，压力大，线程数&#x3D;CPU核心数。</li>
+</ul>
+</li>
+</ul>
+<h2 id="8-线程的相关操作"><a href="#8-线程的相关操作" class="headerlink" title="8. 线程的相关操作"></a>8. 线程的相关操作</h2><ul>
+<li>线程创建函数<ul>
+<li>每个线程都有ID，类型为pthread_t，可通过pthread_self函数获得。</li>
+<li>pthread_create创建新线程，传入参数线程ID、线程属性（NULL）、回调函数、回调函数参数。</li>
+</ul>
+</li>
+<li>线程退出函数<ul>
+<li>pthread_exit让线程退出，但不释放虚拟地址空间（针对于主线程），且不影响其他线程。</li>
+<li>pthread_exit参数为void*，线程退出时可携带的数据，主线程会得到该数据，若不要要，则设置为NULL即可。</li>
+<li>若主线程调用pthread_exit，也不会影响尚未执行完的子线程，否则（主线程既不执行pthread_exit也不执行pthread_join）有可能主线程先抢到时间片，执行完后就立即释放了虚拟地址空间（子线程资源），那么子线程尚未执行就结束了。</li>
+</ul>
+</li>
+<li>线程回收函数<ul>
+<li>pthread_join会阻塞等待线程退出，且每次只回收一个子线程。</li>
+<li>参数为pthread_t线程ID以及void**用于接受子线程通过pthread_exit退出时携带的参数（必须为全局变量&#x2F;堆变量&#x2F;主线程栈变量（得在创建子线程时设置回调函数参数），否则若为子线程栈变量则由子线程独享，子线程结束就会释放）。</li>
+</ul>
+</li>
+<li>线程分离函数<ul>
+<li>因为pthread_join会让主线程阻塞以回收子线程资源，而某些情况下可能不希望主线程阻塞。</li>
+<li>调用pthread_detach会让子线程和主线程分离，当子线程退出，其占用资源无需主线程回收，且主线程中使用pthread_join也回收不到子线程资源。</li>
+<li>若主线程结束，被分离出去的子线程也无法存活，因为主线程释放了虚拟地址空间，因此必须在主线程中调用pthread_exit进行退出，而不能直接retrun。</li>
+</ul>
+</li>
+<li>线程取消函数<ul>
+<li>pthread_cancel通过参数（线程ID）指定要杀死的线程，返回值0或1。</li>
+<li>但线程不会被立马杀死，通常需要满足指定条件，即将被杀死的线程中需进行一次系统调用（从用户区切换到内核区），否则该线程能一直运行。</li>
+</ul>
+</li>
+<li>线程比较函数<ul>
+<li>pthread_equal，参数为两个线程ID，相等则返回非零值，其实直接将ID做整型值比较也可以。</li>
+</ul>
+</li>
+</ul>
+<h2 id="9-线程同步"><a href="#9-线程同步" class="headerlink" title="9. 线程同步"></a>9. 线程同步</h2><ul>
+<li>概念：不是让线程并行地执行，而是线性（先后顺序）地执行。</li>
+<li>方式<ul>
+<li>互斥锁（pthread_mutex_t mutex）：锁的所有权只能被一个线程所拥有<ul>
+<li>pthread_mutex_init初始化互斥锁，参数分别为互斥锁地址（&amp;mutex）及其属性（一般为NULL）</li>
+<li>pthread_mutex_destroy释放互斥锁，参数为互斥锁地址（&amp;mutex）</li>
+<li>pthread_mutex_lock加锁操作，参数为互斥锁地址（&amp;mutex）</li>
+<li>pthread_mutex_unlock解锁操作，参数为互斥锁地址（&amp;mutex）</li>
+<li>pthread_mutex_trylock尝试加锁，若已经被其他线程锁上，则非阻塞，并返回错误号。</li>
+</ul>
+</li>
+<li>死锁：所有线程被阻塞，且线程的阻塞无法解开（因为可以解锁的线程也被阻塞了）<ul>
+<li>场景1: 加锁后忘记解锁</li>
+<li>场景2: 临界区内部在解锁前有return操作（C++中可通过RAII的lock_guard来解决，return时会自动调用析构解锁；也可使用更灵活的unique_lock，lock_guard只有在超出对象作用域时，才会通过析构解锁；而unique_lock除了超出作用域时的自动析构解锁，还可以调用unlock成员函数手动解锁，且会unlock根据锁的状态来判断是否需要真的解锁。）</li>
+<li>场景3: 重复加锁造成死锁</li>
+<li>场景4: 多个共享资源，多把锁，随意加锁（加锁顺序不对）导致相互被阻塞</li>
+</ul>
+</li>
+<li>死锁避免<ul>
+<li>避免多次锁定，多检查</li>
+<li>对共享资源访问完毕，一定要解锁，或者加锁时使用trylock</li>
+<li>若程序有多把锁，可以控制对锁的访问顺序，也可在对其他互斥锁加锁前，先释放当前线程所拥有的互斥锁。</li>
+<li>可以引入一些专门用于死锁检测的模块。</li>
+</ul>
+</li>
+<li>读写锁：互斥锁的升级版本<ul>
+<li>在做读操作的时候可提高程序效率，若所有线程都做读操作，那么读是并行的，而互斥锁，读是串行的。</li>
+<li>读写锁类型为pthread_rwlock_t，是一把锁，但能既提供锁定读又能提供锁定写的操作。</li>
+<li>若读锁锁定临界区，线程对临界区的访问是并行的，读锁是共享的。</li>
+<li>若写锁锁定临界区，线程对临界区的访问是串行的，写锁是独占的。</li>
+<li>使用读写锁对临界区分别加了读锁和写锁，两个线程同时访问临界区，访问写锁临界区的线程继续运行，访问读锁临界区的线程阻塞，因为写锁优先级比读锁高。</li>
+<li>若所有线程都对共享资源做写操作，使用读写锁无优势，此时就是互斥锁，但若所有对共享资源有读也有写，且读操作越多，读写锁越有优势。</li>
+</ul>
+</li>
+<li>条件变量<ul>
+<li>严格意义上，条件变量的主要作用不是处理线程同步，而是进行线程阻塞。在多线程中必须搭配互斥锁才能实现线程同步。虽然条件变量和互斥锁都可执行线程阻塞，但二者效果是不一样的。互斥锁：一个线程加锁成功，其余线程均阻塞。条件变量：只有在满足指定条件下才会阻塞线程，若不满足则多个线程可同时进入临界区，同时读写临界资源。 这种情况下还是会出现共享资源数据的混乱。</li>
+<li>条件变量主要用于处理生产者&#x2F;消费者模型，并配合互斥锁使用，类型为pthread_cond_t。</li>
+<li>需要一个容器，若容器空，则阻塞所有消费者线程，生成者每向容器中添加一个元素，就可执行一次唤醒提醒消费者。若容器满，则阻塞所有生产者线程，消费者从容器中取元素，就可执行一次唤醒提醒生产者。</li>
+<li>pthread_cond_init和pthread_cond_destroy初始化和销毁条件变量，生产者和消费者不能使用同一个条件变量。</li>
+<li>pthread_cond_wait阻塞线程，若该线程是加锁状态，就会自动解锁，若线程解除阻塞，则再次加锁，加锁成功才会继续向下执行临界区，参数为条件变量和一个互斥锁。</li>
+<li>pthread_cond_timewait将线程阻塞一定时间长度，时间到达就解开阻塞，参数会多一个超时时长。</li>
+<li>pthread_cond_signal唤醒阻塞在条件变量上的线程，至少一个被解除阻塞。</li>
+<li>pthread_cond_broadcast唤醒阻塞在条件变量上的线程，被阻塞线程全部被解除阻塞。</li>
+</ul>
+</li>
+<li>信号量<ul>
+<li>比条件变量更简单，无需自己进行条件判定。生产者和消费者可拥有各自的信号量，也可以拥有同一个信号量。</li>
+<li>sem_init初始化信号量，参数为信号量，pshared（线程同步0，进程同步1），信号量初始值（拥有资源数）。</li>
+<li>sem_destroy销毁信号量，参数为信号量。</li>
+<li>sem_wait相当于P操作-1，取资源，若信号量为0（资源耗尽）则阻塞，sem_trywait非阻塞式。</li>
+<li>sem_post相当于V操作+1，存资源。</li>
+<li>sem_getvalue获取信号量（资源数量），参数为信号量和保存资源数的地址（传出参数）。</li>
+<li>资源总量为1时，才可不加锁，若资源量大于1，则要考虑加锁。且加锁操作只能在sem_wait下面，否则可能会死锁。</li>
+</ul>
+</li>
+<li>原子变量<ul>
+<li>C++11提供原子类型模板std::atomic，通过该原子类型所管理的内部变量就是原子变量，保证读写都互斥。</li>
+<li>原子操作不会被线程调度机制打断，中间不会有任何上下文切换，从而保证多线程访问共享资源不会出现数据混乱。</li>
+<li>原子操作是无锁类型，通过指令提供支持，因此性能优于锁和消息传递，且无需开发者处理加锁解锁问题。</li>
+<li>原子类型内部使用CAS（Compare And Swap）循环机制，通过判断当前值是否于前置值，若相等则修改为新值。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="10-线程池（WebServer项目使用半同步-x2F-半同步半反应堆模式）"><a href="#10-线程池（WebServer项目使用半同步-x2F-半同步半反应堆模式）" class="headerlink" title="10. 线程池（WebServer项目使用半同步&#x2F;半同步半反应堆模式）"></a>10. 线程池（WebServer项目使用半同步&#x2F;半同步半反应堆模式）</h2><ul>
+<li>目的：频繁创建线程会降低效率，线程池可实现线程复用，即执行完一个任务，并不会被销毁，而是继续执行其他任务。</li>
+<li>原理：由三部分组成（任务队列、工作线程、管理者线程）<ul>
+<li>任务队列：存储待处理的任务，由工作线程来处理这些任务<ul>
+<li>通过线程池的接口，将待处理任务（回调函数）加入队列（生产），或从队列中删除（消费）。</li>
+</ul>
+</li>
+<li>工作线程：任务队列的消费者，N个<ul>
+<li>不停地读任务队列，取出任务并处理，任务队列空，则工作的线程被阻塞。</li>
+<li>若阻塞后有了新任务，那么被阻塞的线程将有生产者解除，工作线程开始工作。</li>
+</ul>
+</li>
+<li>管理者线程：不处理队列中的任务，1个<ul>
+<li>周期性地对任务中的数量以及处于忙碌状态的工作线程个数进行检查</li>
+<li>任务过多，可以适当创建一些新的工作线程</li>
+<li>任务过少，可以适当销毁一些工作线程</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="避免connect方法长时间阻塞"><a href="#避免connect方法长时间阻塞" class="headerlink" title="避免connect方法长时间阻塞"></a>避免connect方法长时间阻塞</h2><h2 id="服务端如何得知客户端突然掉线或重启"><a href="#服务端如何得知客户端突然掉线或重启" class="headerlink" title="服务端如何得知客户端突然掉线或重启"></a>服务端如何得知客户端突然掉线或重启</h2><h2 id="TTL的概念及用处"><a href="#TTL的概念及用处" class="headerlink" title="TTL的概念及用处"></a>TTL的概念及用处</h2> 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2023/05/29/%E5%85%AB%E8%82%A1/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2023/05/31/%E5%85%AB%E8%82%A1/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            设计模式
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2023/05/28/Redis/%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Redis速查手册</div>
+      </a>
+    
+  </nav>
+
+  
+   
+  
+   
+    <script src="https://cdn.staticfile.org/twikoo/1.4.18/twikoo.all.min.js"></script>
+    <div id="twikoo" class="twikoo"></div>
+    <script>
+        twikoo.init({
+            envId: ""
+        })
+    </script>
+ 
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2023
+        <i class="ri-heart-fill heart_icon"></i> li jiang
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="bd7xzz"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i></p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+ <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/mathjax/2.7.7/MathJax.js"></script>
+<script src="https://cdn.staticfile.org/mathjax/2.7.7/config/TeX-AMS-MML_HTMLorMML-full.js"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true,
+  };
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    
+
+  </div>
+</body>
+
+</html>

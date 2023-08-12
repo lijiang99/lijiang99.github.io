@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>C++基础 |  bd7xzz</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="bd7xzz" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-CPP/CPP基础"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  C++基础
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/05/25/CPP/CPP%E5%9F%BA%E7%A1%80/" class="article-date">
+  <time datetime="2023-05-24T16:00:00.000Z" itemprop="datePublished">2023-05-25</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/C/">C++</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">3.9k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">13 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <span id="more"></span>
+
+<h2 id="1-C和C-的区别"><a href="#1-C和C-的区别" class="headerlink" title="1. C和C++的区别"></a>1. C和C++的区别</h2><ul>
+<li>C是面向过程的语言，而C++是面向对象的语言。</li>
+<li>C++增加了诸如引用、类和对象、函数重载、泛型（模版）的概念。</li>
+<li>在动态分配内存方面，C使用malloc&#x2F;free函数，C++使用new&#x2F;delete运算符。</li>
+</ul>
+<h2 id="2-static关键字的作用"><a href="#2-static关键字的作用" class="headerlink" title="2. static关键字的作用"></a>2. static关键字的作用</h2><ul>
+<li>修饰局部变量：该变量存放在静态存储区，生命周期和整个程序的生命周期一致，在函数首次调用的时候进行初始化，函数再次调用则不会再初始化，但只有局部作用域。</li>
+<li>修饰全局变量：该变量存放在静态存储区，生命周期和整个程序的生命周期一致，但具有全局作用域，声明该变量后，在整个文件中都是可见的，而在文件外不可见。</li>
+<li>修饰函数：声明函数后，在整个文件中都是可见的，而在文件外不可见，可避免函数的同名冲突。</li>
+<li>修饰成员变量：类的不同对象只会维持同一份拷贝，从而实现数据在同一个类的不同对象间共享，可以通过类名而不实例化对象来访问，一般不在类中而在类外初始化（不加static）。</li>
+<li>修饰成员函数：没有this指针，只能访问静态成员，可以通过类名而不实例化对象来访问。</li>
+</ul>
+<h2 id="3-define和const的区别"><a href="#3-define和const的区别" class="headerlink" title="3. #define和const的区别"></a>3. #define和const的区别</h2><ul>
+<li>编译器的处理方式不同：#define在预处理阶段完成代码替换；const则在编译阶段处理。</li>
+<li>类型和安全检查不同：#define没有类型，不执行安全检查；const常量有具体的类型，编译器会执行类型检查，更加安全。</li>
+<li>存储的方式不同：#define仅通过字符串完成代码替换，编译器不会为其分配内存，存放在程序的代码段；const常量则会占用内存空间，存放在程序的数据段。</li>
+<li>作用域不同：#define不受作用域限制，在定义#define后的所有引用都是合法的；const常量则会受到作用域的限制。</li>
+</ul>
+<h2 id="4-inline函数的优缺点"><a href="#4-inline函数的优缺点" class="headerlink" title="4. inline函数的优缺点"></a>4. inline函数的优缺点</h2><ul>
+<li>优点：<ul>
+<li>inline函数会在函数的调用点进行代码展开，从而节省了函数调用的开销，提升了程序的效率。</li>
+<li>相比于宏函数，编译器会为inline函数进行语法检查和类型转换，更加安全。</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>过度使用可能会造成代码膨胀，且若inline函数内代码块的执行开销高于函数调用，那么程序的效率并不会得到明显改善。</li>
+<li>若修改了inline函数的定义，则所有使用该inline函数的文件都需要重新编译。</li>
+<li>inline只是一条建议，是否真正内联仍取决于编译器，所以其实际行为并不可控。</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-智能指针的概念、作用、分类和特点"><a href="#5-智能指针的概念、作用、分类和特点" class="headerlink" title="5. 智能指针的概念、作用、分类和特点"></a>5. 智能指针的概念、作用、分类和特点</h2><ul>
+<li>智能指针是一个RAII类模型，其设计思想是将原生指针封装为类对象，并将delete操作放入析构函数中，从而利用类对象在离开作用域自动调用析构函数的机制来自动释放动态分配的内存。</li>
+<li>智能指针能够处理内存泄漏和空悬指针的问题，可分为auto_ptr、unique_ptr、shared_ptr、weak_ptr四类。</li>
+<li>auto_ptr采取所有权模式，是C++98的方案，在C++11中已被弃用，主要问题在于赋值或函数传参时，对象所有权会被剥夺，存在潜在的内存崩溃的问题。<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">auto_ptr&lt;string&gt; <span class="title">p1</span> <span class="params">(<span class="keyword">new</span> string(<span class="string">&quot;hello, world&quot;</span>))</span></span>;</span><br><span class="line">auto_ptr p2;</span><br><span class="line">p2 = p1; <span class="comment">// 此时p2会剥夺p1的所有权，且程序不会报错，但当要再次访问p1时会报错。</span></span><br></pre></td></tr></table></figure></li>
+<li>unique_ptr是一种独占式的智能指针，即同一时间只能有一个智能指针指向同一对象，禁止拷贝构造和赋值的行为，但若源unique_ptr是一个临时右值，则可以允许拷贝或赋值，因为定义了移动赋值和移动构造。</li>
+<li>shared_ptr是一种共享式的智能指针，即同一时间可以有多个智能指针指向同一对象，通过引用计数机制实现。<ul>
+<li>use_count可查看资源的所有者个数</li>
+<li>release释放当前智能指针的所有权，计数减1</li>
+<li>swap交换两个shared_ptr所拥有的对象</li>
+<li>get返回内部的原生指针</li>
+</ul>
+</li>
+<li>weak_ptr是对对象的一种弱引用，可以绑定到shared_ptr上，且不会增加引用计数，从而协助shared_ptr工作。weak_ptr可以解决shared_ptr相互引用时的死锁问题，即两个shared_ptr相互引用时，两者的引用计数永远不会减为0，资源永远不会被释放。</li>
+</ul>
+<h2 id="6-shared-ptr的工作原理"><a href="#6-shared-ptr的工作原理" class="headerlink" title="6. shared_ptr的工作原理"></a>6. shared_ptr的工作原理</h2><ul>
+<li>在构造函数中，引用计数初始化为1；在析构函数中，引用计数减1；在拷贝构造中，引用计数加1。</li>
+<li>在赋值运算符中，左侧运算对象引用计数减1，右侧运算对象引用计数加1。</li>
+<li>若析构函数或赋值运算符中对象的引用计数变为0，则通过delete运算符释放资源。</li>
+</ul>
+<h2 id="7-空悬指针和野指针"><a href="#7-空悬指针和野指针" class="headerlink" title="7. 空悬指针和野指针"></a>7. 空悬指针和野指针</h2><ul>
+<li>空悬指针：释放动态分配的内存后，未及时将指针置为nullptr，使指针仍指向已经释放的内存地址。</li>
+<li>野指针：定义指针时，未初始化。</li>
+</ul>
+<h2 id="8-变量定义和变量声明的区别"><a href="#8-变量定义和变量声明的区别" class="headerlink" title="8. 变量定义和变量声明的区别"></a>8. 变量定义和变量声明的区别</h2><ul>
+<li>变量定义会为变量分配地址和内存空间，而变量声明则不会；变量可以有多个声明，但只能有一个定义。</li>
+<li>可以用extern来修饰变量声明，表示该变量的定义会出现在文件的后面部分或其他文件中。</li>
+<li>使用extern修饰变量时，可以提供初始值，但此时就变成了定义而非声明，且该语句不能出现在函数的内部。</li>
+</ul>
+<h2 id="9-ifdef、-else、-endif、-ifndef条件编译的作用"><a href="#9-ifdef、-else、-endif、-ifndef条件编译的作用" class="headerlink" title="9. #ifdef、#else、#endif、#ifndef条件编译的作用"></a>9. #ifdef、#else、#endif、#ifndef条件编译的作用</h2><ul>
+<li>借助条件编译，可以在需要的时候，将某些模块方便地包含进行程序中，而在不需要的时候，又能方便地屏蔽掉。</li>
+<li>条件编译也可以搭配一些宏定义（如NDEBUG）来调试和追踪程序。</li>
+</ul>
+<h2 id="10-int、bool、float、指针变量与“零值”比较的if语句"><a href="#10-int、bool、float、指针变量与“零值”比较的if语句" class="headerlink" title="10. int、bool、float、指针变量与“零值”比较的if语句"></a>10. int、bool、float、指针变量与“零值”比较的if语句</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (n == <span class="number">0</span>) &#123;...&#125; <span class="comment">// int型</span></span><br><span class="line"><span class="keyword">if</span> (flag) &#123;...&#125; <span class="comment">// bool型</span></span><br><span class="line"><span class="comment">// float型</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">equal</span><span class="params">(<span class="type">float</span> a, <span class="type">float</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">fabs</span>(a-b) &lt; std::numeric_limits&lt;<span class="type">float</span>&gt;::<span class="built_in">epsilon</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (ptr == <span class="literal">nullptr</span>) &#123;...&#125; <span class="comment">// 指针型</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="11-结构体赋值"><a href="#11-结构体赋值" class="headerlink" title="11. 结构体赋值"></a>11. 结构体赋值</h2><ul>
+<li>结构体在声明时就可以赋予初始值，结构体的不同对象间也可以直接赋值。</li>
+<li>但当含有指针成员时，则赋值时一定要区分是深拷贝还是浅拷贝。</li>
+</ul>
+<h2 id="12-sizeof和strlen的区别"><a href="#12-sizeof和strlen的区别" class="headerlink" title="12. sizeof和strlen的区别"></a>12. sizeof和strlen的区别</h2><ul>
+<li>sizeof是操作符，其参数为数据类型或变量，且在编译时获得计算结果。</li>
+<li>strlen是函数，其参数只能是以&#39;\0&#39;字符结尾的字符串，且在程序运行时获得计算结果。</li>
+<li>sizeof的计算结果是对象所占用的内存大小（以字节为单位），而strlen的计算结果则是实际的字符串长度。</li>
+<li>若将一个字符数组名传递给sizeof，不会退化成指针，但若传递给strlen，则会退化成指针形式。</li>
+</ul>
+<h2 id="13-static在C和C-中的区别"><a href="#13-static在C和C-中的区别" class="headerlink" title="13. static在C和C++中的区别"></a>13. static在C和C++中的区别</h2><ul>
+<li>在C中，static可用于修饰局部变量、外部变量和函数，修饰局部变量时，可让同一函数在不同的调用时期进行数据通信。</li>
+<li>在C++中，static除了上述功能以外，还可以修饰成员变量和成员函数，从而实现同一个类的不同对象间的数据共享。</li>
+</ul>
+<h2 id="14-全局变量和局部变量的区别"><a href="#14-全局变量和局部变量的区别" class="headerlink" title="14. 全局变量和局部变量的区别"></a>14. 全局变量和局部变量的区别</h2><ul>
+<li>全局变量具有全局作用域，生命周期从程序运行开始一直持续到程序运行结束。</li>
+<li>局部变量只有局部作用域，一般在代码块或函数中定义，离开了代码块和函数就会被释放。</li>
+<li>编译器和OS通过内存的分配位置来区分两者，全局变量分配在全局数据段，而局部变量则分配在堆栈中。</li>
+</ul>
+<h2 id="15-strcpy、sprintf、memcpy的区别"><a href="#15-strcpy、sprintf、memcpy的区别" class="headerlink" title="15. strcpy、sprintf、memcpy的区别"></a>15. strcpy、sprintf、memcpy的区别</h2><ul>
+<li>三者的主要功能都是拷贝，但所操作的对象并不同。</li>
+<li>strcpy：操作对象为两个字符串，主要实现字符串的拷贝。</li>
+<li>sprintf：操作对象可以是多种数据类型，可以将多种数据以格式化的形式写入字符串。</li>
+<li>memcpy：操作对象是任意可访问的内存地址，不受类型限制，可以实现内存块间的拷贝。</li>
+</ul>
+<h2 id="16-指针和引用的区别"><a href="#16-指针和引用的区别" class="headerlink" title="16. 指针和引用的区别"></a>16. 指针和引用的区别</h2><ul>
+<li>指针是变量，具有内存空间，而引用不是，它只是变量的别名，因此可以定义元素类型为指针的数组，但不能定义元素类型为引用的数组。</li>
+<li>使用sizeof时，参数若为指针，则根据计算机字长返回固定大小（32位返回4，64位返回8）；参数若为引用，则返回被引用对象所占的内存大小。</li>
+<li>作为函数参数时，若想通过指针改变所指对象的值，则必须解引用；而参数为引用，则可直接修改并影响原对象。</li>
+<li>指针可以改变其指向，但引用不行，引用必须在定义时就通过初始化绑定到一个对象上，因此有const指针，但无const引用。</li>
+<li>指针可以是多级的，但引用只能是一级。</li>
+<li>对指针使用++运算符，则会将指针指向下一个元素位置，而对引用使用++运算符，则会递增被引用的对象的值。</li>
+<li>动态分配内存时所返回的对象，只能使用指针接收。</li>
+</ul>
+<h2 id="17-typedef和-define的区别"><a href="#17-typedef和-define的区别" class="headerlink" title="17. typedef和#define的区别"></a>17. typedef和#define的区别</h2><ul>
+<li>用法不同：typedef用于为类型起一个别名，从而提高程序的可读性；而#define一般用于定义常量或频繁使用的宏。</li>
+<li>执行不同：typedef在编译阶段执行，具有类型检查；而#define在预处理阶段进行代码替换，不具备类型检查。</li>
+<li>作用域不同：typedef具备明确的作用域；而#define定义后的所有引用都是合法的。</li>
+<li>typedef是一条语句，所以结尾要加分号；而#define不是语句，而且不能加分号；且两者定义指针时有很大的区别，如下：<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">int</span>* int_ptr;</span><br><span class="line">int_ptr a, b; <span class="comment">// a，b均为int\*</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> int* int_ptr</span></span><br><span class="line">int_ptr a, b; <span class="comment">// a为int\*，但b为\*</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="18-指针常量和常量指针的区别"><a href="#18-指针常量和常量指针的区别" class="headerlink" title="18. 指针常量和常量指针的区别"></a>18. 指针常量和常量指针的区别</h2><ul>
+<li>指针常量的意思是指针变量本身是一个常量，不可改变其指向，必须在定义时初始化，具有顶层const属性。</li>
+<li>常量指针的意思是指针指向的是一个只读变量，不可通过指针来改变其值，具有底层const属性。</li>
+<li>不管是指针常量还是常量指针，其最大的作用就是在修饰函数形参时，强调在函数内部实参的不可改变性。</li>
+</ul>
+<h2 id="19-栈区和堆区的异同"><a href="#19-栈区和堆区的异同" class="headerlink" title="19. 栈区和堆区的异同"></a>19. 栈区和堆区的异同</h2><ul>
+<li>栈区和堆区并非是指堆栈这两种数据结构，而是指不同的内存存储区域。</li>
+<li>栈区结构类似与栈，由编译器负责分配和释放，主要用于存放函数参数、局部变量等。</li>
+<li>堆区结构类似于链表，存取顺序随意，由程序员申请内存，并负责释放，或程序结束由OS回收。</li>
+</ul>
+<h2 id="20-C中的结构体和C-中的区别"><a href="#20-C中的结构体和C-中的区别" class="headerlink" title="20. C中的结构体和C++中的区别"></a>20. C中的结构体和C++中的区别</h2><ul>
+<li>C中结构体不能由函数成员，而C++可以。</li>
+<li>C中结构体没有访问限制，而C++具有private、public、protected访问说明符。</li>
+<li>C中结构体没有继承，而C++中具有丰富的继承体系。</li>
+</ul>
+<h2 id="21-避免野指针"><a href="#21-避免野指针" class="headerlink" title="21. 避免野指针"></a>21. 避免野指针</h2><ul>
+<li>在定义指针变量时就将指针初始化，或置为nullptr。</li>
+<li>在释放动态分配的内存后，将指针置为nullptr。</li>
+<li>当一个指针指向局部变量时，在离开局部变量作用域之前将指针置为nullptr。</li>
+</ul>
+<h2 id="22-句柄和指针的区别"><a href="#22-句柄和指针的区别" class="headerlink" title="22. 句柄和指针的区别"></a>22. 句柄和指针的区别</h2><ul>
+<li>句柄在Windows中标识的是可用的系统资源，并隐藏了系统信息，只需知道有这样的资源，然后申请使用即可。</li>
+<li>指针标识的某块物理内存的地址，两者在概念上是不同的。</li>
+</ul>
+<h2 id="23-extern-quot-C-quot"><a href="#23-extern-quot-C-quot" class="headerlink" title="23. extern &quot;C&quot;"></a>23. extern &quot;C&quot;</h2><ul>
+<li>extern &quot;C&quot;是链接指示，加上extern &quot;C&quot;则会指示编译器对当前代码按C而不是C++的方式编译。如C++中有函数重载机制，因此在编译时，会将函数的参数类型也加入到编译后的代码中，而C没有函数重载，因此编译时，一般只包含函数名。</li>
+<li>适用于多人协作开发时，一部分人擅长C，一部分人擅长C++的情况。</li>
+</ul>
+<h2 id="24-顶层const和底层const"><a href="#24-顶层const和底层const" class="headerlink" title="24. 顶层const和底层const"></a>24. 顶层const和底层const</h2><ul>
+<li>顶层const是指变量本身具备不可改变的属性，必须在定义时就完成初始化。</li>
+<li>底层const是指指针或引用所指向的对象具有不可改变的属性。</li>
+</ul>
+<h2 id="25-左指引用和右值引用"><a href="#25-左指引用和右值引用" class="headerlink" title="25. 左指引用和右值引用"></a>25. 左指引用和右值引用</h2><ul>
+<li>左值具有持久状态，而右值要么是字面常量，要么就是表达式求值过程中创建的临时对象。</li>
+<li>左值引用可以绑定到左值，常规的左值引用不能绑定到右值，但const左值引用可以绑定到右值上。</li>
+<li>可通过&amp;&amp;声明右值引用类型，可绑定到字面值或一个将要销毁的对象上，而不能绑定到左值。</li>
+<li>可以利用std::move函数显示地将一个左值转换为对应的右值引用类型。</li>
+<li>右值引用常用于模板转发实参，当函数参数定义为指向模板类型参数的右值引用时，可以保持实参的所有类型信息。</li>
+</ul>
+<h2 id="26-volatile的作用"><a href="#26-volatile的作用" class="headerlink" title="26. volatile的作用"></a>26. volatile的作用</h2><ul>
+<li>volatile可用于修饰一个中断服务子程序会访问到的非自动变量或者是多线程间被几个任务共享的变量。</li>
+<li>volatile对象只能调用使用volatile修饰的成员函数，volatile对象也不能使用合成的拷贝&#x2F;移动构造函数和赋值运算符，若想使用，必须自定义。</li>
+<li>可以用const和volatile同时修饰变量，表示变量在内部只读，只在程序外部条件变化下改变，且编译器不会优化该变量。因为const只是不允许程序代码修改变量，在编译期进行检查，并未实际禁止某段内存的读写特性。</li>
+</ul>
+<h2 id="27-静态链接和动态链接的区别"><a href="#27-静态链接和动态链接的区别" class="headerlink" title="27. 静态链接和动态链接的区别"></a>27. 静态链接和动态链接的区别</h2><ul>
+<li>静态链接是指在编译链接时，直接将需要执行的代码拷贝到调用处。<ul>
+<li>优点：程序发布时不需依赖库，可独立执行。</li>
+<li>缺点：程序体积相对较大，若静态函数库更新，则使用此函数库的程序都要重新编译。</li>
+</ul>
+</li>
+<li>动态链接是指在编译链接时，在程序里只有一个（指针）位置，而实际内容并不会整合到执行文件中，只有在运行时需要用到函数库功能时，程序才会去读取函数库，从而实现运行时链接。<ul>
+<li>优点：多个程序可共享同一个动态库，节省资源，且函数库更新，无需重新编译使用此函数库的程序。</li>
+<li>缺点：由于在运行时加载，可能会影响程序的前期执行性能。</li>
+</ul>
+</li>
+</ul>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2023/05/25/CPP/CPP%E5%9F%BA%E7%A1%80/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AF%AD%E6%B3%95%E5%9F%BA%E7%A1%80/" rel="tag">语法基础</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2023/05/28/Redis/%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Redis速查手册
+          
+        </div>
+      </a>
+    
+    
+  </nav>
+
+  
+   
+  
+   
+    <script src="https://cdn.staticfile.org/twikoo/1.4.18/twikoo.all.min.js"></script>
+    <div id="twikoo" class="twikoo"></div>
+    <script>
+        twikoo.init({
+            envId: ""
+        })
+    </script>
+ 
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2023
+        <i class="ri-heart-fill heart_icon"></i> li jiang
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="bd7xzz"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i></p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+ <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/mathjax/2.7.7/MathJax.js"></script>
+<script src="https://cdn.staticfile.org/mathjax/2.7.7/config/TeX-AMS-MML_HTMLorMML-full.js"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true,
+  };
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    
+
+  </div>
+</body>
+
+</html>
