@@ -1,275 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>C++基础</title>
-    <url>/2023/05/25/CPP/CPP%E5%9F%BA%E7%A1%80/</url>
+    <title>设计模式（上篇）</title>
+    <url>/2023/06/07/Fundamentals/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[<span id="more"></span>
 
-<h2 id="1-C和C-的区别"><a href="#1-C和C-的区别" class="headerlink" title="1. C和C++的区别"></a>1. C和C++的区别</h2><ul>
-<li>C是面向过程的语言，而C++是面向对象的语言。</li>
-<li>C++增加了诸如引用、类和对象、函数重载、泛型（模版）的概念。</li>
-<li>在动态分配内存方面，C使用malloc&#x2F;free函数，C++使用new&#x2F;delete运算符。</li>
-</ul>
-<h2 id="2-static关键字的作用"><a href="#2-static关键字的作用" class="headerlink" title="2. static关键字的作用"></a>2. static关键字的作用</h2><ul>
-<li>修饰局部变量：该变量存放在静态存储区，生命周期和整个程序的生命周期一致，在函数首次调用的时候进行初始化，函数再次调用则不会再初始化，但只有局部作用域。</li>
-<li>修饰全局变量：该变量存放在静态存储区，生命周期和整个程序的生命周期一致，但具有全局作用域，声明该变量后，在整个文件中都是可见的，而在文件外不可见。</li>
-<li>修饰函数：声明函数后，在整个文件中都是可见的，而在文件外不可见，可避免函数的同名冲突。</li>
-<li>修饰成员变量：类的不同对象只会维持同一份拷贝，从而实现数据在同一个类的不同对象间共享，可以通过类名而不实例化对象来访问，一般不在类中而在类外初始化（不加static）。</li>
-<li>修饰成员函数：没有this指针，只能访问静态成员，可以通过类名而不实例化对象来访问。</li>
-</ul>
-<h2 id="3-define和const的区别"><a href="#3-define和const的区别" class="headerlink" title="3. #define和const的区别"></a>3. #define和const的区别</h2><ul>
-<li>编译器的处理方式不同：#define在预处理阶段完成代码替换；const则在编译阶段处理。</li>
-<li>类型和安全检查不同：#define没有类型，不执行安全检查；const常量有具体的类型，编译器会执行类型检查，更加安全。</li>
-<li>存储的方式不同：#define仅通过字符串完成代码替换，编译器不会为其分配内存，存放在程序的代码段；const常量则会占用内存空间，存放在程序的数据段。</li>
-<li>作用域不同：#define不受作用域限制，在定义#define后的所有引用都是合法的；const常量则会受到作用域的限制。</li>
-</ul>
-<h2 id="4-inline函数的优缺点"><a href="#4-inline函数的优缺点" class="headerlink" title="4. inline函数的优缺点"></a>4. inline函数的优缺点</h2><ul>
-<li>优点：<ul>
-<li>inline函数会在函数的调用点进行代码展开，从而节省了函数调用的开销，提升了程序的效率。</li>
-<li>相比于宏函数，编译器会为inline函数进行语法检查和类型转换，更加安全。</li>
-</ul>
+<h2 id="Singleton–单例模式"><a href="#Singleton–单例模式" class="headerlink" title="Singleton–单例模式"></a><a href="https://www.bilibili.com/video/BV1Yr4y157Ci?p=12&vd_source=65122611208f4d2dd8e86fb48f5e4e28">Singleton–单例模式</a></h2><ul>
+<li><p>概念：保证一个类仅有一个实例，并提供一个该实例的全局访问点。</p>
 </li>
-<li>缺点：<ul>
-<li>过度使用可能会造成代码膨胀，且若inline函数内代码块的执行开销高于函数调用，那么程序的效率并不会得到明显改善。</li>
-<li>若修改了inline函数的定义，则所有使用该inline函数的文件都需要重新编译。</li>
-<li>inline只是一条建议，是否真正内联仍取决于编译器，所以其实际行为并不可控。</li>
-</ul>
+<li><p>实现：绕过常规的构造器，提供一种机制来保证类只有一个实例。</p>
+</li>
+<li><p>懒汉式：用到的时候才进行初始化</p>
 </li>
 </ul>
-<h2 id="5-智能指针的概念、作用、分类和特点"><a href="#5-智能指针的概念、作用、分类和特点" class="headerlink" title="5. 智能指针的概念、作用、分类和特点"></a>5. 智能指针的概念、作用、分类和特点</h2><ul>
-<li>智能指针是一个RAII类模型，其设计思想是将原生指针封装为类对象，并将delete操作放入析构函数中，从而利用类对象在离开作用域自动调用析构函数的机制来自动释放动态分配的内存。</li>
-<li>智能指针能够处理内存泄漏和空悬指针的问题，可分为auto_ptr、unique_ptr、shared_ptr、weak_ptr四类。</li>
-<li>auto_ptr采取所有权模式，是C++98的方案，在C++11中已被弃用，主要问题在于赋值或函数传参时，对象所有权会被剥夺，存在潜在的内存崩溃的问题。<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function">auto_ptr&lt;string&gt; <span class="title">p1</span> <span class="params">(<span class="keyword">new</span> string(<span class="string">&quot;hello, world&quot;</span>))</span></span>;</span><br><span class="line">auto_ptr p2;</span><br><span class="line">p2 = p1; <span class="comment">// 此时p2会剥夺p1的所有权，且程序不会报错，但当要再次访问p1时会报错。</span></span><br></pre></td></tr></table></figure></li>
-<li>unique_ptr是一种独占式的智能指针，即同一时间只能有一个智能指针指向同一对象，禁止拷贝构造和赋值的行为，但若源unique_ptr是一个临时右值，则可以允许拷贝或赋值，因为定义了移动赋值和移动构造。</li>
-<li>shared_ptr是一种共享式的智能指针，即同一时间可以有多个智能指针指向同一对象，通过引用计数机制实现。<ul>
-<li>use_count可查看资源的所有者个数</li>
-<li>release释放当前智能指针的所有权，计数减1</li>
-<li>swap交换两个shared_ptr所拥有的对象</li>
-<li>get返回内部的原生指针</li>
-</ul>
-</li>
-<li>weak_ptr是对对象的一种弱引用，可以绑定到shared_ptr上，且不会增加引用计数，从而协助shared_ptr工作。weak_ptr可以解决shared_ptr相互引用时的死锁问题，即两个shared_ptr相互引用时，两者的引用计数永远不会减为0，资源永远不会被释放。</li>
-</ul>
-<h2 id="6-shared-ptr的工作原理"><a href="#6-shared-ptr的工作原理" class="headerlink" title="6. shared_ptr的工作原理"></a>6. shared_ptr的工作原理</h2><ul>
-<li>在构造函数中，引用计数初始化为1；在析构函数中，引用计数减1；在拷贝构造中，引用计数加1。</li>
-<li>在赋值运算符中，左侧运算对象引用计数减1，右侧运算对象引用计数加1。</li>
-<li>若析构函数或赋值运算符中对象的引用计数变为0，则通过delete运算符释放资源。</li>
-</ul>
-<h2 id="7-空悬指针和野指针"><a href="#7-空悬指针和野指针" class="headerlink" title="7. 空悬指针和野指针"></a>7. 空悬指针和野指针</h2><ul>
-<li>空悬指针：释放动态分配的内存后，未及时将指针置为nullptr，使指针仍指向已经释放的内存地址。</li>
-<li>野指针：定义指针时，未初始化。</li>
-</ul>
-<h2 id="8-变量定义和变量声明的区别"><a href="#8-变量定义和变量声明的区别" class="headerlink" title="8. 变量定义和变量声明的区别"></a>8. 变量定义和变量声明的区别</h2><ul>
-<li>变量定义会为变量分配地址和内存空间，而变量声明则不会；变量可以有多个声明，但只能有一个定义。</li>
-<li>可以用extern来修饰变量声明，表示该变量的定义会出现在文件的后面部分或其他文件中。</li>
-<li>使用extern修饰变量时，可以提供初始值，但此时就变成了定义而非声明，且该语句不能出现在函数的内部。</li>
-</ul>
-<h2 id="9-ifdef、-else、-endif、-ifndef条件编译的作用"><a href="#9-ifdef、-else、-endif、-ifndef条件编译的作用" class="headerlink" title="9. #ifdef、#else、#endif、#ifndef条件编译的作用"></a>9. #ifdef、#else、#endif、#ifndef条件编译的作用</h2><ul>
-<li>借助条件编译，可以在需要的时候，将某些模块方便地包含进行程序中，而在不需要的时候，又能方便地屏蔽掉。</li>
-<li>条件编译也可以搭配一些宏定义（如NDEBUG）来调试和追踪程序。</li>
-</ul>
-<h2 id="10-int、bool、float、指针变量与“零值”比较的if语句"><a href="#10-int、bool、float、指针变量与“零值”比较的if语句" class="headerlink" title="10. int、bool、float、指针变量与“零值”比较的if语句"></a>10. int、bool、float、指针变量与“零值”比较的if语句</h2><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (n == <span class="number">0</span>) &#123;...&#125; <span class="comment">// int型</span></span><br><span class="line"><span class="keyword">if</span> (flag) &#123;...&#125; <span class="comment">// bool型</span></span><br><span class="line"><span class="comment">// float型</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">equal</span><span class="params">(<span class="type">float</span> a, <span class="type">float</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">fabs</span>(a-b) &lt; std::numeric_limits&lt;<span class="type">float</span>&gt;::<span class="built_in">epsilon</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (ptr == <span class="literal">nullptr</span>) &#123;...&#125; <span class="comment">// 指针型</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        <span class="comment">// 首先要将构造函数和拷贝操作声明为私有（绕过常规构造器），阻止编译器默认生成，且不允许外部使用。</span></span><br><span class="line">        <span class="built_in">Singleton</span>();</span><br><span class="line">        <span class="built_in">Singleton</span>(<span class="type">const</span> Singleton&amp; rhs) = <span class="keyword">delete</span>;</span><br><span class="line">        Singleton&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Singleton&amp; rhs) = <span class="keyword">delete</span>;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="comment">// 声明静态变量和静态成员函数（提供外部访问接口）</span></span><br><span class="line">        <span class="comment">// 静态变量是一个堆对象，因此为指针类型，并初始化为nullptr。</span></span><br><span class="line">        <span class="function"><span class="type">static</span> Singleton* <span class="title">getInstance</span><span class="params">()</span></span>;</span><br><span class="line">        <span class="type">static</span> Singleton* m_instance;</span><br><span class="line">&#125;;</span><br><span class="line">Singleton* Singleton::m_instance = <span class="literal">nullptr</span>;</span><br></pre></td></tr></table></figure>
 
-<h2 id="11-结构体赋值"><a href="#11-结构体赋值" class="headerlink" title="11. 结构体赋值"></a>11. 结构体赋值</h2><ul>
-<li>结构体在声明时就可以赋予初始值，结构体的不同对象间也可以直接赋值。</li>
-<li>但当含有指针成员时，则赋值时一定要区分是深拷贝还是浅拷贝。</li>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 非线程安全版本（只适用于单线程）</span></span><br><span class="line"><span class="function">Singleton* <span class="title">Singleton::getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 多线程情况下，m_instance可能被创建多次。</span></span><br><span class="line">    <span class="keyword">if</span> (m_instance == <span class="literal">nullptr</span>)</span><br><span class="line">        m_instance == <span class="keyword">new</span> <span class="built_in">Singleton</span>();</span><br><span class="line">    <span class="keyword">return</span> m_instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 线程安全版本，但代价过高。当m_instance创建完成后，以后对m_instance的操作都是直接return。</span></span><br><span class="line"><span class="comment">// 即只有一次写操作（需加锁），以后都是读操作（不需加锁）。因此每次调用都加锁是没有必要的，会加大开销。</span></span><br><span class="line"><span class="function">Singleton* <span class="title">Singleton::getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 在函数结束时，具备变量lock被析构释放（解锁）。</span></span><br><span class="line">    Lock lock;</span><br><span class="line">    <span class="keyword">if</span> (m_instance == <span class="literal">nullptr</span>)</span><br><span class="line">        m_instance = <span class="keyword">new</span> <span class="built_in">Singleton</span>();</span><br><span class="line">    <span class="keyword">return</span> m_instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 双检查锁（锁前锁后都检查），但内存读写reorder不安全，极有可能会导致双检查锁的失效。</span></span><br><span class="line"><span class="comment">// 正常情况下，m_instance = new Singleton()分为三步：</span></span><br><span class="line"><span class="comment">// 1. 先分配内存（new）2. 调用构造器初始化内存（Singleton()）3. 返回地址给m_instance</span></span><br><span class="line"><span class="comment">// 但这只是假想的顺序，到了指令级别，很有可能会出现reorder的情况：</span></span><br><span class="line"><span class="comment">// 1. 先分配内存（new）2. 返回地址给m_instance 3. 调用构造器初始化内存（Singleton()）</span></span><br><span class="line"><span class="comment">// 假设线程A执行到第2步，返回地址给m_instance，但此时尚未完成构造。</span></span><br><span class="line"><span class="comment">// 若此时线程B恰好执行，那么m_instance不为空，就直接返回m_instance。</span></span><br><span class="line"><span class="comment">// 但由于m_instance所指向的内存尚未构造，因此所获得的对象状态是不对的。</span></span><br><span class="line"><span class="function">Singleton* <span class="title">Singleton::getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 先判空，若不空直接返回。</span></span><br><span class="line">    <span class="keyword">if</span> (m_instance == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">        Lock lock; <span class="comment">// 若为空，加锁。</span></span><br><span class="line">        <span class="comment">// 再次判空，保证线程安全。</span></span><br><span class="line">        <span class="keyword">if</span> (m_instance == <span class="literal">nullptr</span>)</span><br><span class="line">            m_instance = <span class="keyword">new</span> <span class="built_in">Singleton</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> m_instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Java、C#通过增加关键字volatile来告知编译器变量赋值时禁止reorder（阻止编译器优化）</span></span><br><span class="line"><span class="comment">// C++中也有volatile，但是无法跨平台使用，而C++11后提供了实现跨平台的机制。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 将m_instance声明为原子对象</span></span><br><span class="line">std::atomic&lt;Singleton*&gt; Singleton::m_instance;</span><br><span class="line">std::mutex Singleton::m_mutex;</span><br><span class="line"></span><br><span class="line"><span class="function">Singleton* <span class="title">Singleton::getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 利用原子对象的load函数获取Singleton的指针</span></span><br><span class="line">    Singleton* tmp = m_instance.<span class="built_in">load</span>(std::memory_order_relaxed);</span><br><span class="line">    <span class="comment">// 设置内存屏障，实现内存保护，确保tmp变量赋值时不会被reorder。</span></span><br><span class="line">    std::<span class="built_in">atomic_thread_fence</span>(std::memory_order_acquire);</span><br><span class="line">    <span class="keyword">if</span> (tmp == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">        <span class="comment">// 依然使用双检查锁</span></span><br><span class="line">        <span class="function">std::lock_guard&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(m_mutex)</span></span>;</span><br><span class="line">        tmp = m_instance.<span class="built_in">load</span>(std::memory_order_relaxed);</span><br><span class="line">        <span class="keyword">if</span> (tmp == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            tmp = <span class="keyword">new</span> <span class="built_in">Singleton</span>();</span><br><span class="line">            <span class="comment">// 释放内存屏障</span></span><br><span class="line">            std::<span class="built_in">atomic_thread_fence</span>(std::memory_order_release);</span><br><span class="line">            m_instance.<span class="built_in">store</span>(tmp, std::memory_order_relaxed); <span class="comment">// tmp再交回m_instance</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> tmp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 由于C++11后确保了初始化静态变量是线程安全的</span></span><br><span class="line"><span class="comment">// 因为若线程执行到需初始化静态变量时，且有其他线程正初始化该变量，则阻塞当前线程</span></span><br><span class="line"><span class="comment">// 直到初始化完成，从而确保线程安全，因此单例模式可通过定义局部静态变量来简化设计。</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        <span class="built_in">Singleton</span>();</span><br><span class="line">        <span class="built_in">Singleton</span>(<span class="type">const</span> Singleton&amp; rhs) = <span class="keyword">delete</span>;</span><br><span class="line">        Singleton&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Singleton&amp; rhs) = <span class="keyword">delete</span>;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="function"><span class="type">static</span> Singleton* <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="comment">// 利用局部静态变量来确保只有一份实例，且初始化时线程安全</span></span><br><span class="line">            <span class="comment">// 此时不再需要动态分配内存以及指向堆变量的指针</span></span><br><span class="line">            <span class="comment">// 但每次调用getInstance时，都会检查instance是否以及初始化，即使代码中没有if-else</span></span><br><span class="line">            <span class="type">static</span> Singleton instance;</span><br><span class="line">            <span class="keyword">return</span> &amp;instance;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>饿汉式：程序启动时就完成初始化</li>
 </ul>
-<h2 id="12-sizeof和strlen的区别"><a href="#12-sizeof和strlen的区别" class="headerlink" title="12. sizeof和strlen的区别"></a>12. sizeof和strlen的区别</h2><ul>
-<li>sizeof是操作符，其参数为数据类型或变量，且在编译时获得计算结果。</li>
-<li>strlen是函数，其参数只能是以&#39;\0&#39;字符结尾的字符串，且在程序运行时获得计算结果。</li>
-<li>sizeof的计算结果是对象所占用的内存大小（以字节为单位），而strlen的计算结果则是实际的字符串长度。</li>
-<li>若将一个字符数组名传递给sizeof，不会退化成指针，但若传递给strlen，则会退化成指针形式。</li>
-</ul>
-<h2 id="13-static在C和C-中的区别"><a href="#13-static在C和C-中的区别" class="headerlink" title="13. static在C和C++中的区别"></a>13. static在C和C++中的区别</h2><ul>
-<li>在C中，static可用于修饰局部变量、外部变量和函数，修饰局部变量时，可让同一函数在不同的调用时期进行数据通信。</li>
-<li>在C++中，static除了上述功能以外，还可以修饰成员变量和成员函数，从而实现同一个类的不同对象间的数据共享。</li>
-</ul>
-<h2 id="14-全局变量和局部变量的区别"><a href="#14-全局变量和局部变量的区别" class="headerlink" title="14. 全局变量和局部变量的区别"></a>14. 全局变量和局部变量的区别</h2><ul>
-<li>全局变量具有全局作用域，生命周期从程序运行开始一直持续到程序运行结束。</li>
-<li>局部变量只有局部作用域，一般在代码块或函数中定义，离开了代码块和函数就会被释放。</li>
-<li>编译器和OS通过内存的分配位置来区分两者，全局变量分配在全局数据段，而局部变量则分配在堆栈中。</li>
-</ul>
-<h2 id="15-strcpy、sprintf、memcpy的区别"><a href="#15-strcpy、sprintf、memcpy的区别" class="headerlink" title="15. strcpy、sprintf、memcpy的区别"></a>15. strcpy、sprintf、memcpy的区别</h2><ul>
-<li>三者的主要功能都是拷贝，但所操作的对象并不同。</li>
-<li>strcpy：操作对象为两个字符串，主要实现字符串的拷贝。</li>
-<li>sprintf：操作对象可以是多种数据类型，可以将多种数据以格式化的形式写入字符串。</li>
-<li>memcpy：操作对象是任意可访问的内存地址，不受类型限制，可以实现内存块间的拷贝。</li>
-</ul>
-<h2 id="16-指针和引用的区别"><a href="#16-指针和引用的区别" class="headerlink" title="16. 指针和引用的区别"></a>16. 指针和引用的区别</h2><ul>
-<li>指针是变量，具有内存空间，而引用不是，它只是变量的别名，因此可以定义元素类型为指针的数组，但不能定义元素类型为引用的数组。</li>
-<li>使用sizeof时，参数若为指针，则根据计算机字长返回固定大小（32位返回4，64位返回8）；参数若为引用，则返回被引用对象所占的内存大小。</li>
-<li>作为函数参数时，若想通过指针改变所指对象的值，则必须解引用；而参数为引用，则可直接修改并影响原对象。</li>
-<li>指针可以改变其指向，但引用不行，引用必须在定义时就通过初始化绑定到一个对象上，因此有const指针，但无const引用。</li>
-<li>指针可以是多级的，但引用只能是一级。</li>
-<li>对指针使用++运算符，则会将指针指向下一个元素位置，而对引用使用++运算符，则会递增被引用的对象的值。</li>
-<li>动态分配内存时所返回的对象，只能使用指针接收。</li>
-</ul>
-<h2 id="17-typedef和-define的区别"><a href="#17-typedef和-define的区别" class="headerlink" title="17. typedef和#define的区别"></a>17. typedef和#define的区别</h2><ul>
-<li>用法不同：typedef用于为类型起一个别名，从而提高程序的可读性；而#define一般用于定义常量或频繁使用的宏。</li>
-<li>执行不同：typedef在编译阶段执行，具有类型检查；而#define在预处理阶段进行代码替换，不具备类型检查。</li>
-<li>作用域不同：typedef具备明确的作用域；而#define定义后的所有引用都是合法的。</li>
-<li>typedef是一条语句，所以结尾要加分号；而#define不是语句，而且不能加分号；且两者定义指针时有很大的区别，如下：<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">int</span>* int_ptr;</span><br><span class="line">int_ptr a, b; <span class="comment">// a，b均为int\*</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> int* int_ptr</span></span><br><span class="line">int_ptr a, b; <span class="comment">// a为int\*，但b为\*</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="18-指针常量和常量指针的区别"><a href="#18-指针常量和常量指针的区别" class="headerlink" title="18. 指针常量和常量指针的区别"></a>18. 指针常量和常量指针的区别</h2><ul>
-<li>指针常量的意思是指针变量本身是一个常量，不可改变其指向，必须在定义时初始化，具有顶层const属性。</li>
-<li>常量指针的意思是指针指向的是一个只读变量，不可通过指针来改变其值，具有底层const属性。</li>
-<li>不管是指针常量还是常量指针，其最大的作用就是在修饰函数形参时，强调在函数内部实参的不可改变性。</li>
-</ul>
-<h2 id="19-栈区和堆区的异同"><a href="#19-栈区和堆区的异同" class="headerlink" title="19. 栈区和堆区的异同"></a>19. 栈区和堆区的异同</h2><ul>
-<li>栈区和堆区并非是指堆栈这两种数据结构，而是指不同的内存存储区域。</li>
-<li>栈区结构类似与栈，由编译器负责分配和释放，主要用于存放函数参数、局部变量等。</li>
-<li>堆区结构类似于链表，存取顺序随意，由程序员申请内存，并负责释放，或程序结束由OS回收。</li>
-</ul>
-<h2 id="20-C中的结构体和C-中的区别"><a href="#20-C中的结构体和C-中的区别" class="headerlink" title="20. C中的结构体和C++中的区别"></a>20. C中的结构体和C++中的区别</h2><ul>
-<li>C中结构体不能由函数成员，而C++可以。</li>
-<li>C中结构体没有访问限制，而C++具有private、public、protected访问说明符。</li>
-<li>C中结构体没有继承，而C++中具有丰富的继承体系。</li>
-</ul>
-<h2 id="21-避免野指针"><a href="#21-避免野指针" class="headerlink" title="21. 避免野指针"></a>21. 避免野指针</h2><ul>
-<li>在定义指针变量时就将指针初始化，或置为nullptr。</li>
-<li>在释放动态分配的内存后，将指针置为nullptr。</li>
-<li>当一个指针指向局部变量时，在离开局部变量作用域之前将指针置为nullptr。</li>
-</ul>
-<h2 id="22-句柄和指针的区别"><a href="#22-句柄和指针的区别" class="headerlink" title="22. 句柄和指针的区别"></a>22. 句柄和指针的区别</h2><ul>
-<li>句柄在Windows中标识的是可用的系统资源，并隐藏了系统信息，只需知道有这样的资源，然后申请使用即可。</li>
-<li>指针标识的某块物理内存的地址，两者在概念上是不同的。</li>
-</ul>
-<h2 id="23-extern-quot-C-quot"><a href="#23-extern-quot-C-quot" class="headerlink" title="23. extern &quot;C&quot;"></a>23. extern &quot;C&quot;</h2><ul>
-<li>extern &quot;C&quot;是链接指示，加上extern &quot;C&quot;则会指示编译器对当前代码按C而不是C++的方式编译。如C++中有函数重载机制，因此在编译时，会将函数的参数类型也加入到编译后的代码中，而C没有函数重载，因此编译时，一般只包含函数名。</li>
-<li>适用于多人协作开发时，一部分人擅长C，一部分人擅长C++的情况。</li>
-</ul>
-<h2 id="24-顶层const和底层const"><a href="#24-顶层const和底层const" class="headerlink" title="24. 顶层const和底层const"></a>24. 顶层const和底层const</h2><ul>
-<li>顶层const是指变量本身具备不可改变的属性，必须在定义时就完成初始化。</li>
-<li>底层const是指指针或引用所指向的对象具有不可改变的属性。</li>
-</ul>
-<h2 id="25-左指引用和右值引用"><a href="#25-左指引用和右值引用" class="headerlink" title="25. 左指引用和右值引用"></a>25. 左指引用和右值引用</h2><ul>
-<li>左值具有持久状态，而右值要么是字面常量，要么就是表达式求值过程中创建的临时对象。</li>
-<li>左值引用可以绑定到左值，常规的左值引用不能绑定到右值，但const左值引用可以绑定到右值上。</li>
-<li>可通过&amp;&amp;声明右值引用类型，可绑定到字面值或一个将要销毁的对象上，而不能绑定到左值。</li>
-<li>可以利用std::move函数显示地将一个左值转换为对应的右值引用类型。</li>
-<li>右值引用常用于模板转发实参，当函数参数定义为指向模板类型参数的右值引用时，可以保持实参的所有类型信息。</li>
-</ul>
-<h2 id="26-volatile的作用"><a href="#26-volatile的作用" class="headerlink" title="26. volatile的作用"></a>26. volatile的作用</h2><ul>
-<li>volatile可用于修饰一个中断服务子程序会访问到的非自动变量或者是多线程间被几个任务共享的变量。</li>
-<li>volatile对象只能调用使用volatile修饰的成员函数，volatile对象也不能使用合成的拷贝&#x2F;移动构造函数和赋值运算符，若想使用，必须自定义。</li>
-<li>可以用const和volatile同时修饰变量，表示变量在内部只读，只在程序外部条件变化下改变，且编译器不会优化该变量。因为const只是不允许程序代码修改变量，在编译期进行检查，并未实际禁止某段内存的读写特性。</li>
-</ul>
-<h2 id="27-静态链接和动态链接的区别"><a href="#27-静态链接和动态链接的区别" class="headerlink" title="27. 静态链接和动态链接的区别"></a>27. 静态链接和动态链接的区别</h2><ul>
-<li>静态链接是指在编译链接时，直接将需要执行的代码拷贝到调用处。<ul>
-<li>优点：程序发布时不需依赖库，可独立执行。</li>
-<li>缺点：程序体积相对较大，若静态函数库更新，则使用此函数库的程序都要重新编译。</li>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        <span class="built_in">Singleton</span>();</span><br><span class="line">        <span class="built_in">Singleton</span>(<span class="type">const</span> Singleton&amp; rhs) = <span class="keyword">delete</span>;</span><br><span class="line">        Singleton&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Singleton&amp; rhs) = <span class="keyword">delete</span>;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="function"><span class="type">static</span> Singleton* <span class="title">getInstance</span><span class="params">()</span></span>;</span><br><span class="line">        <span class="type">static</span> Singleton* m_instance;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 启动时就完成初始化</span></span><br><span class="line">Singleton* Singleton::m_instance = <span class="keyword">new</span> <span class="built_in">Singleton</span>();</span><br><span class="line"><span class="comment">// 无需加锁即可实现线程安全，因为此时只有读操作。</span></span><br><span class="line"><span class="function">Singleton* <span class="title">Singleton::getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> m_instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>总结：<ul>
+<li>饿汉式没有加锁，效率高，但类加载时就初始化，浪费内存。且类静态变量在不同编译单元中的初始化顺序是未定义的，若在初始化完成之前就调用getInstance，则会返回一个未定义的实例。</li>
+<li>懒汉式第一次调用才会初始化，避免内存浪费，但为确保线程安全和效率，需实现复杂的双检查锁。</li>
+<li>C++11后可用局部静态变量简化单例模式设计，因为编译器会对局部静态变量自动执行双检查锁检测，以保证线程安全。</li>
 </ul>
 </li>
-<li>动态链接是指在编译链接时，在程序里只有一个（指针）位置，而实际内容并不会整合到执行文件中，只有在运行时需要用到函数库功能时，程序才会去读取函数库，从而实现运行时链接。<ul>
-<li>优点：多个程序可共享同一个动态库，节省资源，且函数库更新，无需重新编译使用此函数库的程序。</li>
-<li>缺点：由于在运行时加载，可能会影响程序的前期执行性能。</li>
 </ul>
+<h2 id="Template-Method–模板方法"><a href="#Template-Method–模板方法" class="headerlink" title="Template Method–模板方法"></a><a href="https://www.bilibili.com/video/BV1Yr4y157Ci?p=3&vd_source=65122611208f4d2dd8e86fb48f5e4e28">Template Method–模板方法</a></h2><ul>
+<li><p>概念：在确定稳定操作结构（流程骨架Run）的前提下，灵活应对各个子步骤的变化或晚期实现需求。</p>
 </li>
+<li><p>实现：在父类中定义流程骨架（稳定），而将一些步骤（变化，虚函数）延迟到子类，使得子类可以复用流程骨架并重写override变化的步骤（早绑定-&gt;晚绑定）。</p>
+<ul>
+<li>Library开发人员：开发1、3、5三个步骤；Application开发人员：开发2、4两个步骤，程序主流程。（早绑定，晚期内容调用早期内容）</li>
+</ul>
+  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 程序库开发人员</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Library</span> &#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="function"><span class="type">void</span> <span class="title">Step1</span><span class="params">()</span> </span>&#123;...&#125;</span><br><span class="line">        <span class="function"><span class="type">void</span> <span class="title">Step3</span><span class="params">()</span> </span>&#123;...&#125;</span><br><span class="line">        <span class="function"><span class="type">void</span> <span class="title">Step5</span><span class="params">()</span> </span>&#123;...&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 应用程序开发人员</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Application</span> &#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="function"><span class="type">bool</span> <span class="title">Step2</span><span class="params">()</span> </span>&#123;...&#125;</span><br><span class="line">        <span class="function">boid <span class="title">Step4</span><span class="params">()</span> </span>&#123;...&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 主程序同时需要调用到两者</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">Library <span class="title">lib</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">Application <span class="title">app</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    lib.<span class="built_in">Step1</span>();</span><br><span class="line">    <span class="keyword">if</span> (app.<span class="built_in">Step2</span>()) &#123; lib.<span class="built_in">Step3</span>(); &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; ++i) app.<span class="built_in">Step4</span>();</span><br><span class="line">    lib.<span class="built_in">Step5</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>改进：Library开发人员：开发1、3、5三个步骤，同时提供程序主流程以及2、4步骤的虚函数；Application开发人员：开发实现2、4两个步骤。（晚绑定，早期内容调用晚期内容）</li>
+</ul>
+  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 程序库开发人员</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Library</span> &#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="comment">// 稳定的Template Method</span></span><br><span class="line">        <span class="function"><span class="type">void</span> <span class="title">Run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="built_in">Step1</span>();</span><br><span class="line">            <span class="comment">// Step2支持变化，虚函数的多态调用</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">Step2</span>()) &#123; <span class="built_in">Step3</span>(); &#125;</span><br><span class="line">            <span class="comment">// Step4支持变化，虚函数的多态调用</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; ++i) <span class="built_in">Step4</span>();</span><br><span class="line">            <span class="built_in">Step5</span>();</span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">virtual</span> ~<span class="built_in">Library</span>() &#123;&#125;</span><br><span class="line">    <span class="keyword">protected</span>:</span><br><span class="line">        <span class="function"><span class="type">void</span> <span class="title">Step1</span><span class="params">()</span> </span>&#123;&#125; <span class="comment">// 稳定</span></span><br><span class="line">        <span class="function"><span class="type">void</span> <span class="title">Step3</span><span class="params">()</span> </span>&#123;...&#125; <span class="comment">// 稳定</span></span><br><span class="line">        <span class="function"><span class="type">void</span> <span class="title">Step5</span><span class="params">()</span> </span>&#123;...&#125; <span class="comment">// 稳定</span></span><br><span class="line">        <span class="function"><span class="keyword">virtual</span> <span class="type">bool</span> <span class="title">Step2</span><span class="params">()</span> </span>= <span class="number">0</span>; <span class="comment">// 变化 </span></span><br><span class="line">        <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">Step4</span><span class="params">()</span> </span>= <span class="number">0</span>; <span class="comment">// 变化 </span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 应用程序开发人员（继承程序库开发人员）</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Application</span> : <span class="keyword">public</span> Library &#123;</span><br><span class="line">    <span class="keyword">protected</span>:</span><br><span class="line">        <span class="comment">// 子类重写实现虚函数（变化的部分）</span></span><br><span class="line">        <span class="function"><span class="keyword">virtual</span> <span class="type">bool</span> <span class="title">Step2</span><span class="params">()</span> </span>&#123;&#125;;</span><br><span class="line">        <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">Step4</span><span class="params">()</span> </span>&#123;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 主程序</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 多态进行动态绑定：父类（程序库开发人员）指针指向子类对象（应用程序开发人员）</span></span><br><span class="line">    Library *pLib = <span class="keyword">new</span> <span class="built_in">Application</span>();</span><br><span class="line">    pLib-&gt;<span class="built_in">Run</span>();</span><br><span class="line">    <span class="keyword">delete</span> pLib;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 </ul>
 ]]></content>
       <categories>
-        <category>C++</category>
+        <category>计算机基础</category>
       </categories>
       <tags>
-        <tag>语法基础</tag>
+        <tag>设计模式</tag>
       </tags>
   </entry>
   <entry>
-    <title>Redis速查手册</title>
-    <url>/2023/05/28/Redis/%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/</url>
-    <content><![CDATA[<span id="more"></span>
-
-<h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><table>
-<thead>
-<tr>
-<th>用法</th>
-<th>效果</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>redis-server</td>
-<td>启动redis服务</td>
-</tr>
-<tr>
-<td>redis-cli</td>
-<td>使用客户端连接到redis</td>
-</tr>
-<tr>
-<td>quit&#x2F;exit</td>
-<td>退出redis客户端</td>
-</tr>
-</tbody></table>
-<h2 id="字符串-String"><a href="#字符串-String" class="headerlink" title="字符串-String"></a>字符串-String</h2><ul>
-<li>默认使用String来存储数据，而且是二进制安全的。</li>
-<li>默认不支持中文，以十六进制输出，若要以中文显示，则需以redis-cli –raw使用客户端。<table>
-<thead>
-<tr>
-<th>用法</th>
-<th>效果</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>SET key value</td>
-<td>设置key值为value</td>
-</tr>
-<tr>
-<td>SETEX key seconds value</td>
-<td>设置key值为value，超时时间为seconds秒</td>
-</tr>
-<tr>
-<td>PSETEX key milliseconds value</td>
-<td>设置key值为value，超时时间为milliseconds毫秒｜</td>
-</tr>
-<tr>
-<td>SETNX key value</td>
-<td>只有key值不存在时，才将key值设置为value</td>
-</tr>
-<tr>
-<td>GET key</td>
-<td>获取key的值</td>
-</tr>
-<tr>
-<td>GETSET key value</td>
-<td>将key值设置为value，并返回旧值</td>
-</tr>
-<tr>
-<td>DEL key [key …]</td>
-<td>删除给定的一个或多个key</td>
-</tr>
-<tr>
-<td>EXISTS key</td>
-<td>查看key是否存在，返回1或0</td>
-</tr>
-<tr>
-<td>KEYS pattern</td>
-<td>利用模式匹配查看哪些key是否存在</td>
-</tr>
-<tr>
-<td>FLUSHALL</td>
-<td>删除所有的key</td>
-</tr>
-<tr>
-<td>TTL key</td>
-<td>查看key还有多久过期</td>
-</tr>
-<tr>
-<td>EXPIRE key seconds</td>
-<td>设置key的过期时间为seconds秒</td>
-</tr>
-</tbody></table>
-</li>
+    <title>排序算法</title>
+    <url>/2023/05/28/Algorithm/%E6%8E%92%E5%BA%8F/</url>
+    <content><![CDATA[<h2 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h2><ul>
+<li>Step1: 比较每对相邻元素，若第一个比第二个大，则交换</li>
+<li>Step2: 这样最大元素就像冒泡一样上浮至最后一个元素位置</li>
+<li>Step3: 在剩下的元素中重复上述步骤（Step1~2）</li>
+<li>时间复杂度为$O(N^2)$，最差情况$O(N^2)$，空间复杂度为$O(1)$<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">bubble_sort</span><span class="params">(<span class="type">int</span> *arr, <span class="type">int</span> len)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = len - <span class="number">1</span>; i &gt; <span class="number">0</span>; --i) &#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; i; ++j) &#123;</span><br><span class="line">			<span class="keyword">if</span> (arr[j] &gt; arr[j+<span class="number">1</span>]) std::<span class="built_in">swap</span>(arr[j], arr[j+<span class="number">1</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 </ul>
+<h2 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h2><ul>
+<li>Step1: 从头到尾定位最小元素，将最小元素与第一个元素交换位置</li>
+<li>Step2: 在剩下的元素中找最小元素，将其与第二个元素交换位置…</li>
+<li>时间复杂度为$O(N^2)$，最差情况$O(N^2)$，空间复杂度为$O(1)$<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">select_sort</span><span class="params">(<span class="type">int</span> *arr, <span class="type">int</span> len)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; len - <span class="number">1</span>; ++i) &#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> j = i+<span class="number">1</span>; j &lt; len; ++j)</span><br><span class="line">			<span class="keyword">if</span> (arr[i] &gt; arr[j]) std::<span class="built_in">swap</span>(arr[i], arr[j]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h2><ul>
+<li>Step1: 对于未排序的元素，在已排序的元素中从后向前扫描，找到相应位置插入</li>
+<li>Step2: 为给待插入元素腾出空间，需将插入位置之后的已排序元素都后移一位</li>
+<li>时间复杂度为$O(N^2)$，最差情况$O(N^2)$，空间复杂度为$O(1)$，适用于部分有序数组和小规模数组<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">insert_sort</span><span class="params">(<span class="type">int</span> *arr, <span class="type">int</span> len)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; len - <span class="number">1</span>; ++i) &#123;</span><br><span class="line">		<span class="type">int</span> cur = i + <span class="number">1</span>, j = i;</span><br><span class="line">		<span class="keyword">while</span> (j &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">			<span class="keyword">if</span> (arr[j] &lt;= arr[cur]) <span class="keyword">break</span>;</span><br><span class="line">			--j;</span><br><span class="line">		&#125;</span><br><span class="line">		++j;</span><br><span class="line">		<span class="type">int</span> tmp = arr[cur];</span><br><span class="line">		<span class="keyword">while</span> (cur &gt; j) &#123;</span><br><span class="line">			arr[cur] = arr[cur<span class="number">-1</span>];</span><br><span class="line">			--cur;</span><br><span class="line">		&#125;</span><br><span class="line">		arr[j] = tmp;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h2><ul>
+<li>Step1: 将序列划分成子序列，通过递归完成，递归终止条件为子序列长度小于2</li>
+<li>Step2: 将排好序的子序列两两合并，从而获得一个更长的有序序列</li>
+<li>时间复杂度为$O(N\log{N})$，最差情况$O(N\log{N})$，空间复杂度为$O(N)$<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">merge</span><span class="params">(<span class="type">int</span> *arr1, <span class="type">int</span> len1, <span class="type">int</span> *arr2, <span class="type">int</span> len2)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> *tmp = <span class="keyword">new</span> <span class="type">int</span>[len1+len2]; </span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>, k = <span class="number">0</span>; k &lt; len1+len2; ++k) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i == len1) tmp[k] = arr2[j++];</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (j == len2) tmp[k] = arr1[i++];</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (arr1[i] &lt; arr2[j]) tmp[k] = arr1[i++];</span><br><span class="line">        <span class="keyword">else</span> tmp[k] = arr2[j++];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; len1; ++i) arr1[i] = tmp[i];</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; len2; ++i) arr2[i] = tmp[len1+i];</span><br><span class="line">    <span class="keyword">delete</span> [] tmp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">merge_sort</span><span class="params">(<span class="type">int</span> *arr, <span class="type">int</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 递归终止条件</span></span><br><span class="line">    <span class="keyword">if</span> (len &lt; <span class="number">2</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// 划分子序列，划分成几个子序列就是几路归并</span></span><br><span class="line">    <span class="comment">// 这里选择划分成两个子序列，因此是二路归并</span></span><br><span class="line">    <span class="type">int</span> mid = len &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    <span class="type">int</span> *left_arr = arr;</span><br><span class="line">    <span class="type">int</span> *right_arr = arr + mid;</span><br><span class="line">    <span class="comment">// 对子序列进行排序</span></span><br><span class="line">    <span class="built_in">merge_sort</span>(left_arr, mid);</span><br><span class="line">    <span class="built_in">merge_sort</span>(right_arr, len - mid);</span><br><span class="line">    <span class="comment">// 合并有序的两个子序列</span></span><br><span class="line">    <span class="built_in">merge</span>(left_arr, mid, right_arr, len - mid);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="测试程序"><a href="#测试程序" class="headerlink" title="测试程序"></a>测试程序</h2><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">sort_test</span><span class="params">(sort_fun sort, <span class="type">const</span> std::string &amp;msg)</span> </span>&#123;</span><br><span class="line">    <span class="type">static</span> std::default_random_engine e;</span><br><span class="line">    <span class="function"><span class="type">static</span> std::uniform_int_distribution&lt;<span class="type">int</span>&gt; <span class="title">u</span><span class="params">(<span class="number">0</span>,<span class="number">9</span>)</span></span>;</span><br><span class="line">    <span class="type">int</span> arr[<span class="number">10</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; ++i) arr[i] = <span class="built_in">u</span>(e);</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;=&gt; &quot;</span> &lt;&lt; msg &lt;&lt; std::endl;</span><br><span class="line">    <span class="function">std::ostream_iterator&lt;<span class="type">int</span>&gt; <span class="title">oiter</span><span class="params">(std::cout, <span class="string">&quot; &quot;</span>)</span></span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;source arr: &quot;</span>;</span><br><span class="line">    std::<span class="built_in">copy</span>(arr, arr+<span class="number">10</span>, oiter);</span><br><span class="line">    std::cout &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">sort</span>(arr, <span class="number">10</span>);</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;after sort: &quot;</span>;</span><br><span class="line">    std::<span class="built_in">copy</span>(arr, arr+<span class="number">10</span>, oiter);</span><br><span class="line">    std::cout &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>);</span><br><span class="line">    <span class="built_in">sort_test</span>(bubble_sort, <span class="string">&quot;Bubble Sort&quot;</span>);</span><br><span class="line">    <span class="built_in">sort_test</span>(select_sort, <span class="string">&quot;Select Sort&quot;</span>);</span><br><span class="line">    <span class="built_in">sort_test</span>(insert_sort, <span class="string">&quot;Insert Sort&quot;</span>);</span><br><span class="line">    <span class="built_in">sort_test</span>(merge_sort, <span class="string">&quot;Merge Sort&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
-        <category>Redis</category>
+        <category>算法</category>
       </categories>
       <tags>
-        <tag>速查手册</tag>
+        <tag>排序</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>查找算法</title>
+    <url>/2023/05/25/Algorithm/%E6%9F%A5%E6%89%BE/</url>
+    <content><![CDATA[<h2 id="二分查找"><a href="#二分查找" class="headerlink" title="二分查找"></a>二分查找</h2><ul>
+<li><p>场景：常用于有序区间（前提条件）查找目标元素</p>
+</li>
+<li><p>思想：可分为左闭右闭和左闭右开两种，重点是要正确处理边界条件。</p>
+</li>
+<li><p>模版</p>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 方法一：左闭右闭区间[left,right]</span></span><br><span class="line"><span class="type">int</span> left = <span class="number">0</span>, right = size - <span class="number">1</span>;</span><br><span class="line"><span class="comment">// 此时可通过判断是否处于合法区间定义来决定是&lt;还是&lt;=</span></span><br><span class="line"><span class="comment">// 当left = right时，在[left,right]中是有效的，所以可以是&lt;=</span></span><br><span class="line"><span class="keyword">while</span> (left &lt;= right) &#123;</span><br><span class="line">    mid = (left + right) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// 更新左区间的右边界</span></span><br><span class="line">    <span class="keyword">if</span> (nums[mid] &gt; target) &#123;</span><br><span class="line">        <span class="comment">// 此时继续根据区间定义来决定right更新为mid还是mid-1，由于此时nums[mid]不为target</span></span><br><span class="line">        <span class="comment">// 所以nums[mid]必定不在下一次查找范围中，因此right应该更新为mid-1</span></span><br><span class="line">        right = mid - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 更新右区间的左边界</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (nums[mid] &lt; target) &#123;</span><br><span class="line">        left = mid + <span class="number">1</span>; <span class="comment">// 更新原理与上面相同</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> mid;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 方法二：左闭右开区间[left,right)</span></span><br><span class="line"><span class="type">int</span> left = <span class="number">0</span>, right = size;</span><br><span class="line"><span class="comment">// 此时若left = right，那么在原合法区间[left,right)定义中就没有意义，所以应该为&lt;</span></span><br><span class="line"><span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">    mid = (left + right) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// 由于区间定义为左闭右开，所以下一次搜索中nums[mid]必定不包含在其中，因此right更新为mid</span></span><br><span class="line">    <span class="keyword">if</span> (nums[mid] &gt; target) &#123; right = mid; &#125;</span><br><span class="line">    <span class="comment">// 由于区间定义为左闭右开，所以下一次搜索中必定包含左边界</span></span><br><span class="line">    <span class="comment">// 而此处nums[mid]已经确定和target不同，所以left更新为mid+1</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (nums[mid] &lt; target) &#123; left = mid + <span class="number">1</span>; &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> mid;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> <span class="number">-1</span>;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>查找</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>回溯算法</title>
+    <url>/2023/05/29/Algorithm/%E5%9B%9E%E6%BA%AF/</url>
+    <content><![CDATA[<ul>
+<li><p>场景：常用于组合、切割（字符串）、子集、排列、棋盘等</p>
+</li>
+<li><p>思想：可抽象成N叉树</p>
+<ul>
+<li>树宽为所处理的集合大小</li>
+<li>树深即为递归的深度</li>
+<li>本质上是递归嵌套循环</li>
+</ul>
+</li>
+<li><p>三步走策略</p>
+<ul>
+<li>确定参数（通常较多，且一般有两个引用参数用于收集中间过程和结果）和返回值（通常是void）</li>
+<li>确定递归终止条件（叶子节点收集结果）</li>
+<li>单层搜索逻辑（for循环），且一定要注意回撤操作</li>
+</ul>
+</li>
+<li><p>模版</p>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">backTrace</span><span class="params">(参数...)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (递归终止条件) &#123;</span><br><span class="line">        收集结果（叶子节点）;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (集合中的元素) &#123;</span><br><span class="line">        处理节点;</span><br><span class="line">        递归函数;</span><br><span class="line">        撤销处理的节点;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>去重操作(40)<ul>
+<li>场景：集合中的元素存在重复，但要求解集是不能包含重复的组合。</li>
+<li>需要先对原集合进行排序，还需要辅助数组used记录集合中元素是否被使用(0或1)。<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">sort</span>(nums.<span class="built_in">begin</span>(), nums.<span class="built_in">end</span>());</span><br><span class="line"><span class="function">vector&lt;<span class="type">bool</span>&gt; <span class="title">used</span><span class="params">(nums.size(), <span class="literal">false</span>)</span></span>;</span><br></pre></td></tr></table></figure></li>
+<li>树层去重：去重逻辑在for循环中若前一个元素与当前元素相同，且前一个元素的使用状态为未使用used[i-1]&#x3D;0，则此时出现树层重复，直接continue不处理。<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = startIndex; i &lt; nums.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">    <span class="comment">// 树层去重操作</span></span><br><span class="line">    <span class="keyword">if</span> (i &gt; <span class="number">0</span> &amp;&amp; nums[i<span class="number">-1</span>] == nums[i] &amp;&amp; !used[i<span class="number">-1</span>]) <span class="keyword">continue</span>;</span><br><span class="line">    used[i] = <span class="literal">true</span>;</span><br><span class="line">    ...</span><br><span class="line">    used[i] = <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>树枝去重</li>
+</ul>
+</li>
+</ul>
+<span id="more"></span>
+
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>回溯</tag>
       </tags>
   </entry>
   <entry>
     <title>网络编程</title>
-    <url>/2023/05/29/%E5%85%AB%E8%82%A1/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/</url>
+    <url>/2023/06/03/Fundamentals/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/</url>
     <content><![CDATA[<span id="more"></span>
 
 <h2 id="1-网络编程的一般步骤"><a href="#1-网络编程的一般步骤" class="headerlink" title="1. 网络编程的一般步骤"></a>1. 网络编程的一般步骤</h2><ul>
@@ -464,28 +354,7 @@
 <li>C++11提供原子类型模板std::atomic，通过该原子类型所管理的内部变量就是原子变量，保证读写都互斥。</li>
 <li>原子操作不会被线程调度机制打断，中间不会有任何上下文切换，从而保证多线程访问共享资源不会出现数据混乱。</li>
 <li>原子操作是无锁类型，通过指令提供支持，因此性能优于锁和消息传递，且无需开发者处理加锁解锁问题。</li>
-<li>原子类型内部使用CAS（Compare And Swap）循环机制，通过判断当前值是否于前置值，若相等则修改为新值。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="10-线程池（WebServer项目使用半同步-x2F-半同步半反应堆模式）"><a href="#10-线程池（WebServer项目使用半同步-x2F-半同步半反应堆模式）" class="headerlink" title="10. 线程池（WebServer项目使用半同步&#x2F;半同步半反应堆模式）"></a>10. 线程池（WebServer项目使用半同步&#x2F;半同步半反应堆模式）</h2><ul>
-<li>目的：频繁创建线程会降低效率，线程池可实现线程复用，即执行完一个任务，并不会被销毁，而是继续执行其他任务。</li>
-<li>原理：由三部分组成（任务队列、工作线程、管理者线程）<ul>
-<li>任务队列：存储待处理的任务，由工作线程来处理这些任务<ul>
-<li>通过线程池的接口，将待处理任务（回调函数）加入队列（生产），或从队列中删除（消费）。</li>
-</ul>
-</li>
-<li>工作线程：任务队列的消费者，N个<ul>
-<li>不停地读任务队列，取出任务并处理，任务队列空，则工作的线程被阻塞。</li>
-<li>若阻塞后有了新任务，那么被阻塞的线程将有生产者解除，工作线程开始工作。</li>
-</ul>
-</li>
-<li>管理者线程：不处理队列中的任务，1个<ul>
-<li>周期性地对任务中的数量以及处于忙碌状态的工作线程个数进行检查</li>
-<li>任务过多，可以适当创建一些新的工作线程</li>
-<li>任务过少，可以适当销毁一些工作线程</li>
+<li>原子类型内部使用CAS（Compare And Swap）循环机制，通过不断赋值来竞争资源，若赋值成功，则表示竞争到了资源。</li>
 </ul>
 </li>
 </ul>
@@ -493,106 +362,188 @@
 </ul>
 <h2 id="避免connect方法长时间阻塞"><a href="#避免connect方法长时间阻塞" class="headerlink" title="避免connect方法长时间阻塞"></a>避免connect方法长时间阻塞</h2><h2 id="服务端如何得知客户端突然掉线或重启"><a href="#服务端如何得知客户端突然掉线或重启" class="headerlink" title="服务端如何得知客户端突然掉线或重启"></a>服务端如何得知客户端突然掉线或重启</h2><h2 id="TTL的概念及用处"><a href="#TTL的概念及用处" class="headerlink" title="TTL的概念及用处"></a>TTL的概念及用处</h2>]]></content>
       <categories>
-        <category>八股</category>
+        <category>计算机基础</category>
       </categories>
       <tags>
         <tag>网络编程</tag>
       </tags>
   </entry>
   <entry>
-    <title>设计模式</title>
-    <url>/2023/05/31/%E5%85%AB%E8%82%A1/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</url>
+    <title>C++基础</title>
+    <url>/2023/05/23/CPP/CPP%E5%9F%BA%E7%A1%80/</url>
     <content><![CDATA[<span id="more"></span>
 
-<h2 id="Singleton单例模式"><a href="#Singleton单例模式" class="headerlink" title="Singleton单例模式"></a><a href="https://www.bilibili.com/video/BV1Yr4y157Ci?p=12&vd_source=65122611208f4d2dd8e86fb48f5e4e28">Singleton单例模式</a></h2><ul>
-<li><p>概念：保证一个类仅有一个实例，并提供一个该实例的全局访问点。</p>
+<h2 id="1-C和C-的区别"><a href="#1-C和C-的区别" class="headerlink" title="1. C和C++的区别"></a>1. C和C++的区别</h2><ul>
+<li>C是面向过程的语言，而C++是面向对象的语言。</li>
+<li>C++增加了诸如引用、类和对象、函数重载、泛型（模版）的概念。</li>
+<li>在动态分配内存方面，C使用malloc&#x2F;free函数，C++使用new&#x2F;delete运算符。</li>
+</ul>
+<h2 id="2-static关键字的作用"><a href="#2-static关键字的作用" class="headerlink" title="2. static关键字的作用"></a>2. static关键字的作用</h2><ul>
+<li>修饰局部变量：该变量存放在静态存储区，生命周期和整个程序的生命周期一致，在函数首次调用的时候进行初始化，函数再次调用则不会再初始化，但只有局部作用域。</li>
+<li>修饰全局变量：该变量存放在静态存储区，生命周期和整个程序的生命周期一致，但具有全局作用域，声明该变量后，在整个文件中都是可见的，而在文件外不可见。</li>
+<li>修饰函数：声明函数后，在整个文件中都是可见的，而在文件外不可见，可避免函数的同名冲突。</li>
+<li>修饰成员变量：类的不同对象只会维持同一份拷贝，从而实现数据在同一个类的不同对象间共享，可以通过类名而不实例化对象来访问，一般不在类中而在类外初始化（不加static）。</li>
+<li>修饰成员函数：没有this指针，只能访问静态成员，可以通过类名而不实例化对象来访问。</li>
+</ul>
+<h2 id="3-define和const的区别"><a href="#3-define和const的区别" class="headerlink" title="3. #define和const的区别"></a>3. #define和const的区别</h2><ul>
+<li>编译器的处理方式不同：#define在预处理阶段完成代码替换；const则在编译阶段处理。</li>
+<li>类型和安全检查不同：#define没有类型，不执行安全检查；const常量有具体的类型，编译器会执行类型检查，更加安全。</li>
+<li>存储的方式不同：#define仅通过字符串完成代码替换，编译器不会为其分配内存，存放在程序的代码段；const常量则会占用内存空间，存放在程序的数据段。</li>
+<li>作用域不同：#define不受作用域限制，在定义#define后的所有引用都是合法的；const常量则会受到作用域的限制。</li>
+</ul>
+<h2 id="4-inline函数的优缺点"><a href="#4-inline函数的优缺点" class="headerlink" title="4. inline函数的优缺点"></a>4. inline函数的优缺点</h2><ul>
+<li>优点：<ul>
+<li>inline函数会在函数的调用点进行代码展开，从而节省了函数调用的开销，提升了程序的效率。</li>
+<li>相比于宏函数，编译器会为inline函数进行语法检查和类型转换，更加安全。</li>
+</ul>
 </li>
-<li><p>动机：经常有一些特殊类，必须保证它们在系统中只存在一个实例，才能确保它们的逻辑正确性以及良好的效率。</p>
-</li>
-<li><p>实现：绕过常规的构造器，提供一种机制来保证类只有一个实例。</p>
-</li>
-<li><p>懒汉式：用到的时候才进行初始化</p>
+<li>缺点：<ul>
+<li>过度使用可能会造成代码膨胀，且若inline函数内代码块的执行开销高于函数调用，那么程序的效率并不会得到明显改善。</li>
+<li>若修改了inline函数的定义，则所有使用该inline函数的文件都需要重新编译。</li>
+<li>inline只是一条建议，是否真正内联仍取决于编译器，所以其实际行为并不可控。</li>
+</ul>
 </li>
 </ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        <span class="comment">// 首先要将构造函数和拷贝操作声明为私有（绕过常规构造器），阻止编译器默认生成，且不允许外部使用。</span></span><br><span class="line">        <span class="built_in">Singleton</span>();</span><br><span class="line">        <span class="built_in">Singleton</span>(<span class="type">const</span> Singleton&amp; rhs) = <span class="keyword">delete</span>;</span><br><span class="line">        Singleton&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Singleton&amp; rhs) = <span class="keyword">delete</span>;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="comment">// 声明静态变量和静态成员函数（提供外部访问接口）</span></span><br><span class="line">        <span class="comment">// 静态变量是一个堆对象，因此为指针类型，并初始化为nullptr。</span></span><br><span class="line">        <span class="function"><span class="type">static</span> Singleton* <span class="title">getInstance</span><span class="params">()</span></span>;</span><br><span class="line">        <span class="type">static</span> Singleton* m_instance;</span><br><span class="line">&#125;;</span><br><span class="line">Singleton* Singleton::m_instance = <span class="literal">nullptr</span>;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 非线程安全版本（只适用于单线程）</span></span><br><span class="line"><span class="function">Singleton* <span class="title">Singleton::getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 多线程情况下，m_instance可能被创建多次。</span></span><br><span class="line">    <span class="keyword">if</span> (m_instance == <span class="literal">nullptr</span>)</span><br><span class="line">        m_instance == <span class="keyword">new</span> <span class="built_in">Singleton</span>();</span><br><span class="line">    <span class="keyword">return</span> m_instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 线程安全版本，但代价过高。当m_instance创建完成后，以后对m_instance的操作都是直接return。</span></span><br><span class="line"><span class="comment">// 即只有一次写操作（需加锁），以后都是读操作（不需加锁）。因此每次调用都加锁是没有必要的，会加大开销。</span></span><br><span class="line"><span class="function">Singleton* <span class="title">Singleton::getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 在函数结束时，具备变量lock被析构释放（解锁）。</span></span><br><span class="line">    Lock lock;</span><br><span class="line">    <span class="keyword">if</span> (m_instance == <span class="literal">nullptr</span>)</span><br><span class="line">        m_instance = <span class="keyword">new</span> <span class="built_in">Singleton</span>();</span><br><span class="line">    <span class="keyword">return</span> m_instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 双检查锁（锁前锁后都检查），但内存读写reorder不安全，极有可能会导致双检查锁的失效。</span></span><br><span class="line"><span class="comment">// 正常情况下，m_instance = new Singleton()分为三步：</span></span><br><span class="line"><span class="comment">// 1. 先分配内存（new）2. 调用构造器初始化内存（Singleton()）3. 返回地址给m_instance</span></span><br><span class="line"><span class="comment">// 但这只是假想的顺序，到了指令级别，很有可能会出现reorder的情况：</span></span><br><span class="line"><span class="comment">// 1. 先分配内存（new）2. 返回地址给m_instance 3. 调用构造器初始化内存（Singleton()）</span></span><br><span class="line"><span class="comment">// 假设线程A执行到第2步，返回地址给m_instance，但此时尚未完成构造。</span></span><br><span class="line"><span class="comment">// 若此时线程B恰好执行，那么m_instance不为空，就直接返回m_instance。</span></span><br><span class="line"><span class="comment">// 但由于m_instance所指向的内存尚未构造，因此所获得的对象状态是不对的。</span></span><br><span class="line"><span class="function">Singleton* <span class="title">Singleton::getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 先判空，若不空直接返回。</span></span><br><span class="line">    <span class="keyword">if</span> (m_instance == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">        Lock lock; <span class="comment">// 若为空，加锁。</span></span><br><span class="line">        <span class="comment">// 再次判空，保证线程安全。</span></span><br><span class="line">        <span class="keyword">if</span> (m_instance == <span class="literal">nullptr</span>)</span><br><span class="line">            m_instance = <span class="keyword">new</span> <span class="built_in">Singleton</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> m_instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Java、C#通过增加关键字volatile来告知编译器变量赋值时禁止reorder（阻止编译器优化）</span></span><br><span class="line"><span class="comment">// C++中也有volatile，但是无法跨平台使用，而C++11后提供了实现跨平台的机制。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 将m_instance声明为原子对象</span></span><br><span class="line">std::atomic&lt;Singleton*&gt; Singleton::m_instance;</span><br><span class="line">std::mutex Singleton::m_mutex;</span><br><span class="line"></span><br><span class="line"><span class="function">Singleton* <span class="title">Singleton::getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 利用原子对象的load函数获取Singleton的指针</span></span><br><span class="line">    Singleton* tmp = m_instance.<span class="built_in">load</span>(std::memory_order_relaxed);</span><br><span class="line">    <span class="comment">// 设置内存屏障，实现内存保护，确保tmp变量赋值时不会被reorder。</span></span><br><span class="line">    std::<span class="built_in">atomic_thread_fence</span>(std::memory_order_acquire);</span><br><span class="line">    <span class="keyword">if</span> (tmp == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">        <span class="comment">// 依然使用双检查锁</span></span><br><span class="line">        <span class="function">std::lock_guard&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(m_mutex)</span></span>;</span><br><span class="line">        tmp = m_instance.<span class="built_in">load</span>(std::memory_order_relaxed);</span><br><span class="line">        <span class="keyword">if</span> (tmp == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            tmp = <span class="keyword">new</span> <span class="built_in">Singleton</span>();</span><br><span class="line">            <span class="comment">// 释放内存屏障</span></span><br><span class="line">            std::<span class="built_in">atomic_thread_fence</span>(std::memory_order_release);</span><br><span class="line">            m_instance.<span class="built_in">store</span>(tmp, std::memory_order_relaxed); <span class="comment">// tmp再交回m_instance</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> tmp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 由于C++11后确保了初始化静态变量是线程安全的</span></span><br><span class="line"><span class="comment">// 因为若线程执行到需初始化静态变量时，且有其他线程正初始化该变量，则阻塞当前线程</span></span><br><span class="line"><span class="comment">// 直到初始化完成，从而确保线程安全，因此单例模式可通过定义局部静态变量来简化设计。</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        <span class="built_in">Singleton</span>();</span><br><span class="line">        <span class="built_in">Singleton</span>(<span class="type">const</span> Singleton&amp; rhs) = <span class="keyword">delete</span>;</span><br><span class="line">        Singleton&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Singleton&amp; rhs) = <span class="keyword">delete</span>;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="function"><span class="type">static</span> Singleton* <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="comment">// 利用局部静态变量来确保只有一份实例，且初始化时线程安全</span></span><br><span class="line">            <span class="comment">// 此时不再需要动态分配内存以及指向堆变量的指针</span></span><br><span class="line">            <span class="comment">// 但每次调用getInstance时，都会检查instance是否以及初始化，即使代码中没有if-else</span></span><br><span class="line">            <span class="type">static</span> Singleton instance;</span><br><span class="line">            <span class="keyword">return</span> &amp;instance;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>饿汉式：程序启动时就完成初始化</li>
+<h2 id="5-智能指针的概念、作用、分类和特点"><a href="#5-智能指针的概念、作用、分类和特点" class="headerlink" title="5. 智能指针的概念、作用、分类和特点"></a>5. 智能指针的概念、作用、分类和特点</h2><ul>
+<li>智能指针是一个RAII类模型，其设计思想是将原生指针封装为类对象，并将delete操作放入析构函数中，从而利用类对象在离开作用域自动调用析构函数的机制来自动释放动态分配的内存。</li>
+<li>智能指针能够处理内存泄漏和空悬指针的问题，可分为auto_ptr、unique_ptr、shared_ptr、weak_ptr四类。</li>
+<li>auto_ptr采取所有权模式，是C++98的方案，在C++11中已被弃用，主要问题在于赋值或函数传参时，对象所有权会被剥夺，存在潜在的内存崩溃的问题。<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function">auto_ptr&lt;string&gt; <span class="title">p1</span> <span class="params">(<span class="keyword">new</span> string(<span class="string">&quot;hello, world&quot;</span>))</span></span>;</span><br><span class="line">auto_ptr p2;</span><br><span class="line">p2 = p1; <span class="comment">// 此时p2会剥夺p1的所有权，且程序不会报错，但当要再次访问p1时会报错。</span></span><br></pre></td></tr></table></figure></li>
+<li>unique_ptr是一种独占式的智能指针，即同一时间只能有一个智能指针指向同一对象，禁止拷贝构造和赋值的行为，但若源unique_ptr是一个临时右值，则可以允许拷贝或赋值，因为定义了移动赋值和移动构造。</li>
+<li>shared_ptr是一种共享式的智能指针，即同一时间可以有多个智能指针指向同一对象，通过引用计数机制实现。<ul>
+<li>use_count可查看资源的所有者个数</li>
+<li>release释放当前智能指针的所有权，计数减1</li>
+<li>swap交换两个shared_ptr所拥有的对象</li>
+<li>get返回内部的原生指针</li>
 </ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        <span class="built_in">Singleton</span>();</span><br><span class="line">        <span class="built_in">Singleton</span>(<span class="type">const</span> Singleton&amp; rhs) = <span class="keyword">delete</span>;</span><br><span class="line">        Singleton&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Singleton&amp; rhs) = <span class="keyword">delete</span>;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="function"><span class="type">static</span> Singleton* <span class="title">getInstance</span><span class="params">()</span></span>;</span><br><span class="line">        <span class="type">static</span> Singleton* m_instance;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 启动时就完成初始化</span></span><br><span class="line">Singleton* Singleton::m_instance = <span class="keyword">new</span> <span class="built_in">Singleton</span>();</span><br><span class="line"><span class="comment">// 无需加锁即可实现线程安全，因为此时只有读操作。</span></span><br><span class="line"><span class="function">Singleton* <span class="title">Singleton::getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> m_instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li>weak_ptr是对对象的一种弱引用，可以绑定到shared_ptr上，且不会增加引用计数，从而协助shared_ptr工作。weak_ptr可以解决shared_ptr相互引用时的死锁问题，即两个shared_ptr相互引用时，两者的引用计数永远不会减为0，资源永远不会被释放。</li>
+</ul>
+<h2 id="6-shared-ptr的工作原理"><a href="#6-shared-ptr的工作原理" class="headerlink" title="6. shared_ptr的工作原理"></a>6. shared_ptr的工作原理</h2><ul>
+<li>在构造函数中，引用计数初始化为1；在析构函数中，引用计数减1；在拷贝构造中，引用计数加1。</li>
+<li>在赋值运算符中，左侧运算对象引用计数减1，右侧运算对象引用计数加1。</li>
+<li>若析构函数或赋值运算符中对象的引用计数变为0，则通过delete运算符释放资源。</li>
+</ul>
+<h2 id="7-空悬指针和野指针"><a href="#7-空悬指针和野指针" class="headerlink" title="7. 空悬指针和野指针"></a>7. 空悬指针和野指针</h2><ul>
+<li>空悬指针：释放动态分配的内存后，未及时将指针置为nullptr，使指针仍指向已经释放的内存地址。</li>
+<li>野指针：定义指针时，未初始化。</li>
+</ul>
+<h2 id="8-变量定义和变量声明的区别"><a href="#8-变量定义和变量声明的区别" class="headerlink" title="8. 变量定义和变量声明的区别"></a>8. 变量定义和变量声明的区别</h2><ul>
+<li>变量定义会为变量分配地址和内存空间，而变量声明则不会；变量可以有多个声明，但只能有一个定义。</li>
+<li>可以用extern来修饰变量声明，表示该变量的定义会出现在文件的后面部分或其他文件中。</li>
+<li>使用extern修饰变量时，可以提供初始值，但此时就变成了定义而非声明，且该语句不能出现在函数的内部。</li>
+</ul>
+<h2 id="9-ifdef、-else、-endif、-ifndef条件编译的作用"><a href="#9-ifdef、-else、-endif、-ifndef条件编译的作用" class="headerlink" title="9. #ifdef、#else、#endif、#ifndef条件编译的作用"></a>9. #ifdef、#else、#endif、#ifndef条件编译的作用</h2><ul>
+<li>借助条件编译，可以在需要的时候，将某些模块方便地包含进行程序中，而在不需要的时候，又能方便地屏蔽掉。</li>
+<li>条件编译也可以搭配一些宏定义（如NDEBUG）来调试和追踪程序。</li>
+</ul>
+<h2 id="10-int、bool、float、指针变量与“零值”比较的if语句"><a href="#10-int、bool、float、指针变量与“零值”比较的if语句" class="headerlink" title="10. int、bool、float、指针变量与“零值”比较的if语句"></a>10. int、bool、float、指针变量与“零值”比较的if语句</h2><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (n == <span class="number">0</span>) &#123;...&#125; <span class="comment">// int型</span></span><br><span class="line"><span class="keyword">if</span> (flag) &#123;...&#125; <span class="comment">// bool型</span></span><br><span class="line"><span class="comment">// float型</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">equal</span><span class="params">(<span class="type">float</span> a, <span class="type">float</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">fabs</span>(a-b) &lt; std::numeric_limits&lt;<span class="type">float</span>&gt;::<span class="built_in">epsilon</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (ptr == <span class="literal">nullptr</span>) &#123;...&#125; <span class="comment">// 指针型</span></span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>总结：<ul>
-<li>饿汉式没有加锁，效率高，但类加载时就初始化，浪费内存。且类静态变量在不同编译单元中的初始化顺序是未定义的，若在初始化完成之前就调用getInstance，则会返回一个未定义的实例。</li>
-<li>懒汉式第一次调用才会初始化，避免内存浪费，但为确保线程安全和效率，需实现复杂的双检查锁。</li>
-<li>C++11后可用局部静态变量简化单例模式设计，因为编译器会对局部静态变量自动执行双检查锁检测，以保证线程安全。</li>
+<h2 id="11-结构体赋值"><a href="#11-结构体赋值" class="headerlink" title="11. 结构体赋值"></a>11. 结构体赋值</h2><ul>
+<li>结构体在声明时就可以赋予初始值，结构体的不同对象间也可以直接赋值。</li>
+<li>但当含有指针成员时，则赋值时一定要区分是深拷贝还是浅拷贝。</li>
+</ul>
+<h2 id="12-sizeof和strlen的区别"><a href="#12-sizeof和strlen的区别" class="headerlink" title="12. sizeof和strlen的区别"></a>12. sizeof和strlen的区别</h2><ul>
+<li>sizeof是操作符，其参数为数据类型或变量，且在编译时获得计算结果。</li>
+<li>strlen是函数，其参数只能是以&#39;\0&#39;字符结尾的字符串，且在程序运行时获得计算结果。</li>
+<li>sizeof的计算结果是对象所占用的内存大小（以字节为单位），而strlen的计算结果则是实际的字符串长度。</li>
+<li>若将一个字符数组名传递给sizeof，不会退化成指针，但若传递给strlen，则会退化成指针形式。</li>
+</ul>
+<h2 id="13-static在C和C-中的区别"><a href="#13-static在C和C-中的区别" class="headerlink" title="13. static在C和C++中的区别"></a>13. static在C和C++中的区别</h2><ul>
+<li>在C中，static可用于修饰局部变量、外部变量和函数，修饰局部变量时，可让同一函数在不同的调用时期进行数据通信。</li>
+<li>在C++中，static除了上述功能以外，还可以修饰成员变量和成员函数，从而实现同一个类的不同对象间的数据共享。</li>
+</ul>
+<h2 id="14-全局变量和局部变量的区别"><a href="#14-全局变量和局部变量的区别" class="headerlink" title="14. 全局变量和局部变量的区别"></a>14. 全局变量和局部变量的区别</h2><ul>
+<li>全局变量具有全局作用域，生命周期从程序运行开始一直持续到程序运行结束。</li>
+<li>局部变量只有局部作用域，一般在代码块或函数中定义，离开了代码块和函数就会被释放。</li>
+<li>编译器和OS通过内存的分配位置来区分两者，全局变量分配在全局数据段，而局部变量则分配在堆栈中。</li>
+</ul>
+<h2 id="15-strcpy、sprintf、memcpy的区别"><a href="#15-strcpy、sprintf、memcpy的区别" class="headerlink" title="15. strcpy、sprintf、memcpy的区别"></a>15. strcpy、sprintf、memcpy的区别</h2><ul>
+<li>三者的主要功能都是拷贝，但所操作的对象并不同。</li>
+<li>strcpy：操作对象为两个字符串，主要实现字符串的拷贝。</li>
+<li>sprintf：操作对象可以是多种数据类型，可以将多种数据以格式化的形式写入字符串。</li>
+<li>memcpy：操作对象是任意可访问的内存地址，不受类型限制，可以实现内存块间的拷贝。</li>
+</ul>
+<h2 id="16-指针和引用的区别"><a href="#16-指针和引用的区别" class="headerlink" title="16. 指针和引用的区别"></a>16. 指针和引用的区别</h2><ul>
+<li>指针是变量，具有内存空间，而引用不是，它只是变量的别名，因此可以定义元素类型为指针的数组，但不能定义元素类型为引用的数组。</li>
+<li>使用sizeof时，参数若为指针，则根据计算机字长返回固定大小（32位返回4，64位返回8）；参数若为引用，则返回被引用对象所占的内存大小。</li>
+<li>作为函数参数时，若想通过指针改变所指对象的值，则必须解引用；而参数为引用，则可直接修改并影响原对象。</li>
+<li>指针可以改变其指向，但引用不行，引用必须在定义时就通过初始化绑定到一个对象上，因此有const指针，但无const引用。</li>
+<li>指针可以是多级的，但引用只能是一级。</li>
+<li>对指针使用++运算符，则会将指针指向下一个元素位置，而对引用使用++运算符，则会递增被引用的对象的值。</li>
+<li>动态分配内存时所返回的对象，只能使用指针接收。</li>
+</ul>
+<h2 id="17-typedef和-define的区别"><a href="#17-typedef和-define的区别" class="headerlink" title="17. typedef和#define的区别"></a>17. typedef和#define的区别</h2><ul>
+<li>用法不同：typedef用于为类型起一个别名，从而提高程序的可读性；而#define一般用于定义常量或频繁使用的宏。</li>
+<li>执行不同：typedef在编译阶段执行，具有类型检查；而#define在预处理阶段进行代码替换，不具备类型检查。</li>
+<li>作用域不同：typedef具备明确的作用域；而#define定义后的所有引用都是合法的。</li>
+<li>typedef是一条语句，所以结尾要加分号；而#define不是语句，而且不能加分号；且两者定义指针时有很大的区别，如下：<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">int</span>* int_ptr;</span><br><span class="line">int_ptr a, b; <span class="comment">// a，b均为int\*</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> int* int_ptr</span></span><br><span class="line">int_ptr a, b; <span class="comment">// a为int\*，但b为\*</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="18-指针常量和常量指针的区别"><a href="#18-指针常量和常量指针的区别" class="headerlink" title="18. 指针常量和常量指针的区别"></a>18. 指针常量和常量指针的区别</h2><ul>
+<li>指针常量的意思是指针变量本身是一个常量，不可改变其指向，必须在定义时初始化，具有顶层const属性。</li>
+<li>常量指针的意思是指针指向的是一个只读变量，不可通过指针来改变其值，具有底层const属性。</li>
+<li>不管是指针常量还是常量指针，其最大的作用就是在修饰函数形参时，强调在函数内部实参的不可改变性。</li>
+</ul>
+<h2 id="19-栈区和堆区的异同"><a href="#19-栈区和堆区的异同" class="headerlink" title="19. 栈区和堆区的异同"></a>19. 栈区和堆区的异同</h2><ul>
+<li>栈区和堆区并非是指堆栈这两种数据结构，而是指不同的内存存储区域。</li>
+<li>栈区结构类似与栈，由编译器负责分配和释放，主要用于存放函数参数、局部变量等。</li>
+<li>堆区结构类似于链表，存取顺序随意，由程序员申请内存，并负责释放，或程序结束由OS回收。</li>
+</ul>
+<h2 id="20-C中的结构体和C-中的区别"><a href="#20-C中的结构体和C-中的区别" class="headerlink" title="20. C中的结构体和C++中的区别"></a>20. C中的结构体和C++中的区别</h2><ul>
+<li>C中结构体不能由函数成员，而C++可以。</li>
+<li>C中结构体没有访问限制，而C++具有private、public、protected访问说明符。</li>
+<li>C中结构体没有继承，而C++中具有丰富的继承体系。</li>
+</ul>
+<h2 id="21-避免野指针"><a href="#21-避免野指针" class="headerlink" title="21. 避免野指针"></a>21. 避免野指针</h2><ul>
+<li>在定义指针变量时就将指针初始化，或置为nullptr。</li>
+<li>在释放动态分配的内存后，将指针置为nullptr。</li>
+<li>当一个指针指向局部变量时，在离开局部变量作用域之前将指针置为nullptr。</li>
+</ul>
+<h2 id="22-句柄和指针的区别"><a href="#22-句柄和指针的区别" class="headerlink" title="22. 句柄和指针的区别"></a>22. 句柄和指针的区别</h2><ul>
+<li>句柄在Windows中标识的是可用的系统资源，并隐藏了系统信息，只需知道有这样的资源，然后申请使用即可。</li>
+<li>指针标识的某块物理内存的地址，两者在概念上是不同的。</li>
+</ul>
+<h2 id="23-extern-quot-C-quot"><a href="#23-extern-quot-C-quot" class="headerlink" title="23. extern &quot;C&quot;"></a>23. extern &quot;C&quot;</h2><ul>
+<li>extern &quot;C&quot;是链接指示，加上extern &quot;C&quot;则会指示编译器对当前代码按C而不是C++的方式编译。如C++中有函数重载机制，因此在编译时，会将函数的参数类型也加入到编译后的代码中，而C没有函数重载，因此编译时，一般只包含函数名。</li>
+<li>适用于多人协作开发时，一部分人擅长C，一部分人擅长C++的情况。</li>
+</ul>
+<h2 id="24-顶层const和底层const"><a href="#24-顶层const和底层const" class="headerlink" title="24. 顶层const和底层const"></a>24. 顶层const和底层const</h2><ul>
+<li>顶层const是指变量本身具备不可改变的属性，必须在定义时就完成初始化。</li>
+<li>底层const是指指针或引用所指向的对象具有不可改变的属性。</li>
+</ul>
+<h2 id="25-左指引用和右值引用"><a href="#25-左指引用和右值引用" class="headerlink" title="25. 左指引用和右值引用"></a>25. 左指引用和右值引用</h2><ul>
+<li>左值具有持久状态，而右值要么是字面常量，要么就是表达式求值过程中创建的临时对象。</li>
+<li>左值引用可以绑定到左值，常规的左值引用不能绑定到右值，但const左值引用可以绑定到右值上。</li>
+<li>可通过&amp;&amp;声明右值引用类型，可绑定到字面值或一个将要销毁的对象上，而不能绑定到左值。</li>
+<li>可以利用std::move函数显示地将一个左值转换为对应的右值引用类型。</li>
+<li>右值引用常用于模板转发实参，当函数参数定义为指向模板类型参数的右值引用时，可以保持实参的所有类型信息。</li>
+</ul>
+<h2 id="26-volatile的作用"><a href="#26-volatile的作用" class="headerlink" title="26. volatile的作用"></a>26. volatile的作用</h2><ul>
+<li>volatile可用于修饰一个中断服务子程序会访问到的非自动变量或者是多线程间被几个任务共享的变量。</li>
+<li>volatile对象只能调用使用volatile修饰的成员函数，volatile对象也不能使用合成的拷贝&#x2F;移动构造函数和赋值运算符，若想使用，必须自定义。</li>
+<li>可以用const和volatile同时修饰变量，表示变量在内部只读，只在程序外部条件变化下改变，且编译器不会优化该变量。因为const只是不允许程序代码修改变量，在编译期进行检查，并未实际禁止某段内存的读写特性。</li>
+</ul>
+<h2 id="27-静态链接和动态链接的区别"><a href="#27-静态链接和动态链接的区别" class="headerlink" title="27. 静态链接和动态链接的区别"></a>27. 静态链接和动态链接的区别</h2><ul>
+<li>静态链接是指在编译链接时，直接将需要执行的代码拷贝到调用处。<ul>
+<li>优点：程序发布时不需依赖库，可独立执行。</li>
+<li>缺点：程序体积相对较大，若静态函数库更新，则使用此函数库的程序都要重新编译。</li>
+</ul>
+</li>
+<li>动态链接是指在编译链接时，在程序里只有一个（指针）位置，而实际内容并不会整合到执行文件中，只有在运行时需要用到函数库功能时，程序才会去读取函数库，从而实现运行时链接。<ul>
+<li>优点：多个程序可共享同一个动态库，节省资源，且函数库更新，无需重新编译使用此函数库的程序。</li>
+<li>缺点：由于在运行时加载，可能会影响程序的前期执行性能。</li>
 </ul>
 </li>
 </ul>
 ]]></content>
       <categories>
-        <category>八股</category>
+        <category>C++</category>
       </categories>
       <tags>
-        <tag>设计模式</tag>
+        <tag>语法基础</tag>
       </tags>
   </entry>
   <entry>
-    <title>回溯算法</title>
-    <url>/2023/07/18/Algorithm/%E5%9B%9E%E6%BA%AF/</url>
-    <content><![CDATA[<ul>
-<li><p>场景：常用于组合、切割（字符串）、子集、排列、棋盘等</p>
-</li>
-<li><p>思想：可抽象成N叉树</p>
-<ul>
-<li>树宽为所处理的集合大小</li>
-<li>树深即为递归的深度</li>
-<li>本质上是递归嵌套循环</li>
-</ul>
-</li>
-<li><p>三步走策略</p>
-<ul>
-<li>确定参数（通常较多，且一般有两个引用参数用于收集中间过程和结果）和返回值（通常是void）</li>
-<li>确定递归终止条件（叶子节点收集结果）</li>
-<li>单层搜索逻辑（for循环），且一定要注意回撤操作</li>
-</ul>
-</li>
-<li><p>模版</p>
-</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">backTrace</span><span class="params">(参数...)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (递归终止条件) &#123;</span><br><span class="line">        收集结果（叶子节点）;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (集合中的元素) &#123;</span><br><span class="line">        处理节点;</span><br><span class="line">        递归函数;</span><br><span class="line">        撤销处理的节点;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>去重操作(40)<ul>
-<li>场景：集合中的元素存在重复，但要求解集是不能包含重复的组合。</li>
-<li>需要先对原集合进行排序，还需要辅助数组used记录集合中元素是否被使用(0或1)。<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">sort</span>(nums.<span class="built_in">begin</span>(), nums.<span class="built_in">end</span>());</span><br><span class="line"><span class="function">vector&lt;<span class="type">bool</span>&gt; <span class="title">used</span><span class="params">(nums.size(), <span class="literal">false</span>)</span></span>;</span><br></pre></td></tr></table></figure></li>
-<li>树层去重：去重逻辑在for循环中若前一个元素与当前元素相同，且前一个元素的使用状态为未使用used[i-1]&#x3D;0，则此时出现树层重复，直接continue不处理。<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = startIndex; i &lt; nums.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">    <span class="comment">// 树层去重操作</span></span><br><span class="line">    <span class="keyword">if</span> (i &gt; <span class="number">0</span> &amp;&amp; nums[i<span class="number">-1</span>] == nums[i] &amp;&amp; !used[i<span class="number">-1</span>]) <span class="keyword">continue</span>;</span><br><span class="line">    used[i] = <span class="literal">true</span>;</span><br><span class="line">    ...</span><br><span class="line">    used[i] = <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li>树枝去重</li>
-</ul>
-</li>
-</ul>
-<span id="more"></span>
-
-]]></content>
-      <categories>
-        <category>算法</category>
-      </categories>
-      <tags>
-        <tag>回溯</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>WebServer--上篇</title>
+    <title>WebServer（上篇）</title>
     <url>/2023/07/27/Project/WebServer/</url>
     <content><![CDATA[<span id="more"></span>
 
