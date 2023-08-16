@@ -455,6 +455,12 @@
 </ul>
 </li>
 </ul>
+<h2 id="HTTP长连接和TCP长连接"><a href="#HTTP长连接和TCP长连接" class="headerlink" title="HTTP长连接和TCP长连接"></a>HTTP长连接和TCP长连接</h2><ul>
+<li>HTTP的Keep-Alive是由应用层（用户态）实现的，称为HTTP长连接，通过复用同一个TCP连接来收发多个HTTP请求&#x2F;应答，从而避免连接建立和释放的开销。</li>
+<li>从HTTP1.1开始是默认开启长连接的，若要手动管理，则需设置HTTP请求包头部中的Connection: keep-alive&#x2F;close字段，且必须保证服务端和客户端设置一致。</li>
+<li>HTTP长连接由服务端的定时器管理，如设置超时时长为60秒，且客户端在60秒内未发起新请求，则会触发回调函数释放该连接。</li>
+<li>TCP的Keep-Alive是由TCP层（内核态）实现的，称为TCP保活机制，当客户端与服务端在一定时间内没有数据交互，内核为确保该连接是否有效，就会发送探测报文来检测对方是否在线，然后再决定是否要关闭该连接。</li>
+</ul>
 <h2 id="避免connect方法长时间阻塞"><a href="#避免connect方法长时间阻塞" class="headerlink" title="避免connect方法长时间阻塞"></a>避免connect方法长时间阻塞</h2><h2 id="服务端如何得知客户端突然掉线或重启"><a href="#服务端如何得知客户端突然掉线或重启" class="headerlink" title="服务端如何得知客户端突然掉线或重启"></a>服务端如何得知客户端突然掉线或重启</h2><h2 id="TTL的概念及用处"><a href="#TTL的概念及用处" class="headerlink" title="TTL的概念及用处"></a>TTL的概念及用处</h2>
         </div>
 
