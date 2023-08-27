@@ -273,7 +273,20 @@
 </ul>
 </li>
 </ul>
-<h2 id="2-IO多路复用"><a href="#2-IO多路复用" class="headerlink" title="2. IO多路复用"></a>2. IO多路复用</h2><ul>
+<h2 id="2-主机字节序与网络字节序"><a href="#2-主机字节序与网络字节序" class="headerlink" title="2. 主机字节序与网络字节序"></a>2. 主机字节序与网络字节序</h2><ul>
+<li>大端序：优先保存高位字节，即低位地址存放高位字节，网络字节序统一为大端序。</li>
+<li>小端序：优先保存低位字节，即低位地址存放低位字节，Intel为小端，且Arm默认为小端，且可手动设置为大端。</li>
+<li>大小端检测：</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">union</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="type">int</span> a;</span><br><span class="line">    <span class="type">char</span> b;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">union</span> <span class="title class_">test</span> t;</span><br><span class="line">    t.a = <span class="number">0x12345678</span>;</span><br><span class="line">    <span class="keyword">if</span> (t.b == <span class="number">0x12</span>) std::cout &lt;&lt; <span class="string">&quot;大端序&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    <span class="keyword">if</span> (t.b == <span class="number">0x78</span>) std::cout &lt;&lt; <span class="string">&quot;小端序&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>字节序转换：</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;netinet/in.h&gt;</span></span></span><br><span class="line"><span class="comment">// 长整型函数常用于转换IP地址</span></span><br><span class="line"><span class="function"><span class="type">unsigned</span> <span class="type">long</span> <span class="type">int</span> <span class="title">htonl</span><span class="params">(<span class="type">unsigned</span> <span class="type">long</span> <span class="type">int</span> hostlong)</span></span>;</span><br><span class="line"><span class="function"><span class="type">unsigned</span> <span class="type">long</span> <span class="type">int</span> <span class="title">ntohl</span><span class="params">(<span class="type">unsigned</span> <span class="type">long</span> <span class="type">int</span> netlong)</span></span>;</span><br><span class="line"><span class="comment">// 短整型函数常用于转换端口号</span></span><br><span class="line"><span class="function"><span class="type">unsigned</span> <span class="type">short</span> <span class="type">int</span> <span class="title">htons</span><span class="params">(<span class="type">unsigned</span> <span class="type">short</span> <span class="type">int</span> hostshort)</span></span>;</span><br><span class="line"><span class="function"><span class="type">unsigned</span> <span class="type">short</span> <span class="type">int</span> <span class="title">ntohs</span><span class="params">(<span class="type">unsigned</span> <span class="type">short</span> <span class="type">int</span> netshort)</span></span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="3-IO多路复用"><a href="#3-IO多路复用" class="headerlink" title="3. IO多路复用"></a>3. IO多路复用</h2><ul>
 <li>IO多路复用的原理是在一个进程（线程）中同时监听多个IO事件，从而避免为每个请求都分配一个进程（线程）。</li>
 <li>在Linux中，IO复用的方式有select、poll、epoll这三个系统调用。</li>
 <li>select<ul>
@@ -294,12 +307,12 @@
 </ul>
 </li>
 </ul>
-<h2 id="3-epoll中的LT和ET的区别（epoll默认LT）"><a href="#3-epoll中的LT和ET的区别（epoll默认LT）" class="headerlink" title="3. epoll中的LT和ET的区别（epoll默认LT）"></a>3. epoll中的LT和ET的区别（epoll默认LT）</h2><ul>
+<h2 id="4-epoll中的LT和ET的区别"><a href="#4-epoll中的LT和ET的区别" class="headerlink" title="4. epoll中的LT和ET的区别"></a>4. epoll中的LT和ET的区别</h2><ul>
 <li>两种模式的事件通知方式不同，LT持续通知直到事件处理完毕，ET只通知一次，不管事件是否处理完毕。</li>
 <li>LT模式下，读事件触发，可以按需收取字节数，不用一次性把数据收取干净；ET模式下，必须把数据收取干净。</li>
 <li>LT可自由决定每次收取多少数据，但可能导致多次触发；ET触发次数少效率更高，但每次都必须将数据接收完。</li>
 </ul>
-<h2 id="4-IO模型（粗分两种，细分五种）"><a href="#4-IO模型（粗分两种，细分五种）" class="headerlink" title="4. IO模型（粗分两种，细分五种）"></a>4. IO模型（粗分两种，细分五种）</h2><ul>
+<h2 id="5-IO模型（粗分两种，细分五种）"><a href="#5-IO模型（粗分两种，细分五种）" class="headerlink" title="5. IO模型（粗分两种，细分五种）"></a>5. IO模型（粗分两种，细分五种）</h2><ul>
 <li>同步IO：在IO事件发生后，由应用程序（用户）自行执行IO读写操作。<ul>
 <li>阻塞&#x2F;非阻塞IO、信号驱动IO（进程运行并不阻塞，直到收到信号再处理IO事件）、IO复用。</li>
 </ul>
@@ -307,12 +320,12 @@
 <li>异步IO：由内核通过缓冲区位置直接对IO执行读写操作，且IO读写操作总是立即返回，不论IO是否阻塞。</li>
 <li>简言之，同步IO向程序通知IO就绪事件，而异步IO则向程序通知IO完成事件。</li>
 </ul>
-<h2 id="5-事件处理模型Reactor-x2F-Proactor"><a href="#5-事件处理模型Reactor-x2F-Proactor" class="headerlink" title="5. 事件处理模型Reactor&#x2F;Proactor"></a>5. 事件处理模型Reactor&#x2F;Proactor</h2><ul>
+<h2 id="6-事件处理模型Reactor-x2F-Proactor"><a href="#6-事件处理模型Reactor-x2F-Proactor" class="headerlink" title="6. 事件处理模型Reactor&#x2F;Proactor"></a>6. 事件处理模型Reactor&#x2F;Proactor</h2><ul>
 <li>Reactor通常基于同步IO，Proactor则基于异步IO。</li>
 <li>Reactor: 主线程只负责监听文件描述符上是否有事件发生，有就立刻通知工作线程，除此之外，主线程不做任何其他工作。</li>
 <li>Proactor: 主线程执行数据读写操作，读写完成后，主线程向工作线程通知完成事件，那么从工作线程角度来看，它已经获得数据读写的结果，接下来就只要对读写结果进行逻辑处理即可。</li>
 </ul>
-<h2 id="6-并发编程模式"><a href="#6-并发编程模式" class="headerlink" title="6. 并发编程模式"></a>6. 并发编程模式</h2><ul>
+<h2 id="7-并发编程模式"><a href="#7-并发编程模式" class="headerlink" title="7. 并发编程模式"></a>7. 并发编程模式</h2><ul>
 <li>并发编程模式是指IO处理单元和多个逻辑单元间协调完成工作，主要有半同步&#x2F;半异步模式和领导者&#x2F;追随者模式。<ul>
 <li>半同步&#x2F;半异步模式：<ul>
 <li>与IO同步&#x2F;异步概念不同，此处同步指程序完全按代码的顺序执行，异步则指程序的执行需由系统事件（中断&#x2F;信号等）驱动。异步效率高，实时性强，适合嵌入式，但复杂难调试，不适于大量并发。同步效率相对较低，但逻辑简单。因此对于服务器这种既要求实时性，又要求并发，就该同时使用同步线程和异步线程。</li>
@@ -334,7 +347,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="7-多进程和多线程的区别"><a href="#7-多进程和多线程的区别" class="headerlink" title="7. 多进程和多线程的区别"></a>7. 多进程和多线程的区别</h2><ul>
+<h2 id="8-多进程和多线程的区别"><a href="#8-多进程和多线程的区别" class="headerlink" title="8. 多进程和多线程的区别"></a>8. 多进程和多线程的区别</h2><ul>
 <li>线程是轻量级的进程，执行效率和进程差不多，但消耗的系统资源更少。</li>
 <li>进程有自己独立的地址空间，多个线程共用同一个地址空间。<ul>
 <li>同一地址空间线程独享：栈区、寄存器（内核中管理）</li>
@@ -356,7 +369,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="8-线程的相关操作"><a href="#8-线程的相关操作" class="headerlink" title="8. 线程的相关操作"></a>8. 线程的相关操作</h2><ul>
+<h2 id="9-线程的相关操作"><a href="#9-线程的相关操作" class="headerlink" title="9. 线程的相关操作"></a>9. 线程的相关操作</h2><ul>
 <li>线程创建函数<ul>
 <li>每个线程都有ID，类型为pthread_t，可通过pthread_self函数获得。</li>
 <li>pthread_create创建新线程，传入参数线程ID、线程属性（NULL）、回调函数、回调函数参数。</li>
@@ -389,7 +402,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="9-线程同步"><a href="#9-线程同步" class="headerlink" title="9. 线程同步"></a>9. 线程同步</h2><ul>
+<h2 id="10-线程同步"><a href="#10-线程同步" class="headerlink" title="10. 线程同步"></a>10. 线程同步</h2><ul>
 <li>概念：不是让线程并行地执行，而是线性（先后顺序）地执行。</li>
 <li>方式<ul>
 <li>互斥锁（pthread_mutex_t mutex）：锁的所有权只能被一个线程所拥有<ul>
@@ -454,7 +467,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="HTTP长连接和TCP长连接"><a href="#HTTP长连接和TCP长连接" class="headerlink" title="HTTP长连接和TCP长连接"></a>HTTP长连接和TCP长连接</h2><ul>
+<h2 id="11-HTTP长连接和TCP长连接"><a href="#11-HTTP长连接和TCP长连接" class="headerlink" title="11. HTTP长连接和TCP长连接"></a>11. HTTP长连接和TCP长连接</h2><ul>
 <li>HTTP的Keep-Alive是由应用层（用户态）实现的，称为HTTP长连接，通过复用同一个TCP连接来收发多个HTTP请求&#x2F;应答，从而避免连接建立和释放的开销。</li>
 <li>从HTTP1.1开始是默认开启长连接的，若要手动管理，则需设置HTTP请求包头部中的Connection: keep-alive&#x2F;close字段，且必须保证服务端和客户端设置一致。</li>
 <li>HTTP长连接由服务端的定时器管理，如设置超时时长为60秒，且客户端在60秒内未发起新请求，则会触发回调函数释放该连接。</li>
