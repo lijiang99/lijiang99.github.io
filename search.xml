@@ -130,101 +130,6 @@
       </tags>
   </entry>
   <entry>
-    <title>算法（中篇）</title>
-    <url>/2023/05/29/Algorithm/%E7%AE%97%E6%B3%952/</url>
-    <content><![CDATA[<span id="more"></span>
-
-<h2 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h2><h3 id="二叉树分类"><a href="#二叉树分类" class="headerlink" title="二叉树分类"></a>二叉树分类</h3><ul>
-<li>满二叉树：从上到下，从左到右全部排满，若深度（相较于根节点）为$k$（$k$从$1$开始），则节点数量为$2^k-1$。</li>
-<li>完全二叉树：除了底层的叶子节点外，其他层都是满的，且底部叶子是从左到右连续的。若为第$i$（$i$从$0$开始）个节点，则左子节点为$2i+1$，右子节点为$2i+2$，父节点为$(i-1)&#x2F;2$。</li>
-<li>二叉搜索树：节点按节点值的大小顺序组织（left&lt;root&lt;right），搜索一个节点的复杂度为$O(\log{N})$。</li>
-<li>平衡二叉搜索树：除了满足二叉搜索树的特性外，还要求左右子树的高度（相较于叶子节点）差不能超过$1$。</li>
-</ul>
-<h3 id="二叉树遍历"><a href="#二叉树遍历" class="headerlink" title="二叉树遍历"></a>二叉树遍历</h3><ul>
-<li><p>深度优先：常用递归法或迭代法（配合栈来模拟递归）实现，前序遍历、中序遍历、后序遍历都属于深度优先。</p>
-<ul>
-<li>递归法：三步走，确定递归函数的参数和返回值、确定递归终止条件、确定单层递归逻辑</li>
-</ul>
-  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">traversal</span><span class="params">(TreeNode *root, vector&lt;<span class="type">int</span>&gt; &amp;res)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// preorder前序遍历</span></span><br><span class="line">    res.<span class="built_in">push_back</span>(root-&gt;val);</span><br><span class="line">    <span class="built_in">traversal</span>(root-&gt;left, res);</span><br><span class="line">    <span class="built_in">traversal</span>(root-&gt;right, res);</span><br><span class="line">    <span class="comment">// inorder中序遍历</span></span><br><span class="line">    <span class="comment">// traversal(root-&gt;left, res);</span></span><br><span class="line">    <span class="comment">// res.push_back(root-&gt;val);</span></span><br><span class="line">    <span class="comment">// traversal(root-&gt;right, res);</span></span><br><span class="line">    <span class="comment">// postorder后序遍历</span></span><br><span class="line">    <span class="comment">// traversal(root-&gt;left, res);</span></span><br><span class="line">    <span class="comment">// traversal(root-&gt;right, res);</span></span><br><span class="line">    <span class="comment">// res.push_back(root-&gt;val);</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>迭代法：利用栈来模拟递归，且需考虑好访问节点与处理节点的逻辑。</li>
-</ul>
-  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 前序遍历：访问节点和处理节点的顺序一致，即每次处理的均是当前访问的节点。</span></span><br><span class="line"><span class="comment">// 且每次处理（节点出栈，节点值放入数组）后，需先将节点的右子节点入栈，后将节点的左子节点入栈。</span></span><br><span class="line"><span class="comment">// 而非先处理左子节点，再处理右子节点，因为栈是先进后出的顺序。</span></span><br><span class="line"><span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">preorderTraversal</span><span class="params">(TreeNode *root)</span> </span>&#123;</span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; res;</span><br><span class="line">    stack&lt;TreeNode*&gt; stk;</span><br><span class="line">    stk.<span class="built_in">push</span>(root);</span><br><span class="line">    <span class="keyword">while</span> (!stk.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        TreeNode *node = stk.<span class="built_in">top</span>(); stk.<span class="built_in">pop</span>();</span><br><span class="line">        <span class="keyword">if</span> (node) res.<span class="built_in">push_back</span>(node-&gt;val);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">continue</span>;</span><br><span class="line">        stk.<span class="built_in">push</span>(node-&gt;right); stk.<span class="built_in">push</span>(node-&gt;left);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="comment">// 后序遍历：只需将前序遍历的入栈顺序颠倒（变为先左后右），再将结果数组元素颠倒即可。</span></span><br><span class="line"><span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">postorderTraversal</span><span class="params">(TreeNode *root)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 与前序遍历相同处理...</span></span><br><span class="line">    <span class="keyword">while</span> (!stk.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        <span class="comment">// 与前序遍历相同处理...</span></span><br><span class="line">        <span class="comment">// 此时会将结果由“根左右”变为“根右左”</span></span><br><span class="line">        stk.<span class="built_in">push</span>(node-&gt;left); skt.<span class="built_in">push</span>(node-&gt;right);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 再结果由“根右左”变为“左右根”</span></span><br><span class="line">    <span class="built_in">reverse</span>(res.<span class="built_in">begin</span>(), res.<span class="built_in">end</span>());</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="comment">// 中序遍历：访问节点和处理节点的顺序不一致，即每次访问的节点并不会被立即处理，而是先由栈暂存。</span></span><br><span class="line"><span class="comment">// 若当前访问节点非空，先将其入栈，并将左子节点作为下一个访问节点。</span></span><br><span class="line"><span class="comment">// 若当前访问节点为空，则弹出栈顶节点（收集结果），并将右子节点作为下一个访问节点。</span></span><br><span class="line"><span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">inorderTraversal</span><span class="params">(TreeNode *root)</span> </span>&#123;</span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; res;</span><br><span class="line">    stack&lt;TreeNode*&gt; stk;</span><br><span class="line">    TreeNode *cur = root; <span class="comment">// cur代表当前访问节点</span></span><br><span class="line">    <span class="keyword">while</span> (cur || !stk.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (cur) &#123; stk.<span class="built_in">push</span>(cur); cur = cur-&gt;left; &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            cur = stk.<span class="built_in">top</span>(); stk.<span class="built_in">pop</span>();</span><br><span class="line">            res.<span class="built_in">push_back</span>(cur-&gt;val); cur = cur-&gt;right;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>广度优先：常用迭代法（配合队列）实现，层序遍历是广度优先的一种。</p>
-<ul>
-<li>迭代法：使用队列存放每层的节点，并用size记录当前层的节点个数。每弹出一个节点就将其左右子节点加入队列，并将size减1。当size减为0，则表示遍历完一层，将size更新为当前队列大小，开始遍历下一层。</li>
-</ul>
-  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">levelOrder</span>(TreeNode *root) &#123;</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; res;</span><br><span class="line">    queue&lt;TreeNode*&gt; que;</span><br><span class="line">    <span class="keyword">if</span> (root) que.<span class="built_in">push</span>(root);</span><br><span class="line">    <span class="type">int</span> size;</span><br><span class="line">    <span class="keyword">while</span> (!que.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        size = que.<span class="built_in">size</span>();</span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; tmp;</span><br><span class="line">        <span class="keyword">while</span> (size--) &#123;</span><br><span class="line">            TreeNode *node = que.<span class="built_in">front</span>(); que.<span class="built_in">pop</span>();</span><br><span class="line">            tmp.<span class="built_in">push_back</span>(node-&gt;val);</span><br><span class="line">            <span class="keyword">if</span> (node-&gt;left) que.<span class="built_in">push</span>(node-&gt;left);</span><br><span class="line">            <span class="keyword">if</span> (node-&gt;right) que.<span class="built_in">push</span>(node-&gt;right);</span><br><span class="line">        &#125;</span><br><span class="line">        res.<span class="built_in">emplace_back</span>(std::<span class="built_in">move</span>(tmp));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="完全二叉树节点数量"><a href="#完全二叉树节点数量" class="headerlink" title="完全二叉树节点数量"></a>完全二叉树节点数量</h3><ul>
-<li>方法1：将其当作普通二叉树，则前、中、后、层序遍历都可计算，但时间复杂度为$O(N)$，相对低效。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">countNodes</span><span class="params">(TreeNode *root)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 后序遍历思想</span></span><br><span class="line">    <span class="keyword">return</span> root ? <span class="built_in">countNodes</span>(root-&gt;left) + <span class="built_in">countNodes</span>(root-&gt;right) + <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>方法2：由于完全二叉树及其子树可能为满二叉树，那么就可使用$2^k-1$来快速计算节点数，$k$为满二叉树的深度。因此每次递归需先判断当前树是否为满二叉树，若是则利用公式快速计算节点数；若不是，则通过后序遍历来计算节点数。对于满二叉树判断，需结合完全二叉树从左到右节点连续的特性（右子节点不空，则必定存在左子节点），因此若一直向左走到叶节点的路径经过的节点数等于一直向右走到叶节点的路径经过的节点数，那么该树为满二叉树。从而避免了遍历所有节点，只需遍历树最外侧的两条路径，时间复杂度$\leq{O(N)}$。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">countNodes</span><span class="params">(TreeNode *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> leftDepth = <span class="number">0</span>, rightDepth = <span class="number">0</span>;</span><br><span class="line">    TreeNode *left = root-&gt;left, *right = root-&gt;right;</span><br><span class="line">    <span class="keyword">while</span> (left) &#123; ++leftDepth; left = left-&gt;left; &#125; <span class="comment">// 计算左外侧路径的节点数</span></span><br><span class="line">    <span class="keyword">while</span> (right) &#123; ++rightDepth; right = right-&gt;right; &#125; <span class="comment">// 计算右外侧路径的节点数</span></span><br><span class="line">    <span class="comment">// 两侧路径的节点数相同为满二叉树，则快速计算节点数</span></span><br><span class="line">    <span class="keyword">if</span> (leftDepth == rightDepth) <span class="keyword">return</span> (<span class="number">2</span> &lt;&lt; leftDepth) - <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// 两侧路径的节点数不同，则后序遍历计算节点数</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">countNodes</span>(root-&gt;left) + <span class="built_in">countNodes</span>(root-&gt;right) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="二叉树中的回溯（二叉树左下角值）"><a href="#二叉树中的回溯（二叉树左下角值）" class="headerlink" title="二叉树中的回溯（二叉树左下角值）"></a>二叉树中的回溯（<a href="https://leetcode.cn/problems/find-bottom-left-tree-value/description/">二叉树左下角值</a>）</h3><ul>
-<li>方法1：利用层序遍历，最后一层的第一个节点即为目标节点，但相对低效。</li>
-<li>方法2：将问题转换为找最后一层（节点深度必定最大)，可利用递归（遍历）加回溯（记录最大深度）来解决。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 全局变量记录最大深度和目标值</span></span><br><span class="line"><span class="type">int</span> maxDepth = INT_MIN, res;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">findBottomLeftValue</span><span class="params">(TreeNode *root, <span class="type">int</span> depth)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 递归终止条件，到达叶子节点，此时收割结果</span></span><br><span class="line">    <span class="keyword">if</span> (!root-&gt;left &amp;&amp; !root-&gt;right) &#123;</span><br><span class="line">        <span class="keyword">if</span> (depth &gt; maxDepth) &#123; maxDepth = depth; res = root-&gt;val; &#125;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 每次优先从左遍历，因为要求的是左下角的值</span></span><br><span class="line">    <span class="keyword">if</span> (root-&gt;left) &#123;</span><br><span class="line">        ++depth;</span><br><span class="line">        <span class="built_in">findBottomLeftValue</span>(root-&gt;left, depth);</span><br><span class="line">        --depth; <span class="comment">// 回撤操作</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 将回撤操作隐含在参数传递中</span></span><br><span class="line">    <span class="keyword">if</span> (root-&gt;right) <span class="built_in">findBottomLeftValue</span>(root-&gt;right, depth + <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">findBottomLeftValue</span><span class="params">(TreeNode *root)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">findBottomLeftValue</span>(root, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="验证二叉搜索树"><a href="#验证二叉搜索树" class="headerlink" title="验证二叉搜索树"></a>验证二叉搜索树</h3><ul>
-<li>方法1：中序遍历，将遍历结果存入数组，验证结果是否单调递增（暴力解法，效率低）。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">vector&lt;<span class="type">int</span>&gt; nums;</span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">isValidBST</span><span class="params">(TreeNode *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="built_in">isValidBST</span>(root-&gt;left);</span><br><span class="line">    nums.<span class="built_in">push_back</span>(root-&gt;val);</span><br><span class="line">    <span class="built_in">isValidBST</span>(root-&gt;right);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; nums.<span class="built_in">size</span>(); ++i) &#123; <span class="keyword">if</span> (nums[i] &lt;= nums[i<span class="number">-1</span>]) <span class="keyword">return</span> <span class="literal">false</span>; &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>方法2：前序遍历，利用区间范围概念，左子树中所有节点必小于根节点，右子树中所有节点必大于根节点。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 该方法缺点在于，需根据节点值类型来确定上下限类型，上下限类型表示的范围要比节点值类型大</span></span><br><span class="line"><span class="comment">// 如节点值可能就是INT_MIN，那么如下限取INT_MIN，则始终返回true</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">isValidBST</span><span class="params">(TreeNode *root, <span class="type">long</span> lower, <span class="type">long</span> upper)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">if</span> (root-&gt;val &gt;= upper || root-&gt;val &lt;= lower) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">isValidBST</span>(root-&gt;left, lower, root-&gt;val) &amp;&amp;</span><br><span class="line">        <span class="built_in">isValidBST</span>(root-&gt;right, root-&gt;val, upper);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">isValidBST</span><span class="params">(TreeNode *root)</span> </span>&#123; <span class="keyword">return</span> <span class="built_in">isValidBST</span>(root, LONG_MIN, LONG_MAX); &#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>方法3：双指针+中序遍历（但凡遇到需利用二叉搜索树特性时，就必定是中序遍历）</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">TreeNode *pre = <span class="literal">nullptr</span>;</span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">isValidBST</span><span class="params">(TreeNode *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">isValidBST</span>(root-&gt;left)) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="comment">// 判断前继指针所指节点的值和当前指针所指节点的值。</span></span><br><span class="line">    <span class="keyword">if</span> (pre &amp;&amp; pre-&gt;val &gt;= root-&gt;val) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    pre = root; <span class="comment">// 更新前继节点，相当于回溯过程</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">isValidBST</span>(root-&gt;right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="回溯算法"><a href="#回溯算法" class="headerlink" title="回溯算法"></a>回溯算法</h2><h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><ul>
-<li>组合：不强调元素顺序，求出所有元素中满足条件的所有组合。</li>
-<li>切割：在字符串中，切割出所有满足特定条件的子串。</li>
-<li>子集：列出元素所构成的所有子集。</li>
-<li>排列：相较于组合，排列强调元素顺序，相同元素不同顺序的组合可构成一个排列，但都只是同一个组合。</li>
-<li>棋盘：N皇后和解数独等问题。</li>
-</ul>
-<h3 id="基本思想"><a href="#基本思想" class="headerlink" title="基本思想"></a>基本思想</h3><ul>
-<li>可抽象成N叉树，树宽为所处理的集合大小（for循环遍历），树深即为递归的深度，本质上是递归嵌套循环。</li>
-</ul>
-<h3 id="三步走策略"><a href="#三步走策略" class="headerlink" title="三步走策略"></a>三步走策略</h3><ul>
-<li>确定参数（通常较多，且一般有两个引用参数用于收集中间过程和结果）和返回值（通常是void）</li>
-<li>确定递归终止条件（叶子节点收集结果）</li>
-<li>单层搜索逻辑（for循环），且一定要注意回撤操作</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">backTrace</span><span class="params">(参数...)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (递归终止条件) &#123;</span><br><span class="line">        收集结果（叶子节点）;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (集合中的元素) &#123;</span><br><span class="line">        处理节点;</span><br><span class="line">        递归函数;</span><br><span class="line">        回溯操作，撤销处理的节点;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="去重操作-40"><a href="#去重操作-40" class="headerlink" title="去重操作(40)"></a>去重操作(40)</h3><ul>
-<li>场景：集合中的元素存在重复，但要求解集是不能包含重复的组合。</li>
-<li>需要先对原集合进行排序，还需要辅助数组used记录集合中元素是否被使用(0或1)。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">sort</span>(nums.<span class="built_in">begin</span>(), nums.<span class="built_in">end</span>());</span><br><span class="line"><span class="function">vector&lt;<span class="type">bool</span>&gt; <span class="title">used</span><span class="params">(nums.size(), <span class="literal">false</span>)</span></span>;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>树层去重：去重逻辑在for循环中若前一个元素与当前元素相同，且前一个元素的使用状态为未使用used[i-1]&#x3D;0，则此时出现树层重复，直接continue不处理。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = startIndex; i &lt; nums.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">    <span class="comment">// 树层去重操作</span></span><br><span class="line">    <span class="keyword">if</span> (i &gt; <span class="number">0</span> &amp;&amp; nums[i<span class="number">-1</span>] == nums[i] &amp;&amp; !used[i<span class="number">-1</span>]) <span class="keyword">continue</span>;</span><br><span class="line">    used[i] = <span class="literal">true</span>;</span><br><span class="line">    ...</span><br><span class="line">    used[i] = <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>树枝去重</li>
-</ul>
-]]></content>
-      <categories>
-        <category>算法</category>
-      </categories>
-      <tags>
-        <tag>二叉树</tag>
-        <tag>回溯</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>网络编程</title>
     <url>/2023/06/03/Fundamentals/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/</url>
     <content><![CDATA[<span id="more"></span>
@@ -594,324 +499,98 @@
       </tags>
   </entry>
   <entry>
-    <title>C++轻量级多线程Web服务器（上篇）</title>
-    <url>/2023/07/27/Project/WebServer1/</url>
+    <title>算法（中篇）</title>
+    <url>/2023/05/29/Algorithm/%E7%AE%97%E6%B3%952/</url>
     <content><![CDATA[<span id="more"></span>
 
-<p>本项目地址：<a href="https://github.com/lijiang99/WebServer">https://github.com/lijiang99/WebServer</a></p>
-<p>参考资料：<a href="https://dark-wind.github.io/books/Linux%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B.pdf">《Linux高性能服务器编程》</a>、<a href="https://github.com/qinguoyi/TinyWebServer/tree/raw_version">TinyWebServer</a>、<a href="https://github.com/markparticle/WebServer">WebServer（C++版）</a></p>
-<h2 id="Day1-运行项目"><a href="#Day1-运行项目" class="headerlink" title="Day1: 运行项目"></a>Day1: 运行项目</h2><ul>
-<li><p>mysql安装并修改密码</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装mysql</span></span><br><span class="line">sudo apt install mysql-server mysql-client</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看debian-sys-maint的密码</span></span><br><span class="line">sudo cat /etc/mysql/debian.cnf</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">通过debian-sys-maint登录</span></span><br><span class="line">mysql -u debian-sys-maint -p</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改root用户的密码</span></span><br><span class="line">use mysql;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改mysql密码认证方式为本地认证</span></span><br><span class="line">UPDATE user SET plugin=&quot;mysql_native_password&quot; WHERE user=&quot;root&quot;;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">先把密码改为空（也不知道为什么，但不这么干就一直失败）</span></span><br><span class="line">UPDATE user SET authentication_string=&quot;&quot; WHERE user=&quot;root&quot;;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改成想要的密码</span></span><br><span class="line">ALTER USER &#x27;root&#x27;@&#x27;localhost&#x27; IDENTIFIED WITH mysql_native_password BY &#x27;123456&#x27;;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">刷新权限并退出</span></span><br><span class="line">flush privileges;</span><br><span class="line">exit</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">重启mysql</span></span><br><span class="line">sudo service mysql restart</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">以root登录</span></span><br><span class="line">mysql -u root -p</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>创建新的数据库和数据表</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"># 创建新的数据库和数据表</span><br><span class="line"><span class="keyword">create</span> database tiny_web_server;</span><br><span class="line">USE tiny_web_server;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="keyword">user</span>(</span><br><span class="line">    username <span class="type">char</span>(<span class="number">50</span>) <span class="keyword">NULL</span>,</span><br><span class="line">    passwd <span class="type">char</span>(<span class="number">50</span>) <span class="keyword">NULL</span></span><br><span class="line">)ENGINE<span class="operator">=</span>InnoDB;</span><br><span class="line"># 向数据表中添加数据</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">user</span>(username, passwd) <span class="keyword">VALUES</span>(<span class="string">&#x27;bd7xzz&#x27;</span>, <span class="string">&#x27;123456&#x27;</span>);</span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>修改配置信息</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// main.cpp中的数据库初始化信息</span></span><br><span class="line"><span class="comment">// 修改MySQL服务器登录名和密码，并指定要用到的database</span></span><br><span class="line">connPool-&gt;<span class="built_in">init</span>(<span class="string">&quot;localhost&quot;</span>, <span class="string">&quot;root&quot;</span>, <span class="string">&quot;123456&quot;</span>, <span class="string">&quot;tiny_web_server&quot;</span>, <span class="number">3306</span>, <span class="number">8</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 修改http_conn.cpp中的root路径</span></span><br><span class="line"><span class="type">const</span> <span class="type">char</span>* doc_root=<span class="string">&quot;../root&quot;</span>;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>编译构建</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装mysql链接库</span></span><br><span class="line">sudo apt install libmysqlclient-dev</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">生成server</span></span><br><span class="line">make server</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动server</span></span><br><span class="line">./server port</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">浏览器端</span></span><br><span class="line">localhost:port</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">压力测试（并发连接数10500，访问时长5s）</span></span><br><span class="line">./webbench -c 10500 -t 5 http://localhost:port/</span><br></pre></td></tr></table></figure></li>
+<h2 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h2><h3 id="二叉树分类"><a href="#二叉树分类" class="headerlink" title="二叉树分类"></a>二叉树分类</h3><ul>
+<li>满二叉树：从上到下，从左到右全部排满，若深度（相较于根节点）为$k$（$k$从$1$开始），则节点数量为$2^k-1$。</li>
+<li>完全二叉树：除了底层的叶子节点外，其他层都是满的，且底部叶子是从左到右连续的。若为第$i$（$i$从$0$开始）个节点，则左子节点为$2i+1$，右子节点为$2i+2$，父节点为$(i-1)&#x2F;2$。</li>
+<li>二叉搜索树：节点按节点值的大小顺序组织（left&lt;root&lt;right），搜索一个节点的复杂度为$O(\log{N})$。</li>
+<li>平衡二叉搜索树：除了满足二叉搜索树的特性外，还要求左右子树的高度（相较于叶子节点）差不能超过$1$。</li>
 </ul>
-<h1 id="Day2-连接池实现"><a href="#Day2-连接池实现" class="headerlink" title="Day2: 连接池实现"></a>Day2: 连接池实现</h1><ul>
-<li><p>连接池概念</p>
+<h3 id="二叉树遍历"><a href="#二叉树遍历" class="headerlink" title="二叉树遍历"></a>二叉树遍历</h3><ul>
+<li><p>深度优先：常用递归法或迭代法（配合栈来模拟递归）实现，前序遍历、中序遍历、后序遍历都属于深度优先。</p>
 <ul>
-<li>若系统需频繁访问数据库，则需频繁创建和断开数据库连接，但创建连接很耗时且有安全隐患。</li>
-<li>程序初始化时，集中创建多个数据库连接形成连接池并集中管理，供程序使用，可保证较快的数据库读写速度，也更安全。</li>
-<li>池可以看作资源的容器，流程是工作线程从连接池中取一个连接，访问数据库，访问结束后将连接交还连接池。</li>
+<li>递归法：三步走，确定递归函数的参数和返回值、确定递归终止条件、确定单层递归逻辑</li>
 </ul>
-</li>
-<li><p>连接池创建（单例模式–懒汉式创建连接池）</p>
+  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">traversal</span><span class="params">(TreeNode *root, vector&lt;<span class="type">int</span>&gt; &amp;res)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// preorder前序遍历</span></span><br><span class="line">    res.<span class="built_in">push_back</span>(root-&gt;val);</span><br><span class="line">    <span class="built_in">traversal</span>(root-&gt;left, res);</span><br><span class="line">    <span class="built_in">traversal</span>(root-&gt;right, res);</span><br><span class="line">    <span class="comment">// inorder中序遍历</span></span><br><span class="line">    <span class="comment">// traversal(root-&gt;left, res);</span></span><br><span class="line">    <span class="comment">// res.push_back(root-&gt;val);</span></span><br><span class="line">    <span class="comment">// traversal(root-&gt;right, res);</span></span><br><span class="line">    <span class="comment">// postorder后序遍历</span></span><br><span class="line">    <span class="comment">// traversal(root-&gt;left, res);</span></span><br><span class="line">    <span class="comment">// traversal(root-&gt;right, res);</span></span><br><span class="line">    <span class="comment">// res.push_back(root-&gt;val);</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
-<li><p>原项目</p>
-<ul>
-<li>连接池的拷贝操作未显示定义或声明为私有，编译器会生成默认版本，因此该单例模式有漏洞。</li>
-<li>基于懒汉式并使用局部静态变量创建连接池（但该方式在C++11之后才是线程安全的）  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function">connection_pool* <span class="title">connection_pool::GetInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">static</span> connection_pool connPool;</span><br><span class="line">    <span class="keyword">return</span> &amp;connPool;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>迭代法：利用栈来模拟递归，且需考虑好访问节点与处理节点的逻辑。</li>
 </ul>
+  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 前序遍历：访问节点和处理节点的顺序一致，即每次处理的均是当前访问的节点。</span></span><br><span class="line"><span class="comment">// 且每次处理（节点出栈，节点值放入数组）后，需先将节点的右子节点入栈，后将节点的左子节点入栈。</span></span><br><span class="line"><span class="comment">// 而非先处理左子节点，再处理右子节点，因为栈是先进后出的顺序。</span></span><br><span class="line"><span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">preorderTraversal</span><span class="params">(TreeNode *root)</span> </span>&#123;</span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; res;</span><br><span class="line">    stack&lt;TreeNode*&gt; stk;</span><br><span class="line">    stk.<span class="built_in">push</span>(root);</span><br><span class="line">    <span class="keyword">while</span> (!stk.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        TreeNode *node = stk.<span class="built_in">top</span>(); stk.<span class="built_in">pop</span>();</span><br><span class="line">        <span class="keyword">if</span> (node) res.<span class="built_in">push_back</span>(node-&gt;val);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">continue</span>;</span><br><span class="line">        stk.<span class="built_in">push</span>(node-&gt;right); stk.<span class="built_in">push</span>(node-&gt;left);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="comment">// 后序遍历：只需将前序遍历的入栈顺序颠倒（变为先左后右），再将结果数组元素颠倒即可。</span></span><br><span class="line"><span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">postorderTraversal</span><span class="params">(TreeNode *root)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 与前序遍历相同处理...</span></span><br><span class="line">    <span class="keyword">while</span> (!stk.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        <span class="comment">// 与前序遍历相同处理...</span></span><br><span class="line">        <span class="comment">// 此时会将结果由“根左右”变为“根右左”</span></span><br><span class="line">        stk.<span class="built_in">push</span>(node-&gt;left); skt.<span class="built_in">push</span>(node-&gt;right);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 再结果由“根右左”变为“左右根”</span></span><br><span class="line">    <span class="built_in">reverse</span>(res.<span class="built_in">begin</span>(), res.<span class="built_in">end</span>());</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="comment">// 中序遍历：访问节点和处理节点的顺序不一致，即每次访问的节点并不会被立即处理，而是先由栈暂存。</span></span><br><span class="line"><span class="comment">// 若当前访问节点非空，先将其入栈，并将左子节点作为下一个访问节点。</span></span><br><span class="line"><span class="comment">// 若当前访问节点为空，则弹出栈顶节点（收集结果），并将右子节点作为下一个访问节点。</span></span><br><span class="line"><span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">inorderTraversal</span><span class="params">(TreeNode *root)</span> </span>&#123;</span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; res;</span><br><span class="line">    stack&lt;TreeNode*&gt; stk;</span><br><span class="line">    TreeNode *cur = root; <span class="comment">// cur代表当前访问节点</span></span><br><span class="line">    <span class="keyword">while</span> (cur || !stk.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (cur) &#123; stk.<span class="built_in">push</span>(cur); cur = cur-&gt;left; &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            cur = stk.<span class="built_in">top</span>(); stk.<span class="built_in">pop</span>();</span><br><span class="line">            res.<span class="built_in">push_back</span>(cur-&gt;val); cur = cur-&gt;right;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>本项目改进 </p>
+<li><p>广度优先：常用迭代法（配合队列）实现，层序遍历是广度优先的一种。</p>
 <ul>
-<li>将构造函数和拷贝操作显示声明为私有，并利用delete关键字显示声明拷贝操作，以阻止编译器默认合成。  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">connection_pool</span> &#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        <span class="built_in">connection_pool</span>();</span><br><span class="line">        <span class="built_in">connection_pool</span>(<span class="type">const</span> connection_pool&amp; rhs) = <span class="keyword">delete</span>;</span><br><span class="line">        <span class="function">connection_pool&amp; <span class="title">operator</span><span class="params">(<span class="type">const</span> connection_pool&amp; rhs)</span> </span>= <span class="keyword">delete</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<li>迭代法：使用队列存放每层的节点，并用size记录当前层的节点个数。每弹出一个节点就将其左右子节点加入队列，并将size减1。当size减为0，则表示遍历完一层，将size更新为当前队列大小，开始遍历下一层。</li>
 </ul>
-</li>
+  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">levelOrder</span>(TreeNode *root) &#123;</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; res;</span><br><span class="line">    queue&lt;TreeNode*&gt; que;</span><br><span class="line">    <span class="keyword">if</span> (root) que.<span class="built_in">push</span>(root);</span><br><span class="line">    <span class="type">int</span> size;</span><br><span class="line">    <span class="keyword">while</span> (!que.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        size = que.<span class="built_in">size</span>();</span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; tmp;</span><br><span class="line">        <span class="keyword">while</span> (size--) &#123;</span><br><span class="line">            TreeNode *node = que.<span class="built_in">front</span>(); que.<span class="built_in">pop</span>();</span><br><span class="line">            tmp.<span class="built_in">push_back</span>(node-&gt;val);</span><br><span class="line">            <span class="keyword">if</span> (node-&gt;left) que.<span class="built_in">push</span>(node-&gt;left);</span><br><span class="line">            <span class="keyword">if</span> (node-&gt;right) que.<span class="built_in">push</span>(node-&gt;right);</span><br><span class="line">        &#125;</span><br><span class="line">        res.<span class="built_in">emplace_back</span>(std::<span class="built_in">move</span>(tmp));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 </ul>
-</li>
-<li><p>连接池初始化</p>
+<h3 id="完全二叉树节点数量"><a href="#完全二叉树节点数量" class="headerlink" title="完全二叉树节点数量"></a>完全二叉树节点数量</h3><ul>
+<li>方法1：将其当作普通二叉树，则前、中、后、层序遍历都可计算，但时间复杂度为$O(N)$，相对低效。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">countNodes</span><span class="params">(TreeNode *root)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 后序遍历思想</span></span><br><span class="line">    <span class="keyword">return</span> root ? <span class="built_in">countNodes</span>(root-&gt;left) + <span class="built_in">countNodes</span>(root-&gt;right) + <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
-<li><p>原项目</p>
-<ul>
-<li>定义了额外的init函数以供用户在类外修改连接池的内部数据成员</li>
-<li>但如果用户多次调用init函数怎么办？init函数并未考虑在多次调用的情况下，内部链表的状态变化（可能需要先销毁再重新分配），那么函数名就与其实际工作不符。</li>
-<li>个人觉得应初始化有且只有一次，若要修改连接池内部数据则需提供额外接口，并在实现时考虑链表的状态问题。</li>
+<li>方法2：由于完全二叉树及其子树可能为满二叉树，那么就可使用$2^k-1$来快速计算节点数，$k$为满二叉树的深度。因此每次递归需先判断当前树是否为满二叉树，若是则利用公式快速计算节点数；若不是，则通过后序遍历来计算节点数。对于满二叉树判断，需结合完全二叉树从左到右节点连续的特性（右子节点不空，则必定存在左子节点），因此若一直向左走到叶节点的路径经过的节点数等于一直向右走到叶节点的路径经过的节点数，那么该树为满二叉树。从而避免了遍历所有节点，只需遍历树最外侧的两条路径，时间复杂度$\leq{O(N)}$。</li>
 </ul>
-</li>
-<li><p>本项目改进</p>
-<ul>
-<li><p>数据成员</p>
-  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">typedef</span> std::atomic_bool init_status_type;</span><br><span class="line">    std::string _host; <span class="comment">// 主机地址</span></span><br><span class="line">    std::string _user; <span class="comment">// 数据库用户名</span></span><br><span class="line">    std::<span class="type">size_t</span> _port; <span class="comment">// 数据库端口号</span></span><br><span class="line">    std::string _password; <span class="comment">// 数据库密码</span></span><br><span class="line">    std::string _database; <span class="comment">// 所使用的数据库名</span></span><br><span class="line">    std::<span class="type">size_t</span> _max_conn; <span class="comment">// 最大连接数</span></span><br><span class="line">    <span class="comment">// 原子变量，用于判断连接池是否已经初始化</span></span><br><span class="line">    init_status_type _init_status;</span><br><span class="line">    std::mutex _mutex; <span class="comment">// 互斥锁</span></span><br><span class="line">    <span class="type">sem_t</span> _sem; <span class="comment">// 信号量</span></span><br><span class="line">    <span class="comment">// 使用以双向链表为底层数据结构的队列构造连接池</span></span><br><span class="line">    std::queue&lt;MYSQL*, std::list&lt;MYSQL*&gt;&gt; _conn_queue;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在构造函数中将_init_status状态置为false表示尚未初始化，再在init函数中根据该状态判断是否执行初始化。</p>
-</li>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">countNodes</span><span class="params">(TreeNode *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> leftDepth = <span class="number">0</span>, rightDepth = <span class="number">0</span>;</span><br><span class="line">    TreeNode *left = root-&gt;left, *right = root-&gt;right;</span><br><span class="line">    <span class="keyword">while</span> (left) &#123; ++leftDepth; left = left-&gt;left; &#125; <span class="comment">// 计算左外侧路径的节点数</span></span><br><span class="line">    <span class="keyword">while</span> (right) &#123; ++rightDepth; right = right-&gt;right; &#125; <span class="comment">// 计算右外侧路径的节点数</span></span><br><span class="line">    <span class="comment">// 两侧路径的节点数相同为满二叉树，则快速计算节点数</span></span><br><span class="line">    <span class="keyword">if</span> (leftDepth == rightDepth) <span class="keyword">return</span> (<span class="number">2</span> &lt;&lt; leftDepth) - <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// 两侧路径的节点数不同，则后序遍历计算节点数</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">countNodes</span>(root-&gt;left) + <span class="built_in">countNodes</span>(root-&gt;right) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="二叉树中的回溯（二叉树左下角值）"><a href="#二叉树中的回溯（二叉树左下角值）" class="headerlink" title="二叉树中的回溯（二叉树左下角值）"></a>二叉树中的回溯（<a href="https://leetcode.cn/problems/find-bottom-left-tree-value/description/">二叉树左下角值</a>）</h3><ul>
+<li>方法1：利用层序遍历，最后一层的第一个节点即为目标节点，但相对低效。</li>
+<li>方法2：将问题转换为找最后一层（节点深度必定最大)，可利用递归（遍历）加回溯（记录最大深度）来解决。</li>
 </ul>
-  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 构造函数为私有，类内定义，默认为inline</span></span><br><span class="line"><span class="built_in">connection_pool</span>() : _init_status(<span class="literal">false</span>) &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化数据库连接池信息</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">connection_pool::init</span><span class="params">(<span class="type">const</span> std::string&amp; host, <span class="type">const</span> std::string&amp; user, std::<span class="type">size_t</span> port,</span></span></span><br><span class="line"><span class="params"><span class="function">        <span class="type">const</span> std::string&amp; password, <span class="type">const</span> std::string&amp; database, std::<span class="type">size_t</span> max_conn)</span> </span>&#123;</span><br><span class="line">    <span class="type">bool</span> expected = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (!_init_status.<span class="built_in">compare_exchange_weak</span>(expected, <span class="literal">true</span>))</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;connection pool already initialized&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化数据库信息</span></span><br><span class="line">    _host = host; _user = user; _port = port;</span><br><span class="line">    _password = password; _database = database; _max_conn = max_conn;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 根据最大连接数预分配连接并添加到队列中</span></span><br><span class="line">    <span class="function">std::lock_guard&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(_mutex)</span></span>;</span><br><span class="line">    <span class="keyword">for</span> (std::<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; _max_conn; ++i) &#123;</span><br><span class="line">        MYSQL* conn = <span class="literal">nullptr</span>;</span><br><span class="line">        <span class="comment">// 初始化连接</span></span><br><span class="line">        conn = <span class="built_in">mysql_init</span>(conn);</span><br><span class="line">        <span class="keyword">if</span> (conn == <span class="literal">nullptr</span>)</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to initialize database connection&quot;</span>);</span><br><span class="line">        <span class="comment">// 建立一条实际的数据库连接</span></span><br><span class="line">        conn = <span class="built_in">mysql_real_connect</span>(conn, _host.<span class="built_in">c_str</span>(), _user.<span class="built_in">c_str</span>(),</span><br><span class="line">                _password.<span class="built_in">c_str</span>(), _database.<span class="built_in">c_str</span>(), _port, <span class="literal">nullptr</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">if</span> (conn == <span class="literal">nullptr</span>)</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to establish database connection&quot;</span>);</span><br><span class="line">        <span class="comment">// 向连接池中加入一条连接</span></span><br><span class="line">        _conn_queue.<span class="built_in">push</span>(conn);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 信号量初始化为最大连接数</span></span><br><span class="line">    <span class="built_in">sem_init</span>(&amp;_sem, <span class="number">0</span>, _max_conn);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 全局变量记录最大深度和目标值</span></span><br><span class="line"><span class="type">int</span> maxDepth = INT_MIN, res;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">findBottomLeftValue</span><span class="params">(TreeNode *root, <span class="type">int</span> depth)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 递归终止条件，到达叶子节点，此时收割结果</span></span><br><span class="line">    <span class="keyword">if</span> (!root-&gt;left &amp;&amp; !root-&gt;right) &#123;</span><br><span class="line">        <span class="keyword">if</span> (depth &gt; maxDepth) &#123; maxDepth = depth; res = root-&gt;val; &#125;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 每次优先从左遍历，因为要求的是左下角的值</span></span><br><span class="line">    <span class="keyword">if</span> (root-&gt;left) &#123;</span><br><span class="line">        ++depth;</span><br><span class="line">        <span class="built_in">findBottomLeftValue</span>(root-&gt;left, depth);</span><br><span class="line">        --depth; <span class="comment">// 回撤操作</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 将回撤操作隐含在参数传递中</span></span><br><span class="line">    <span class="keyword">if</span> (root-&gt;right) <span class="built_in">findBottomLeftValue</span>(root-&gt;right, depth + <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">findBottomLeftValue</span><span class="params">(TreeNode *root)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">findBottomLeftValue</span>(root, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="验证二叉搜索树"><a href="#验证二叉搜索树" class="headerlink" title="验证二叉搜索树"></a>验证二叉搜索树</h3><ul>
+<li>方法1：中序遍历，将遍历结果存入数组，验证结果是否单调递增（暴力解法，效率低）。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">vector&lt;<span class="type">int</span>&gt; nums;</span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">isValidBST</span><span class="params">(TreeNode *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="built_in">isValidBST</span>(root-&gt;left);</span><br><span class="line">    nums.<span class="built_in">push_back</span>(root-&gt;val);</span><br><span class="line">    <span class="built_in">isValidBST</span>(root-&gt;right);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; nums.<span class="built_in">size</span>(); ++i) &#123; <span class="keyword">if</span> (nums[i] &lt;= nums[i<span class="number">-1</span>]) <span class="keyword">return</span> <span class="literal">false</span>; &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>方法2：前序遍历，利用区间范围概念，左子树中所有节点必小于根节点，右子树中所有节点必大于根节点。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 该方法缺点在于，需根据节点值类型来确定上下限类型，上下限类型表示的范围要比节点值类型大</span></span><br><span class="line"><span class="comment">// 如节点值可能就是INT_MIN，那么如下限取INT_MIN，则始终返回true</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">isValidBST</span><span class="params">(TreeNode *root, <span class="type">long</span> lower, <span class="type">long</span> upper)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">if</span> (root-&gt;val &gt;= upper || root-&gt;val &lt;= lower) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">isValidBST</span>(root-&gt;left, lower, root-&gt;val) &amp;&amp;</span><br><span class="line">        <span class="built_in">isValidBST</span>(root-&gt;right, root-&gt;val, upper);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">isValidBST</span><span class="params">(TreeNode *root)</span> </span>&#123; <span class="keyword">return</span> <span class="built_in">isValidBST</span>(root, LONG_MIN, LONG_MAX); &#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>方法3：双指针+中序遍历（但凡遇到需利用二叉搜索树特性时，就必定是中序遍历）</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">TreeNode *pre = <span class="literal">nullptr</span>;</span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">isValidBST</span><span class="params">(TreeNode *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">isValidBST</span>(root-&gt;left)) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="comment">// 判断前继指针所指节点的值和当前指针所指节点的值。</span></span><br><span class="line">    <span class="keyword">if</span> (pre &amp;&amp; pre-&gt;val &gt;= root-&gt;val) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    pre = root; <span class="comment">// 更新前继节点，相当于回溯过程</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">isValidBST</span>(root-&gt;right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="回溯算法"><a href="#回溯算法" class="headerlink" title="回溯算法"></a>回溯算法</h2><h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><ul>
+<li>组合：不强调元素顺序，求出所有元素中满足条件的所有组合。</li>
+<li>切割：在字符串中，切割出所有满足特定条件的子串。</li>
+<li>子集：列出元素所构成的所有子集。</li>
+<li>排列：相较于组合，排列强调元素顺序，相同元素不同顺序的组合可构成一个排列，但都只是同一个组合。</li>
+<li>棋盘：N皇后和解数独等问题。</li>
+</ul>
+<h3 id="基本思想"><a href="#基本思想" class="headerlink" title="基本思想"></a>基本思想</h3><ul>
+<li>可抽象成N叉树，树宽为所处理的集合大小（for循环遍历），树深即为递归的深度，本质上是递归嵌套循环。</li>
+</ul>
+<h3 id="三步走策略"><a href="#三步走策略" class="headerlink" title="三步走策略"></a>三步走策略</h3><ul>
+<li>确定参数（通常较多，且一般有两个引用参数用于收集中间过程和结果）和返回值（通常是void）</li>
+<li>确定递归终止条件（叶子节点收集结果）</li>
+<li>单层搜索逻辑（for循环），且一定要注意回撤操作</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">backTrace</span><span class="params">(参数...)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (递归终止条件) &#123;</span><br><span class="line">        收集结果（叶子节点）;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (集合中的元素) &#123;</span><br><span class="line">        处理节点;</span><br><span class="line">        递归函数;</span><br><span class="line">        回溯操作，撤销处理的节点;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="去重操作-40"><a href="#去重操作-40" class="headerlink" title="去重操作(40)"></a>去重操作(40)</h3><ul>
+<li>场景：集合中的元素存在重复，但要求解集是不能包含重复的组合。</li>
+<li>需要先对原集合进行排序，还需要辅助数组used记录集合中元素是否被使用(0或1)。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">sort</span>(nums.<span class="built_in">begin</span>(), nums.<span class="built_in">end</span>());</span><br><span class="line"><span class="function">vector&lt;<span class="type">bool</span>&gt; <span class="title">used</span><span class="params">(nums.size(), <span class="literal">false</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>树层去重：去重逻辑在for循环中若前一个元素与当前元素相同，且前一个元素的使用状态为未使用used[i-1]&#x3D;0，则此时出现树层重复，直接continue不处理。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = startIndex; i &lt; nums.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">    <span class="comment">// 树层去重操作</span></span><br><span class="line">    <span class="keyword">if</span> (i &gt; <span class="number">0</span> &amp;&amp; nums[i<span class="number">-1</span>] == nums[i] &amp;&amp; !used[i<span class="number">-1</span>]) <span class="keyword">continue</span>;</span><br><span class="line">    used[i] = <span class="literal">true</span>;</span><br><span class="line">    ...</span><br><span class="line">    used[i] = <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>注意其中对于初始化状态判断部分的代码</li>
-</ul>
-  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 利用原子变量判断初始化状态，只允许初始化一次，禁止重复初始化</span></span><br><span class="line"><span class="comment">// compare_exchange_weak为CAS(compare and swap)操作</span></span><br><span class="line"><span class="comment">// 若当前_init_status == expected，表示尚未初始化，则将true赋给_init_status，并返回true</span></span><br><span class="line"><span class="comment">// 若当前_init_status != expected，表示已初始化过，则将_init_status赋给expected，并返回false</span></span><br><span class="line"><span class="type">bool</span> expected = <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">if</span> (!_init_status.<span class="built_in">compare_exchange_weak</span>(expected, <span class="literal">true</span>))</span><br><span class="line">    <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;connection pool already initialized&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 不能将其改写成如下形式，即使原子变量读写都互斥，在理论上下面的代码仍会出现问题</span></span><br><span class="line"><span class="comment">// 如线程A读到_init_status为false，则解锁读操作继续向下执行，此时线程B就可以读_init_status了</span></span><br><span class="line"><span class="comment">// 那么此时线程B的读（读到_init_status为true）可能在线程A的写（将_init_status改为false）前完成</span></span><br><span class="line"><span class="comment">// 那么线程B也会继续向下执行，这就造成线程A和线程B都对数据库连接池初始化了一遍，违背了init设计的初衷</span></span><br><span class="line"><span class="comment">// 因此必须使用上面的CAS操作，将整个条件判断的过程都变为原子操作，且在条件判断过程中覆写_init_status</span></span><br><span class="line"><span class="keyword">if</span> (_init_status == <span class="literal">true</span>)</span><br><span class="line">    <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;connection pool already initialized&quot;</span>);</span><br><span class="line">_init_status = <span class="literal">true</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><p>连接池接口</p>
-<ul>
-<li><p>获取可用连接get_connection()</p>
-<ul>
-<li>信号量减1，相当于P操作，为0则阻塞等待可用连接</li>
-<li>取链表首元素作为可用连接</li>
-</ul>
-</li>
-<li><p>释放当前连接put_connection(MYSQL* conn)</p>
-<ul>
-<li>将连接作为尾元素重新加入链表</li>
-<li>信号量加1，相当于V操作</li>
-</ul>
-</li>
-<li><p>销毁连接池（供析构函数内部使用）destroy()</p>
-<ul>
-<li>遍历链表，关闭所有连接后，清空链表</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>RAII机制管理连接资源</p>
-<ul>
-<li>构造函数中，通过指向连接池的指针来分配连接。</li>
-<li>析构函数中，通过指向连接池的指针来释放连接。  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">sql_connection</span> &#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        MYSQL* _conn;</span><br><span class="line">        connection_pool* _conn_pool;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="comment">// 通过指向连接池的指针来分配连接，并用返回的连接初始化_conn</span></span><br><span class="line">        <span class="comment">// 同时为修改传入参数，需传递指针型参数，而连接本身也是指针</span></span><br><span class="line">        <span class="comment">// 所以形参类型应该为二级指针</span></span><br><span class="line">        <span class="built_in">sql_connection</span>(MYSQL** sql, connection_pool* conn_pool) &#123;</span><br><span class="line">            *sql = conn_pool-&gt;<span class="built_in">get_connection</span>();</span><br><span class="line">            _conn = *sql;</span><br><span class="line">            _conn_pool = conn_pool</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 通过指向连接池的指针来释放所管理的连接</span></span><br><span class="line">        ~<span class="built_in">sql_connection</span>() &#123; _conn_pool-&gt;<span class="built_in">put_connection</span>(_conn); &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-</ul>
-<h1 id="Day3-线程池实现"><a href="#Day3-线程池实现" class="headerlink" title="Day3: 线程池实现"></a>Day3: 线程池实现</h1><ul>
-<li><p>线程池概念</p>
-<ul>
-<li>线程是轻量级的进程，执行效率和进程差不多，但消耗的系统资源更少，但频繁创建线程依然会降低效率。</li>
-<li>线程池可实现线程复用，即执行完一个任务，并不会被销毁，而是继续执行其他任务。</li>
-</ul>
-</li>
-<li><p>线程池方案</p>
-<ul>
-<li>采用半同步&#x2F;半反应堆的并发编程模式，主线程为处理IO事件的异步线程，工作线程为同步线程。</li>
-<li>主线程监听到客户请求，就将其封装成任务对象并插入请求队列，再通知工作线程，工作线程从请求队列拉取任务并执行。</li>
-</ul>
-</li>
-<li><p>线程池实现</p>
-<ul>
-<li><p>原项目</p>
-<ul>
-<li>定义为模板类，请求队列元素为指向模板类型的指针，且将工作线程的回调函数分离为worker和run。worker调用run，但run在内部需要通过指向模板类型（实例化为http_conn）指针来调用实际工作的函数（process），这就要求实例化时所提供的类，必须含有process成员函数，感觉耦合度过高。</li>
-<li>定义了线程池数组，个人感觉根据在初始化时根据线程数创建线程即可，没必要额外定义。</li>
-<li>使用信号量来设计生产者和消费者模型，且当超出最大请求数时就拒绝请求，感觉不合理。</li>
-<li>以deque为底层的queue来实现请求队列，deque支持随机访问但浪费空间，且队列并无随机访问的要求（C++版）。</li>
-<li>未定义最大请求数，那么请求会一直添加到请求队列中，浪费内存且拖慢效率（C++版）。</li>
-</ul>
-</li>
-<li><p>本项目改进</p>
-<ul>
-<li><p>定义为模板类，请求队列元素类型为模板类型的仿函数（function&lt;Callback&gt;），因此线程池实例化时，可以接受任意类型的函数对象，且工作线程的任务全部由worker函数内部调用仿函数（请求队列元素）完成，从而实现解耦。并以list为底层的queue来实现请求队列，提高空间利用率。 </p>
-  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">bool</span> _thread_pool_status_type;</span><br><span class="line"><span class="type">const</span> _thread_pool_status_type _pool_startup = <span class="literal">true</span>;</span><br><span class="line"><span class="type">const</span> _thread_pool_status_type _pool_shutdown = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Callback&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">thread_pool</span> &#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        <span class="keyword">typedef</span> _thread_pool_status_type pool_status_type;</span><br><span class="line">        <span class="comment">// 任务类型为仿函数对象（回调函数）</span></span><br><span class="line">        <span class="keyword">typedef</span> std::function&lt;Callback&gt; task_type;</span><br><span class="line">        <span class="comment">// 请求队列类型，以双向链表为底层容器的队列，每个元素均表示一个任务</span></span><br><span class="line">        <span class="keyword">typedef</span> std::queue&lt;task_type, std::list&lt;task_type&gt;&gt; task_queue_type;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 线程池状态（打开/关闭）</span></span><br><span class="line">        pool_status_type _pool_status;</span><br><span class="line">        <span class="comment">// 线程池中线程数量</span></span><br><span class="line">        std::<span class="type">size_t</span> _thread_number;</span><br><span class="line">        <span class="comment">// 请求队列允许的最大请求数</span></span><br><span class="line">        std::<span class="type">size_t</span> _max_requests;</span><br><span class="line">        <span class="comment">// 指向请求队列的指针，队列中元素即工作线程需要竞争的共享资源</span></span><br><span class="line">        task_queue_type* _task_queue;</span><br><span class="line">        <span class="comment">// 保护请求队列的互斥锁</span></span><br><span class="line">        std::mutex _mutex;</span><br><span class="line">        <span class="comment">// 用于生产者/消费者（工作线程）模型的条件变量，需要搭配互斥锁一起使用</span></span><br><span class="line">        std::condition_variable _cond_producer;</span><br><span class="line">        std::condition_variable _cond_consumer;</span><br><span class="line">        ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>未定义线程池数组，而是在构造函数中根据线程数量来创建线程。</p>
-  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 构造函数，初始化线程池信息，并创建工作线程</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Callback&gt;</span><br><span class="line">thread_pool&lt;Callback&gt;::<span class="built_in">thread_pool</span>(<span class="type">int</span> thread_num, <span class="type">int</span> max_requests) : _pool_status(_pool_startup) &#123;</span><br><span class="line">    <span class="comment">// 判断线程数和最大请求数是否合法</span></span><br><span class="line">    <span class="keyword">if</span> (_thread_number &lt;= <span class="number">0</span> || _max_requests &lt;= <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;invalid number of threads or requests&quot;</span>);</span><br><span class="line">    <span class="comment">// 分配请求队列，默认初始化为空队列</span></span><br><span class="line">    <span class="keyword">if</span> (!(_task_queue = <span class="keyword">new</span> <span class="built_in">task_queue_type</span>()))</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to allocate memory for task queue&quot;</span>);</span><br><span class="line">    </span><br><span class="line">    _thread_number = <span class="built_in">static_cast</span>&lt;std::<span class="type">size_t</span>&gt;(thread_number);</span><br><span class="line">    _max_requests = <span class="built_in">static_cast</span>&lt;std::<span class="type">size_t</span>&gt;(max_requests);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建工作线程，并将工作线程与主线程分离</span></span><br><span class="line">    <span class="keyword">for</span> (std::<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; _thread_number; ++i) &#123;</span><br><span class="line">        <span class="comment">// 使用成员函数作为工作线程的回调函数需额外传递this指针</span></span><br><span class="line">        std::<span class="built_in">thread</span>(&amp;thread_pool::worker, <span class="keyword">this</span>).<span class="built_in">detach</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使用条件变量来设计生产者（主线程add_task）&#x2F;消费者（工作线程worker）模型，且当超出最大请求数不会拒绝请求，而是阻塞主线程以待工作线程处理任务。若工作线程竞争到了任务并为请求队列腾出了空间，那么此时主线程解除阻塞并将任务加入请求队列。</p>
-  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 向请求队列中添加任务，右值引用用于模板转发实参</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Callback&gt;</span><br><span class="line"><span class="type">void</span> thread_pool&lt;Callback&gt;::<span class="built_in">add_task</span>(task_type&amp;&amp; task) &#123;</span><br><span class="line">    <span class="comment">// 向请求队列中添加任务，需要对请求队列进行锁保护</span></span><br><span class="line">    <span class="function">std::unique_lock&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(_mutex)</span></span>;</span><br><span class="line">    <span class="comment">// 若请求队列中的任务数超出最大请求数上限，应该延迟添加，而不应该拒绝请求</span></span><br><span class="line">    <span class="comment">// 即阻塞生产者线程，等待工作线程取出任务为请求队列腾出空间以添加新任务</span></span><br><span class="line">    <span class="keyword">while</span> (_task_queue-&gt;<span class="built_in">size</span>() &gt;= _max_requests) &#123;</span><br><span class="line">        <span class="comment">// 若生产者线程此时处于加锁状态，则自动解锁，但不解除阻塞</span></span><br><span class="line">        <span class="comment">// 若生产者线程解除阻塞，则再次加锁，以执行临界区（while循环后面的代码）</span></span><br><span class="line">        _cond_producer.<span class="built_in">wait</span>(lock);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 向请求队列中添加新任务，forward用于保持实参类型信息</span></span><br><span class="line">    _task_queue-&gt;<span class="built_in">emplace</span>(std::forward&lt;task_type&gt;(task));</span><br><span class="line">    <span class="comment">// 解锁并唤醒阻塞在条件变量上的一个工作线程，让其处理任务</span></span><br><span class="line">    lock.<span class="built_in">unlock</span>();</span><br><span class="line">    _cond_consumer.<span class="built_in">notify_one</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 工作线程从请求队列中拉取任务进行处理</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Callback&gt;</span><br><span class="line"><span class="type">void</span> thread_pool&lt;Callback&gt;::<span class="built_in">worker</span>() &#123;</span><br><span class="line">    <span class="comment">// 从请求队列中拉取任务，需要对请求队列进行锁保护</span></span><br><span class="line">    <span class="function">std::unique_lock&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(_mutex)</span></span>;</span><br><span class="line">    <span class="comment">// 先判断线程池状态，若为开启则一直进行事件循环</span></span><br><span class="line">    <span class="keyword">while</span> (_pool_status != _pool_shutdown) &#123;</span><br><span class="line">        <span class="comment">// 队列中有任务，工作线程拉取并处理</span></span><br><span class="line">        <span class="keyword">if</span> (!_task_queue-&gt;<span class="built_in">empty</span>()) &#123;</span><br><span class="line">            task_type task = _task_queue-&gt;<span class="built_in">front</span>();</span><br><span class="line">            _task_queue-&gt;<span class="built_in">pop</span>();</span><br><span class="line">            <span class="comment">// 取出任务就解锁，并唤醒可能阻塞的生产者线程</span></span><br><span class="line">            lock.<span class="built_in">unlock</span>();</span><br><span class="line">            _cond_producer.<span class="built_in">notify_one</span>();</span><br><span class="line">            <span class="comment">// 工作线程执行任务</span></span><br><span class="line">            <span class="built_in">task</span>();</span><br><span class="line">            <span class="comment">// 再次加锁，用于下一次循环中拉取任务时，对请求队列进行锁保护</span></span><br><span class="line">            lock.<span class="built_in">lock</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 无任务则工作线程阻塞以待有任务处理</span></span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 若工作线程此时处于加锁状态，则自动解锁，但不解除阻塞</span></span><br><span class="line">            <span class="comment">// 若工作线程解除阻塞，则再次加锁，以执行临界区（下一次循环）</span></span><br><span class="line">            _cond_consumer.<span class="built_in">wait</span>(lock);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-</ul>
-</li>
+<li>树枝去重</li>
 </ul>
 ]]></content>
       <categories>
-        <category>项目</category>
+        <category>算法</category>
       </categories>
       <tags>
-        <tag>网络编程</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>C++基础</title>
-    <url>/2023/05/23/CPP/CPP%E5%9F%BA%E7%A1%80/</url>
-    <content><![CDATA[<span id="more"></span>
-
-<h2 id="1-C和C-的区别"><a href="#1-C和C-的区别" class="headerlink" title="1. C和C++的区别"></a>1. C和C++的区别</h2><ul>
-<li>C是面向过程的语言，而C++是面向对象的语言。</li>
-<li>C++增加了诸如引用、类和对象、函数重载、泛型（模版）的概念。</li>
-<li>在动态分配内存方面，C使用malloc&#x2F;free函数，C++使用new&#x2F;delete运算符。</li>
-</ul>
-<h2 id="2-static关键字的作用"><a href="#2-static关键字的作用" class="headerlink" title="2. static关键字的作用"></a>2. static关键字的作用</h2><ul>
-<li>修饰局部变量：该变量存放在静态存储区，生命周期和整个程序的生命周期一致，在函数首次调用的时候进行初始化，函数再次调用则不会再初始化，但只有局部作用域。</li>
-<li>修饰全局变量：该变量存放在静态存储区，生命周期和整个程序的生命周期一致，但具有全局作用域，声明该变量后，在整个文件中都是可见的，而在文件外不可见。</li>
-<li>修饰函数：声明函数后，在整个文件中都是可见的，而在文件外不可见，可避免函数的同名冲突。</li>
-<li>修饰成员变量：类的不同对象只会维持同一份拷贝，从而实现数据在同一个类的不同对象间共享，可以通过类名而不实例化对象来访问，一般不在类中而在类外初始化（不加static）。</li>
-<li>修饰成员函数：没有this指针，只能访问静态成员，可以通过类名而不实例化对象来访问。</li>
-</ul>
-<h2 id="3-define和const的区别"><a href="#3-define和const的区别" class="headerlink" title="3. #define和const的区别"></a>3. #define和const的区别</h2><ul>
-<li>编译器的处理方式不同：#define在预处理阶段完成代码替换；const则在编译阶段处理。</li>
-<li>类型和安全检查不同：#define没有类型，不执行安全检查；const常量有具体的类型，编译器会执行类型检查，更加安全。</li>
-<li>存储的方式不同：#define仅通过字符串完成代码替换，编译器不会为其分配内存，存放在程序的代码段；const常量则会占用内存空间，存放在程序的数据段。</li>
-<li>作用域不同：#define不受作用域限制，在定义#define后的所有引用都是合法的；const常量则会受到作用域的限制。</li>
-</ul>
-<h2 id="4-inline函数的优缺点"><a href="#4-inline函数的优缺点" class="headerlink" title="4. inline函数的优缺点"></a>4. inline函数的优缺点</h2><ul>
-<li>优点：<ul>
-<li>inline函数会在函数的调用点进行代码展开，从而节省了函数调用的开销，提升了程序的效率。</li>
-<li>相比于宏函数，编译器会为inline函数进行语法检查和类型转换，更加安全。</li>
-</ul>
-</li>
-<li>缺点：<ul>
-<li>过度使用可能会造成代码膨胀，且若inline函数内代码块的执行开销高于函数调用，那么程序的效率并不会得到明显改善。</li>
-<li>若修改了inline函数的定义，则所有使用该inline函数的文件都需要重新编译。</li>
-<li>inline只是一条建议，是否真正内联仍取决于编译器，所以其实际行为并不可控。</li>
-</ul>
-</li>
-</ul>
-<h2 id="5-智能指针的概念、作用、分类和特点"><a href="#5-智能指针的概念、作用、分类和特点" class="headerlink" title="5. 智能指针的概念、作用、分类和特点"></a>5. 智能指针的概念、作用、分类和特点</h2><ul>
-<li>智能指针是一个RAII类模型，其设计思想是将原生指针封装为类对象，并将delete操作放入析构函数中，从而利用类对象在离开作用域自动调用析构函数的机制来自动释放动态分配的内存。</li>
-<li>智能指针能够处理内存泄漏和空悬指针的问题，可分为auto_ptr、unique_ptr、shared_ptr、weak_ptr四类。</li>
-<li>auto_ptr采取所有权模式，是C++98的方案，在C++11中已被弃用，主要问题在于赋值或函数传参时，对象所有权会被剥夺，存在潜在的内存崩溃的问题。<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function">auto_ptr&lt;string&gt; <span class="title">p1</span> <span class="params">(<span class="keyword">new</span> string(<span class="string">&quot;hello, world&quot;</span>))</span></span>;</span><br><span class="line">auto_ptr p2;</span><br><span class="line">p2 = p1; <span class="comment">// 此时p2会剥夺p1的所有权，且程序不会报错，但当要再次访问p1时会报错。</span></span><br></pre></td></tr></table></figure></li>
-<li>unique_ptr是一种独占式的智能指针，即同一时间只能有一个智能指针指向同一对象，禁止拷贝构造和赋值的行为，但若源unique_ptr是一个临时右值，则可以允许拷贝或赋值，因为定义了移动赋值和移动构造。</li>
-<li>shared_ptr是一种共享式的智能指针，即同一时间可以有多个智能指针指向同一对象，通过引用计数机制实现。<ul>
-<li>use_count可查看资源的所有者个数</li>
-<li>release释放当前智能指针的所有权，计数减1</li>
-<li>swap交换两个shared_ptr所拥有的对象</li>
-<li>get返回内部的原生指针</li>
-</ul>
-</li>
-<li>weak_ptr是对对象的一种弱引用，可以绑定到shared_ptr上，且不会增加引用计数，从而协助shared_ptr工作。weak_ptr可以解决shared_ptr相互引用时的死锁问题，即两个shared_ptr相互引用时，两者的引用计数永远不会减为0，资源永远不会被释放。</li>
-</ul>
-<h2 id="6-shared-ptr的工作原理"><a href="#6-shared-ptr的工作原理" class="headerlink" title="6. shared_ptr的工作原理"></a>6. shared_ptr的工作原理</h2><ul>
-<li>在构造函数中，引用计数初始化为1；在析构函数中，引用计数减1；在拷贝构造中，引用计数加1。</li>
-<li>在赋值运算符中，左侧运算对象引用计数减1，右侧运算对象引用计数加1。</li>
-<li>若析构函数或赋值运算符中对象的引用计数变为0，则通过delete运算符释放资源。</li>
-</ul>
-<h2 id="7-空悬指针和野指针"><a href="#7-空悬指针和野指针" class="headerlink" title="7. 空悬指针和野指针"></a>7. 空悬指针和野指针</h2><ul>
-<li>空悬指针：释放动态分配的内存后，未及时将指针置为nullptr，使指针仍指向已经释放的内存地址。</li>
-<li>野指针：定义指针时，未初始化。</li>
-</ul>
-<h2 id="8-变量定义和变量声明的区别"><a href="#8-变量定义和变量声明的区别" class="headerlink" title="8. 变量定义和变量声明的区别"></a>8. 变量定义和变量声明的区别</h2><ul>
-<li>变量定义会为变量分配地址和内存空间，而变量声明则不会；变量可以有多个声明，但只能有一个定义。</li>
-<li>可以用extern来修饰变量声明，表示该变量的定义会出现在文件的后面部分或其他文件中。</li>
-<li>使用extern修饰变量时，可以提供初始值，但此时就变成了定义而非声明，且该语句不能出现在函数的内部。</li>
-</ul>
-<h2 id="9-ifdef、-else、-endif、-ifndef条件编译的作用"><a href="#9-ifdef、-else、-endif、-ifndef条件编译的作用" class="headerlink" title="9. #ifdef、#else、#endif、#ifndef条件编译的作用"></a>9. #ifdef、#else、#endif、#ifndef条件编译的作用</h2><ul>
-<li>借助条件编译，可以在需要的时候，将某些模块方便地包含进行程序中，而在不需要的时候，又能方便地屏蔽掉。</li>
-<li>条件编译也可以搭配一些宏定义（如NDEBUG）来调试和追踪程序。</li>
-</ul>
-<h2 id="10-int、bool、float、指针变量与“零值”比较的if语句"><a href="#10-int、bool、float、指针变量与“零值”比较的if语句" class="headerlink" title="10. int、bool、float、指针变量与“零值”比较的if语句"></a>10. int、bool、float、指针变量与“零值”比较的if语句</h2><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (n == <span class="number">0</span>) &#123;...&#125; <span class="comment">// int型</span></span><br><span class="line"><span class="keyword">if</span> (flag) &#123;...&#125; <span class="comment">// bool型</span></span><br><span class="line"><span class="comment">// float型</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">equal</span><span class="params">(<span class="type">float</span> a, <span class="type">float</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">fabs</span>(a-b) &lt; std::numeric_limits&lt;<span class="type">float</span>&gt;::<span class="built_in">epsilon</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (ptr == <span class="literal">nullptr</span>) &#123;...&#125; <span class="comment">// 指针型</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="11-结构体赋值"><a href="#11-结构体赋值" class="headerlink" title="11. 结构体赋值"></a>11. 结构体赋值</h2><ul>
-<li>结构体在声明时就可以赋予初始值，结构体的不同对象间也可以直接赋值。</li>
-<li>但当含有指针成员时，则赋值时一定要区分是深拷贝还是浅拷贝。</li>
-</ul>
-<h2 id="12-sizeof和strlen的区别"><a href="#12-sizeof和strlen的区别" class="headerlink" title="12. sizeof和strlen的区别"></a>12. sizeof和strlen的区别</h2><ul>
-<li>sizeof是操作符，其参数为数据类型或变量，且在编译时获得计算结果。</li>
-<li>strlen是函数，其参数只能是以&#39;\0&#39;字符结尾的字符串，且在程序运行时获得计算结果。</li>
-<li>sizeof的计算结果是对象所占用的内存大小（以字节为单位），而strlen的计算结果则是实际的字符串长度。</li>
-<li>若将一个字符数组名传递给sizeof，不会退化成指针，但若传递给strlen，则会退化成指针形式。</li>
-</ul>
-<h2 id="13-static在C和C-中的区别"><a href="#13-static在C和C-中的区别" class="headerlink" title="13. static在C和C++中的区别"></a>13. static在C和C++中的区别</h2><ul>
-<li>在C中，static可用于修饰局部变量、外部变量和函数，修饰局部变量时，可让同一函数在不同的调用时期进行数据通信。</li>
-<li>在C++中，static除了上述功能以外，还可以修饰成员变量和成员函数，从而实现同一个类的不同对象间的数据共享。</li>
-</ul>
-<h2 id="14-全局变量和局部变量的区别"><a href="#14-全局变量和局部变量的区别" class="headerlink" title="14. 全局变量和局部变量的区别"></a>14. 全局变量和局部变量的区别</h2><ul>
-<li>全局变量具有全局作用域，生命周期从程序运行开始一直持续到程序运行结束。</li>
-<li>局部变量只有局部作用域，一般在代码块或函数中定义，离开了代码块和函数就会被释放。</li>
-<li>编译器和OS通过内存的分配位置来区分两者，全局变量分配在全局数据段，而局部变量则分配在堆栈中。</li>
-</ul>
-<h2 id="15-strcpy、sprintf、memcpy的区别"><a href="#15-strcpy、sprintf、memcpy的区别" class="headerlink" title="15. strcpy、sprintf、memcpy的区别"></a>15. strcpy、sprintf、memcpy的区别</h2><ul>
-<li>三者的主要功能都是拷贝，但所操作的对象并不同。</li>
-<li>strcpy：操作对象为两个字符串，主要实现字符串的拷贝。</li>
-<li>sprintf：操作对象可以是多种数据类型，可以将多种数据以格式化的形式写入字符串。</li>
-<li>memcpy：操作对象是任意可访问的内存地址，不受类型限制，可以实现内存块间的拷贝。</li>
-</ul>
-<h2 id="16-指针和引用的区别"><a href="#16-指针和引用的区别" class="headerlink" title="16. 指针和引用的区别"></a>16. 指针和引用的区别</h2><ul>
-<li>指针是变量，具有内存空间，而引用不是，它只是变量的别名，因此可以定义元素类型为指针的数组，但不能定义元素类型为引用的数组。</li>
-<li>使用sizeof时，参数若为指针，则根据计算机字长返回固定大小（32位返回4，64位返回8）；参数若为引用，则返回被引用对象所占的内存大小。</li>
-<li>作为函数参数时，若想通过指针改变所指对象的值，则必须解引用；而参数为引用，则可直接修改并影响原对象。</li>
-<li>指针可以改变其指向，但引用不行，引用必须在定义时就通过初始化绑定到一个对象上，因此有const指针，但无const引用。</li>
-<li>指针可以是多级的，但引用只能是一级。</li>
-<li>对指针使用++运算符，则会将指针指向下一个元素位置，而对引用使用++运算符，则会递增被引用的对象的值。</li>
-<li>动态分配内存时所返回的对象，只能使用指针接收。</li>
-</ul>
-<h2 id="17-typedef和-define的区别"><a href="#17-typedef和-define的区别" class="headerlink" title="17. typedef和#define的区别"></a>17. typedef和#define的区别</h2><ul>
-<li>用法不同：typedef用于为类型起一个别名，从而提高程序的可读性；而#define一般用于定义常量或频繁使用的宏。</li>
-<li>执行不同：typedef在编译阶段执行，具有类型检查；而#define在预处理阶段进行代码替换，不具备类型检查。</li>
-<li>作用域不同：typedef具备明确的作用域；而#define定义后的所有引用都是合法的。</li>
-<li>typedef是一条语句，所以结尾要加分号；而#define不是语句，而且不能加分号；且两者定义指针时有很大的区别，如下：<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">int</span>* int_ptr;</span><br><span class="line">int_ptr a, b; <span class="comment">// a，b均为int\*</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> int* int_ptr</span></span><br><span class="line">int_ptr a, b; <span class="comment">// a为int\*，但b为\*</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="18-指针常量和常量指针的区别"><a href="#18-指针常量和常量指针的区别" class="headerlink" title="18. 指针常量和常量指针的区别"></a>18. 指针常量和常量指针的区别</h2><ul>
-<li>指针常量的意思是指针变量本身是一个常量，不可改变其指向，必须在定义时初始化，具有顶层const属性。</li>
-<li>常量指针的意思是指针指向的是一个只读变量，不可通过指针来改变其值，具有底层const属性。</li>
-<li>不管是指针常量还是常量指针，其最大的作用就是在修饰函数形参时，强调在函数内部实参的不可改变性。</li>
-</ul>
-<h2 id="19-栈区和堆区的异同"><a href="#19-栈区和堆区的异同" class="headerlink" title="19. 栈区和堆区的异同"></a>19. 栈区和堆区的异同</h2><ul>
-<li>栈区和堆区并非是指堆栈这两种数据结构，而是指不同的内存存储区域。</li>
-<li>栈区结构类似与栈，由编译器负责分配和释放，主要用于存放函数参数、局部变量等。</li>
-<li>堆区结构类似于链表，存取顺序随意，由程序员申请内存，并负责释放，或程序结束由OS回收。</li>
-</ul>
-<h2 id="20-C中的结构体和C-中的区别"><a href="#20-C中的结构体和C-中的区别" class="headerlink" title="20. C中的结构体和C++中的区别"></a>20. C中的结构体和C++中的区别</h2><ul>
-<li>C中结构体不能由函数成员，而C++可以。</li>
-<li>C中结构体没有访问限制，而C++具有private、public、protected访问说明符。</li>
-<li>C中结构体没有继承，而C++中具有丰富的继承体系。</li>
-</ul>
-<h2 id="21-避免野指针"><a href="#21-避免野指针" class="headerlink" title="21. 避免野指针"></a>21. 避免野指针</h2><ul>
-<li>在定义指针变量时就将指针初始化，或置为nullptr。</li>
-<li>在释放动态分配的内存后，将指针置为nullptr。</li>
-<li>当一个指针指向局部变量时，在离开局部变量作用域之前将指针置为nullptr。</li>
-</ul>
-<h2 id="22-句柄和指针的区别"><a href="#22-句柄和指针的区别" class="headerlink" title="22. 句柄和指针的区别"></a>22. 句柄和指针的区别</h2><ul>
-<li>句柄在Windows中标识的是可用的系统资源，并隐藏了系统信息，只需知道有这样的资源，然后申请使用即可。</li>
-<li>指针标识的某块物理内存的地址，两者在概念上是不同的。</li>
-</ul>
-<h2 id="23-extern-quot-C-quot"><a href="#23-extern-quot-C-quot" class="headerlink" title="23. extern &quot;C&quot;"></a>23. extern &quot;C&quot;</h2><ul>
-<li>extern &quot;C&quot;是链接指示，加上extern &quot;C&quot;则会指示编译器对当前代码按C而不是C++的方式编译。如C++中有函数重载机制，因此在编译时，会将函数的参数类型也加入到编译后的代码中，而C没有函数重载，因此编译时，一般只包含函数名。</li>
-<li>适用于多人协作开发时，一部分人擅长C，一部分人擅长C++的情况。</li>
-</ul>
-<h2 id="24-顶层const和底层const"><a href="#24-顶层const和底层const" class="headerlink" title="24. 顶层const和底层const"></a>24. 顶层const和底层const</h2><ul>
-<li>顶层const是指变量本身具备不可改变的属性，必须在定义时就完成初始化。</li>
-<li>底层const是指指针或引用所指向的对象具有不可改变的属性。</li>
-</ul>
-<h2 id="25-左指引用和右值引用"><a href="#25-左指引用和右值引用" class="headerlink" title="25. 左指引用和右值引用"></a>25. 左指引用和右值引用</h2><ul>
-<li>左值具有持久状态，而右值要么是字面常量，要么就是表达式求值过程中创建的临时对象。</li>
-<li>左值引用可以绑定到左值，常规的左值引用不能绑定到右值，但const左值引用可以绑定到右值上。</li>
-<li>可通过&amp;&amp;声明右值引用类型，可绑定到字面值或一个将要销毁的对象上，而不能绑定到左值。</li>
-<li>可以利用std::move函数显示地将一个左值转换为对应的右值引用类型。</li>
-<li>右值引用常用于模板转发实参，当函数参数定义为指向模板类型参数的右值引用时，可以保持实参的所有类型信息。</li>
-</ul>
-<h2 id="26-volatile的作用"><a href="#26-volatile的作用" class="headerlink" title="26. volatile的作用"></a>26. volatile的作用</h2><ul>
-<li>volatile可用于修饰一个中断服务子程序会访问到的非自动变量或者是多线程间被几个任务共享的变量。</li>
-<li>volatile对象只能调用使用volatile修饰的成员函数，volatile对象也不能使用合成的拷贝&#x2F;移动构造函数和赋值运算符，若想使用，必须自定义。</li>
-<li>可以用const和volatile同时修饰变量，表示变量在内部只读，只在程序外部条件变化下改变，且编译器不会优化该变量。因为const只是不允许程序代码修改变量，在编译期进行检查，并未实际禁止某段内存的读写特性。</li>
-</ul>
-<h2 id="27-静态链接和动态链接的区别"><a href="#27-静态链接和动态链接的区别" class="headerlink" title="27. 静态链接和动态链接的区别"></a>27. 静态链接和动态链接的区别</h2><ul>
-<li>静态链接是指在编译链接时，直接将需要执行的代码拷贝到调用处。<ul>
-<li>优点：程序发布时不需依赖库，可独立执行。</li>
-<li>缺点：程序体积相对较大，若静态函数库更新，则使用此函数库的程序都要重新编译。</li>
-</ul>
-</li>
-<li>动态链接是指在编译链接时，在程序里只有一个（指针）位置，而实际内容并不会整合到执行文件中，只有在运行时需要用到函数库功能时，程序才会去读取函数库，从而实现运行时链接。<ul>
-<li>优点：多个程序可共享同一个动态库，节省资源，且函数库更新，无需重新编译使用此函数库的程序。</li>
-<li>缺点：由于在运行时加载，可能会影响程序的前期执行性能。</li>
-</ul>
-</li>
-</ul>
-<h2 id="28-定义只能在栈或堆上生成对象"><a href="#28-定义只能在栈或堆上生成对象" class="headerlink" title="28. 定义只能在栈或堆上生成对象"></a>28. 定义只能在栈或堆上生成对象</h2><ul>
-<li>只在堆上生成对象：由于栈对象由编译器管理，在销毁时编译器会调用析构函数来释放对象所占用的空间，因此编译器在为类对象分配栈空间时，必须先检查类析构函数的可访问性。那么只要将析构函数声明为私有，即可阻止建立栈对象，但此时必须提供一个额外的destroy函数用于在类外手动销毁建立的堆对象。</li>
-<li>只在栈上生成对象：在类中将new和delete重载为类的私有成员，即可阻止在类外建立堆对象。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>C++</category>
-      </categories>
-      <tags>
-        <tag>语法基础</tag>
+        <tag>二叉树</tag>
+        <tag>回溯</tag>
       </tags>
   </entry>
   <entry>
@@ -1102,6 +781,149 @@
       </tags>
   </entry>
   <entry>
+    <title>C++轻量级多线程Web服务器（上篇）</title>
+    <url>/2023/07/27/Project/WebServer1/</url>
+    <content><![CDATA[<span id="more"></span>
+
+<p>本项目地址：<a href="https://github.com/lijiang99/WebServer">https://github.com/lijiang99/WebServer</a></p>
+<p>参考资料：<a href="https://dark-wind.github.io/books/Linux%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B.pdf">《Linux高性能服务器编程》</a>、<a href="https://github.com/qinguoyi/TinyWebServer/tree/raw_version">TinyWebServer</a>、<a href="https://github.com/markparticle/WebServer">WebServer（C++版）</a></p>
+<h2 id="Day1-运行项目"><a href="#Day1-运行项目" class="headerlink" title="Day1: 运行项目"></a>Day1: 运行项目</h2><ul>
+<li><p>mysql安装并修改密码</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装mysql</span></span><br><span class="line">sudo apt install mysql-server mysql-client</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看debian-sys-maint的密码</span></span><br><span class="line">sudo cat /etc/mysql/debian.cnf</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">通过debian-sys-maint登录</span></span><br><span class="line">mysql -u debian-sys-maint -p</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改root用户的密码</span></span><br><span class="line">use mysql;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改mysql密码认证方式为本地认证</span></span><br><span class="line">UPDATE user SET plugin=&quot;mysql_native_password&quot; WHERE user=&quot;root&quot;;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">先把密码改为空（也不知道为什么，但不这么干就一直失败）</span></span><br><span class="line">UPDATE user SET authentication_string=&quot;&quot; WHERE user=&quot;root&quot;;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改成想要的密码</span></span><br><span class="line">ALTER USER &#x27;root&#x27;@&#x27;localhost&#x27; IDENTIFIED WITH mysql_native_password BY &#x27;123456&#x27;;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">刷新权限并退出</span></span><br><span class="line">flush privileges;</span><br><span class="line">exit</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">重启mysql</span></span><br><span class="line">sudo service mysql restart</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">以root登录</span></span><br><span class="line">mysql -u root -p</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建新的数据库和数据表</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"># 创建新的数据库和数据表</span><br><span class="line"><span class="keyword">create</span> database tiny_web_server;</span><br><span class="line">USE tiny_web_server;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="keyword">user</span>(</span><br><span class="line">    username <span class="type">char</span>(<span class="number">50</span>) <span class="keyword">NULL</span>,</span><br><span class="line">    passwd <span class="type">char</span>(<span class="number">50</span>) <span class="keyword">NULL</span></span><br><span class="line">)ENGINE<span class="operator">=</span>InnoDB;</span><br><span class="line"># 向数据表中添加数据</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">user</span>(username, passwd) <span class="keyword">VALUES</span>(<span class="string">&#x27;bd7xzz&#x27;</span>, <span class="string">&#x27;123456&#x27;</span>);</span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改配置信息</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// main.cpp中的数据库初始化信息</span></span><br><span class="line"><span class="comment">// 修改MySQL服务器登录名和密码，并指定要用到的database</span></span><br><span class="line">connPool-&gt;<span class="built_in">init</span>(<span class="string">&quot;localhost&quot;</span>, <span class="string">&quot;root&quot;</span>, <span class="string">&quot;123456&quot;</span>, <span class="string">&quot;tiny_web_server&quot;</span>, <span class="number">3306</span>, <span class="number">8</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 修改http_conn.cpp中的root路径</span></span><br><span class="line"><span class="type">const</span> <span class="type">char</span>* doc_root=<span class="string">&quot;../root&quot;</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>编译构建</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装mysql链接库</span></span><br><span class="line">sudo apt install libmysqlclient-dev</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">生成server</span></span><br><span class="line">make server</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动server</span></span><br><span class="line">./server port</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">浏览器端</span></span><br><span class="line">localhost:port</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">压力测试（并发连接数10500，访问时长5s）</span></span><br><span class="line">./webbench -c 10500 -t 5 http://localhost:port/</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="Day2-连接池实现"><a href="#Day2-连接池实现" class="headerlink" title="Day2: 连接池实现"></a>Day2: 连接池实现</h1><ul>
+<li><p>连接池概念</p>
+<ul>
+<li>若系统需频繁访问数据库，则需频繁创建和断开数据库连接，但创建连接很耗时且有安全隐患。</li>
+<li>程序初始化时，集中创建多个数据库连接形成连接池并集中管理，供程序使用，可保证较快的数据库读写速度，也更安全。</li>
+<li>池可以看作资源的容器，流程是工作线程从连接池中取一个连接，访问数据库，访问结束后将连接交还连接池。</li>
+</ul>
+</li>
+<li><p>连接池创建（单例模式–懒汉式创建连接池）</p>
+<ul>
+<li><p>原项目</p>
+<ul>
+<li>连接池的拷贝操作未显示定义或声明为私有，编译器会生成默认版本，因此该单例模式有漏洞。</li>
+<li>基于懒汉式并使用局部静态变量创建连接池（但该方式在C++11之后才是线程安全的）  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function">connection_pool* <span class="title">connection_pool::GetInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">static</span> connection_pool connPool;</span><br><span class="line">    <span class="keyword">return</span> &amp;connPool;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>本项目改进 </p>
+<ul>
+<li>将构造函数和拷贝操作显示声明为私有，并利用delete关键字显示声明拷贝操作，以阻止编译器默认合成。  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">connection_pool</span> &#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        <span class="built_in">connection_pool</span>();</span><br><span class="line">        <span class="built_in">connection_pool</span>(<span class="type">const</span> connection_pool&amp; rhs) = <span class="keyword">delete</span>;</span><br><span class="line">        <span class="function">connection_pool&amp; <span class="title">operator</span><span class="params">(<span class="type">const</span> connection_pool&amp; rhs)</span> </span>= <span class="keyword">delete</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>连接池初始化</p>
+<ul>
+<li><p>原项目</p>
+<ul>
+<li>定义了额外的init函数以供用户在类外修改连接池的内部数据成员</li>
+<li>但如果用户多次调用init函数怎么办？init函数并未考虑在多次调用的情况下，内部链表的状态变化（可能需要先销毁再重新分配），那么函数名就与其实际工作不符。</li>
+<li>个人觉得应初始化有且只有一次，若要修改连接池内部数据则需提供额外接口，并在实现时考虑链表的状态问题。</li>
+</ul>
+</li>
+<li><p>本项目改进</p>
+<ul>
+<li><p>数据成员</p>
+  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">typedef</span> std::atomic_bool init_status_type;</span><br><span class="line">    std::string _host; <span class="comment">// 主机地址</span></span><br><span class="line">    std::string _user; <span class="comment">// 数据库用户名</span></span><br><span class="line">    std::<span class="type">size_t</span> _port; <span class="comment">// 数据库端口号</span></span><br><span class="line">    std::string _password; <span class="comment">// 数据库密码</span></span><br><span class="line">    std::string _database; <span class="comment">// 所使用的数据库名</span></span><br><span class="line">    std::<span class="type">size_t</span> _max_conn; <span class="comment">// 最大连接数</span></span><br><span class="line">    <span class="comment">// 原子变量，用于判断连接池是否已经初始化</span></span><br><span class="line">    init_status_type _init_status;</span><br><span class="line">    std::mutex _mutex; <span class="comment">// 互斥锁</span></span><br><span class="line">    <span class="type">sem_t</span> _sem; <span class="comment">// 信号量</span></span><br><span class="line">    <span class="comment">// 使用以双向链表为底层数据结构的队列构造连接池</span></span><br><span class="line">    std::queue&lt;MYSQL*, std::list&lt;MYSQL*&gt;&gt; _conn_queue;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在构造函数中将_init_status状态置为false表示尚未初始化，再在init函数中根据该状态判断是否执行初始化。</p>
+</li>
+</ul>
+  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 构造函数为私有，类内定义，默认为inline</span></span><br><span class="line"><span class="built_in">connection_pool</span>() : _init_status(<span class="literal">false</span>) &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化数据库连接池信息</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">connection_pool::init</span><span class="params">(<span class="type">const</span> std::string&amp; host, <span class="type">const</span> std::string&amp; user, std::<span class="type">size_t</span> port,</span></span></span><br><span class="line"><span class="params"><span class="function">        <span class="type">const</span> std::string&amp; password, <span class="type">const</span> std::string&amp; database, std::<span class="type">size_t</span> max_conn)</span> </span>&#123;</span><br><span class="line">    <span class="type">bool</span> expected = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (!_init_status.<span class="built_in">compare_exchange_weak</span>(expected, <span class="literal">true</span>))</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;connection pool already initialized&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化数据库信息</span></span><br><span class="line">    _host = host; _user = user; _port = port;</span><br><span class="line">    _password = password; _database = database; _max_conn = max_conn;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 根据最大连接数预分配连接并添加到队列中</span></span><br><span class="line">    <span class="function">std::lock_guard&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(_mutex)</span></span>;</span><br><span class="line">    <span class="keyword">for</span> (std::<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; _max_conn; ++i) &#123;</span><br><span class="line">        MYSQL* conn = <span class="literal">nullptr</span>;</span><br><span class="line">        <span class="comment">// 初始化连接</span></span><br><span class="line">        conn = <span class="built_in">mysql_init</span>(conn);</span><br><span class="line">        <span class="keyword">if</span> (conn == <span class="literal">nullptr</span>)</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to initialize database connection&quot;</span>);</span><br><span class="line">        <span class="comment">// 建立一条实际的数据库连接</span></span><br><span class="line">        conn = <span class="built_in">mysql_real_connect</span>(conn, _host.<span class="built_in">c_str</span>(), _user.<span class="built_in">c_str</span>(),</span><br><span class="line">                _password.<span class="built_in">c_str</span>(), _database.<span class="built_in">c_str</span>(), _port, <span class="literal">nullptr</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">if</span> (conn == <span class="literal">nullptr</span>)</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to establish database connection&quot;</span>);</span><br><span class="line">        <span class="comment">// 向连接池中加入一条连接</span></span><br><span class="line">        _conn_queue.<span class="built_in">push</span>(conn);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 信号量初始化为最大连接数</span></span><br><span class="line">    <span class="built_in">sem_init</span>(&amp;_sem, <span class="number">0</span>, _max_conn);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>注意其中对于初始化状态判断部分的代码</li>
+</ul>
+  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 利用原子变量判断初始化状态，只允许初始化一次，禁止重复初始化</span></span><br><span class="line"><span class="comment">// compare_exchange_weak为CAS(compare and swap)操作</span></span><br><span class="line"><span class="comment">// 若当前_init_status == expected，表示尚未初始化，则将true赋给_init_status，并返回true</span></span><br><span class="line"><span class="comment">// 若当前_init_status != expected，表示已初始化过，则将_init_status赋给expected，并返回false</span></span><br><span class="line"><span class="type">bool</span> expected = <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">if</span> (!_init_status.<span class="built_in">compare_exchange_weak</span>(expected, <span class="literal">true</span>))</span><br><span class="line">    <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;connection pool already initialized&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 不能将其改写成如下形式，即使原子变量读写都互斥，在理论上下面的代码仍会出现问题</span></span><br><span class="line"><span class="comment">// 如线程A读到_init_status为false，则解锁读操作继续向下执行，此时线程B就可以读_init_status了</span></span><br><span class="line"><span class="comment">// 那么此时线程B的读（读到_init_status为true）可能在线程A的写（将_init_status改为false）前完成</span></span><br><span class="line"><span class="comment">// 那么线程B也会继续向下执行，这就造成线程A和线程B都对数据库连接池初始化了一遍，违背了init设计的初衷</span></span><br><span class="line"><span class="comment">// 因此必须使用上面的CAS操作，将整个条件判断的过程都变为原子操作，且在条件判断过程中覆写_init_status</span></span><br><span class="line"><span class="keyword">if</span> (_init_status == <span class="literal">true</span>)</span><br><span class="line">    <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;connection pool already initialized&quot;</span>);</span><br><span class="line">_init_status = <span class="literal">true</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>连接池接口</p>
+<ul>
+<li><p>获取可用连接get_connection()</p>
+<ul>
+<li>信号量减1，相当于P操作，为0则阻塞等待可用连接</li>
+<li>取链表首元素作为可用连接</li>
+</ul>
+</li>
+<li><p>释放当前连接put_connection(MYSQL* conn)</p>
+<ul>
+<li>将连接作为尾元素重新加入链表</li>
+<li>信号量加1，相当于V操作</li>
+</ul>
+</li>
+<li><p>销毁连接池（供析构函数内部使用）destroy()</p>
+<ul>
+<li>遍历链表，关闭所有连接后，清空链表</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>RAII机制管理连接资源</p>
+<ul>
+<li>构造函数中，通过指向连接池的指针来分配连接。</li>
+<li>析构函数中，通过指向连接池的指针来释放连接。  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">sql_connection</span> &#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        MYSQL* _conn;</span><br><span class="line">        connection_pool* _conn_pool;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="comment">// 通过指向连接池的指针来分配连接，并用返回的连接初始化_conn</span></span><br><span class="line">        <span class="comment">// 同时为修改传入参数，需传递指针型参数，而连接本身也是指针</span></span><br><span class="line">        <span class="comment">// 所以形参类型应该为二级指针</span></span><br><span class="line">        <span class="built_in">sql_connection</span>(MYSQL** sql, connection_pool* conn_pool) &#123;</span><br><span class="line">            *sql = conn_pool-&gt;<span class="built_in">get_connection</span>();</span><br><span class="line">            _conn = *sql;</span><br><span class="line">            _conn_pool = conn_pool</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 通过指向连接池的指针来释放所管理的连接</span></span><br><span class="line">        ~<span class="built_in">sql_connection</span>() &#123; _conn_pool-&gt;<span class="built_in">put_connection</span>(_conn); &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h1 id="Day3-线程池实现"><a href="#Day3-线程池实现" class="headerlink" title="Day3: 线程池实现"></a>Day3: 线程池实现</h1><ul>
+<li><p>线程池概念</p>
+<ul>
+<li>线程是轻量级的进程，执行效率和进程差不多，但消耗的系统资源更少，但频繁创建线程依然会降低效率。</li>
+<li>线程池可实现线程复用，即执行完一个任务，并不会被销毁，而是继续执行其他任务。</li>
+</ul>
+</li>
+<li><p>线程池方案</p>
+<ul>
+<li>采用半同步&#x2F;半反应堆的并发编程模式，主线程为处理IO事件的异步线程，工作线程为同步线程。</li>
+<li>主线程监听到客户请求，就将其封装成任务对象并插入请求队列，再通知工作线程，工作线程从请求队列拉取任务并执行。</li>
+</ul>
+</li>
+<li><p>线程池实现</p>
+<ul>
+<li><p>原项目</p>
+<ul>
+<li>定义为模板类，请求队列元素为指向模板类型的指针，且将工作线程的回调函数分离为worker和run。worker调用run，但run在内部需要通过指向模板类型（实例化为http_conn）指针来调用实际工作的函数（process），这就要求实例化时所提供的类，必须含有process成员函数，感觉耦合度过高。</li>
+<li>定义了线程池数组，个人感觉根据在初始化时根据线程数创建线程即可，没必要额外定义。</li>
+<li>使用信号量来设计生产者和消费者模型，且当超出最大请求数时就拒绝请求，感觉不合理。</li>
+<li>以deque为底层的queue来实现请求队列，deque支持随机访问但浪费空间，且队列并无随机访问的要求（C++版）。</li>
+<li>未定义最大请求数，那么请求会一直添加到请求队列中，浪费内存且拖慢效率（C++版）。</li>
+</ul>
+</li>
+<li><p>本项目改进</p>
+<ul>
+<li><p>定义为模板类，请求队列元素类型为模板类型的仿函数（function&lt;Callback&gt;），因此线程池实例化时，可以接受任意类型的函数对象，且工作线程的任务全部由worker函数内部调用仿函数（请求队列元素）完成，从而实现解耦。并以list为底层的queue来实现请求队列，提高空间利用率。 </p>
+  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">bool</span> _thread_pool_status_type;</span><br><span class="line"><span class="type">const</span> _thread_pool_status_type _pool_startup = <span class="literal">true</span>;</span><br><span class="line"><span class="type">const</span> _thread_pool_status_type _pool_shutdown = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Callback&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">thread_pool</span> &#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        <span class="keyword">typedef</span> _thread_pool_status_type pool_status_type;</span><br><span class="line">        <span class="comment">// 任务类型为仿函数对象（回调函数）</span></span><br><span class="line">        <span class="keyword">typedef</span> std::function&lt;Callback&gt; task_type;</span><br><span class="line">        <span class="comment">// 请求队列类型，以双向链表为底层容器的队列，每个元素均表示一个任务</span></span><br><span class="line">        <span class="keyword">typedef</span> std::queue&lt;task_type, std::list&lt;task_type&gt;&gt; task_queue_type;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 线程池状态（打开/关闭）</span></span><br><span class="line">        pool_status_type _pool_status;</span><br><span class="line">        <span class="comment">// 线程池中线程数量</span></span><br><span class="line">        std::<span class="type">size_t</span> _thread_number;</span><br><span class="line">        <span class="comment">// 请求队列允许的最大请求数</span></span><br><span class="line">        std::<span class="type">size_t</span> _max_requests;</span><br><span class="line">        <span class="comment">// 指向请求队列的指针，队列中元素即工作线程需要竞争的共享资源</span></span><br><span class="line">        task_queue_type* _task_queue;</span><br><span class="line">        <span class="comment">// 保护请求队列的互斥锁</span></span><br><span class="line">        std::mutex _mutex;</span><br><span class="line">        <span class="comment">// 用于生产者/消费者（工作线程）模型的条件变量，需要搭配互斥锁一起使用</span></span><br><span class="line">        std::condition_variable _cond_producer;</span><br><span class="line">        std::condition_variable _cond_consumer;</span><br><span class="line">        ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>未定义线程池数组，而是在构造函数中根据线程数量来创建线程。</p>
+  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 构造函数，初始化线程池信息，并创建工作线程</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Callback&gt;</span><br><span class="line">thread_pool&lt;Callback&gt;::<span class="built_in">thread_pool</span>(<span class="type">int</span> thread_num, <span class="type">int</span> max_requests) : _pool_status(_pool_startup) &#123;</span><br><span class="line">    <span class="comment">// 判断线程数和最大请求数是否合法</span></span><br><span class="line">    <span class="keyword">if</span> (_thread_number &lt;= <span class="number">0</span> || _max_requests &lt;= <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;invalid number of threads or requests&quot;</span>);</span><br><span class="line">    <span class="comment">// 分配请求队列，默认初始化为空队列</span></span><br><span class="line">    <span class="keyword">if</span> (!(_task_queue = <span class="keyword">new</span> <span class="built_in">task_queue_type</span>()))</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to allocate memory for task queue&quot;</span>);</span><br><span class="line">    </span><br><span class="line">    _thread_number = <span class="built_in">static_cast</span>&lt;std::<span class="type">size_t</span>&gt;(thread_number);</span><br><span class="line">    _max_requests = <span class="built_in">static_cast</span>&lt;std::<span class="type">size_t</span>&gt;(max_requests);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建工作线程，并将工作线程与主线程分离</span></span><br><span class="line">    <span class="keyword">for</span> (std::<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; _thread_number; ++i) &#123;</span><br><span class="line">        <span class="comment">// 使用成员函数作为工作线程的回调函数需额外传递this指针</span></span><br><span class="line">        std::<span class="built_in">thread</span>(&amp;thread_pool::worker, <span class="keyword">this</span>).<span class="built_in">detach</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用条件变量来设计生产者（主线程add_task）&#x2F;消费者（工作线程worker）模型，且当超出最大请求数不会拒绝请求，而是阻塞主线程以待工作线程处理任务。若工作线程竞争到了任务并为请求队列腾出了空间，那么此时主线程解除阻塞并将任务加入请求队列。</p>
+  <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 向请求队列中添加任务，右值引用用于模板转发实参</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Callback&gt;</span><br><span class="line"><span class="type">void</span> thread_pool&lt;Callback&gt;::<span class="built_in">add_task</span>(task_type&amp;&amp; task) &#123;</span><br><span class="line">    <span class="comment">// 向请求队列中添加任务，需要对请求队列进行锁保护</span></span><br><span class="line">    <span class="function">std::unique_lock&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(_mutex)</span></span>;</span><br><span class="line">    <span class="comment">// 若请求队列中的任务数超出最大请求数上限，应该延迟添加，而不应该拒绝请求</span></span><br><span class="line">    <span class="comment">// 即阻塞生产者线程，等待工作线程取出任务为请求队列腾出空间以添加新任务</span></span><br><span class="line">    <span class="keyword">while</span> (_task_queue-&gt;<span class="built_in">size</span>() &gt;= _max_requests) &#123;</span><br><span class="line">        <span class="comment">// 若生产者线程此时处于加锁状态，则自动解锁，但不解除阻塞</span></span><br><span class="line">        <span class="comment">// 若生产者线程解除阻塞，则再次加锁，以执行临界区（while循环后面的代码）</span></span><br><span class="line">        _cond_producer.<span class="built_in">wait</span>(lock);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 向请求队列中添加新任务，forward用于保持实参类型信息</span></span><br><span class="line">    _task_queue-&gt;<span class="built_in">emplace</span>(std::forward&lt;task_type&gt;(task));</span><br><span class="line">    <span class="comment">// 解锁并唤醒阻塞在条件变量上的一个工作线程，让其处理任务</span></span><br><span class="line">    lock.<span class="built_in">unlock</span>();</span><br><span class="line">    _cond_consumer.<span class="built_in">notify_one</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 工作线程从请求队列中拉取任务进行处理</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Callback&gt;</span><br><span class="line"><span class="type">void</span> thread_pool&lt;Callback&gt;::<span class="built_in">worker</span>() &#123;</span><br><span class="line">    <span class="comment">// 从请求队列中拉取任务，需要对请求队列进行锁保护</span></span><br><span class="line">    <span class="function">std::unique_lock&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(_mutex)</span></span>;</span><br><span class="line">    <span class="comment">// 先判断线程池状态，若为开启则一直进行事件循环</span></span><br><span class="line">    <span class="keyword">while</span> (_pool_status != _pool_shutdown) &#123;</span><br><span class="line">        <span class="comment">// 队列中有任务，工作线程拉取并处理</span></span><br><span class="line">        <span class="keyword">if</span> (!_task_queue-&gt;<span class="built_in">empty</span>()) &#123;</span><br><span class="line">            task_type task = _task_queue-&gt;<span class="built_in">front</span>();</span><br><span class="line">            _task_queue-&gt;<span class="built_in">pop</span>();</span><br><span class="line">            <span class="comment">// 取出任务就解锁，并唤醒可能阻塞的生产者线程</span></span><br><span class="line">            lock.<span class="built_in">unlock</span>();</span><br><span class="line">            _cond_producer.<span class="built_in">notify_one</span>();</span><br><span class="line">            <span class="comment">// 工作线程执行任务</span></span><br><span class="line">            <span class="built_in">task</span>();</span><br><span class="line">            <span class="comment">// 再次加锁，用于下一次循环中拉取任务时，对请求队列进行锁保护</span></span><br><span class="line">            lock.<span class="built_in">lock</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 无任务则工作线程阻塞以待有任务处理</span></span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 若工作线程此时处于加锁状态，则自动解锁，但不解除阻塞</span></span><br><span class="line">            <span class="comment">// 若工作线程解除阻塞，则再次加锁，以执行临界区（下一次循环）</span></span><br><span class="line">            _cond_consumer.<span class="built_in">wait</span>(lock);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>项目</category>
+      </categories>
+      <tags>
+        <tag>网络编程</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>设计模式（下篇）</title>
     <url>/2023/06/07/Fundamentals/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F2/</url>
     <content><![CDATA[<span id="more"></span>
@@ -1201,6 +1023,217 @@
       </categories>
       <tags>
         <tag>设计模式</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>C++基础</title>
+    <url>/2023/05/23/CPP/CPP%E5%9F%BA%E7%A1%80/</url>
+    <content><![CDATA[<span id="more"></span>
+
+<h2 id="1-C和C-的区别"><a href="#1-C和C-的区别" class="headerlink" title="1. C和C++的区别"></a>1. C和C++的区别</h2><ul>
+<li>C是面向过程的语言，而C++是面向对象的语言。</li>
+<li>C++增加了诸如引用、类和对象、函数重载、泛型（模版）的概念。</li>
+<li>在动态分配内存方面，C使用malloc&#x2F;free函数，C++使用new&#x2F;delete运算符。</li>
+</ul>
+<h2 id="2-static关键字的作用"><a href="#2-static关键字的作用" class="headerlink" title="2. static关键字的作用"></a>2. static关键字的作用</h2><ul>
+<li>修饰局部变量：该变量存放在静态存储区，生命周期和整个程序的生命周期一致，在函数首次调用的时候进行初始化，函数再次调用则不会再初始化，但只有局部作用域。</li>
+<li>修饰全局变量：该变量存放在静态存储区，生命周期和整个程序的生命周期一致，但具有全局作用域，声明该变量后，在整个文件中都是可见的，而在文件外不可见。</li>
+<li>修饰函数：声明函数后，在整个文件中都是可见的，而在文件外不可见，可避免函数的同名冲突。</li>
+<li>修饰成员变量：类的不同对象只会维持同一份拷贝，从而实现数据在同一个类的不同对象间共享，可以通过类名而不实例化对象来访问，一般不在类中而在类外初始化（不加static）。</li>
+<li>修饰成员函数：没有this指针，只能访问静态成员，可以通过类名而不实例化对象来访问。</li>
+</ul>
+<h2 id="3-define和const的区别"><a href="#3-define和const的区别" class="headerlink" title="3. #define和const的区别"></a>3. #define和const的区别</h2><ul>
+<li>编译器的处理方式不同：#define在预处理阶段完成代码替换；const则在编译阶段处理。</li>
+<li>类型和安全检查不同：#define没有类型，不执行安全检查；const常量有具体的类型，编译器会执行类型检查，更加安全。</li>
+<li>存储的方式不同：#define仅通过字符串完成代码替换，编译器不会为其分配内存，存放在程序的代码段；const常量则会占用内存空间，存放在程序的数据段。</li>
+<li>作用域不同：#define不受作用域限制，在定义#define后的所有引用都是合法的；const常量则会受到作用域的限制。</li>
+</ul>
+<h2 id="4-inline函数的优缺点"><a href="#4-inline函数的优缺点" class="headerlink" title="4. inline函数的优缺点"></a>4. inline函数的优缺点</h2><ul>
+<li>优点：<ul>
+<li>inline函数会在函数的调用点进行代码展开，从而节省了函数调用的开销，提升了程序的效率。</li>
+<li>相比于宏函数，编译器会为inline函数进行语法检查和类型转换，更加安全。</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>过度使用可能会造成代码膨胀，且若inline函数内代码块的执行开销高于函数调用，那么程序的效率并不会得到明显改善。</li>
+<li>若修改了inline函数的定义，则所有使用该inline函数的文件都需要重新编译。</li>
+<li>inline只是一条建议，是否真正内联仍取决于编译器，所以其实际行为并不可控。</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-智能指针的概念、作用、分类和特点"><a href="#5-智能指针的概念、作用、分类和特点" class="headerlink" title="5. 智能指针的概念、作用、分类和特点"></a>5. 智能指针的概念、作用、分类和特点</h2><ul>
+<li>智能指针是一个RAII类模型，其设计思想是将原生指针封装为类对象，并将delete操作放入析构函数中，从而利用类对象在离开作用域自动调用析构函数的机制来自动释放动态分配的内存。</li>
+<li>智能指针能够处理内存泄漏和空悬指针的问题，可分为auto_ptr、unique_ptr、shared_ptr、weak_ptr四类。</li>
+<li>auto_ptr采取所有权模式，是C++98的方案，在C++11中已被弃用，主要问题在于赋值或函数传参时，对象所有权会被剥夺，存在潜在的内存崩溃的问题。<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function">auto_ptr&lt;string&gt; <span class="title">p1</span> <span class="params">(<span class="keyword">new</span> string(<span class="string">&quot;hello, world&quot;</span>))</span></span>;</span><br><span class="line">auto_ptr p2;</span><br><span class="line">p2 = p1; <span class="comment">// 此时p2会剥夺p1的所有权，且程序不会报错，但当要再次访问p1时会报错。</span></span><br></pre></td></tr></table></figure></li>
+<li>unique_ptr是一种独占式的智能指针，即同一时间只能有一个智能指针指向同一对象，禁止拷贝构造和赋值的行为，但若源unique_ptr是一个临时右值，则可以允许拷贝或赋值，因为定义了移动赋值和移动构造。</li>
+<li>shared_ptr是一种共享式的智能指针，即同一时间可以有多个智能指针指向同一对象，通过引用计数机制实现。<ul>
+<li>use_count可查看资源的所有者个数</li>
+<li>release释放当前智能指针的所有权，计数减1</li>
+<li>swap交换两个shared_ptr所拥有的对象</li>
+<li>get返回内部的原生指针</li>
+</ul>
+</li>
+<li>weak_ptr是对对象的一种弱引用，可以绑定到shared_ptr上，且不会增加引用计数，从而协助shared_ptr工作。weak_ptr可以解决shared_ptr相互引用时的死锁问题，即两个shared_ptr相互引用时，两者的引用计数永远不会减为0，资源永远不会被释放。</li>
+</ul>
+<h2 id="6-shared-ptr的工作原理"><a href="#6-shared-ptr的工作原理" class="headerlink" title="6. shared_ptr的工作原理"></a>6. shared_ptr的工作原理</h2><ul>
+<li>在构造函数中，引用计数初始化为1；在析构函数中，引用计数减1；在拷贝构造中，引用计数加1。</li>
+<li>在赋值运算符中，左侧运算对象引用计数减1，右侧运算对象引用计数加1。</li>
+<li>若析构函数或赋值运算符中对象的引用计数变为0，则通过delete运算符释放资源。</li>
+</ul>
+<h2 id="7-空悬指针和野指针"><a href="#7-空悬指针和野指针" class="headerlink" title="7. 空悬指针和野指针"></a>7. 空悬指针和野指针</h2><ul>
+<li>空悬指针：释放动态分配的内存后，未及时将指针置为nullptr，使指针仍指向已经释放的内存地址。</li>
+<li>野指针：定义指针时，未初始化。</li>
+</ul>
+<h2 id="8-变量定义和变量声明的区别"><a href="#8-变量定义和变量声明的区别" class="headerlink" title="8. 变量定义和变量声明的区别"></a>8. 变量定义和变量声明的区别</h2><ul>
+<li>变量定义会为变量分配地址和内存空间，而变量声明则不会；变量可以有多个声明，但只能有一个定义。</li>
+<li>可以用extern来修饰变量声明，表示该变量的定义会出现在文件的后面部分或其他文件中。</li>
+<li>使用extern修饰变量时，可以提供初始值，但此时就变成了定义而非声明，且该语句不能出现在函数的内部。</li>
+</ul>
+<h2 id="9-ifdef、-else、-endif、-ifndef条件编译的作用"><a href="#9-ifdef、-else、-endif、-ifndef条件编译的作用" class="headerlink" title="9. #ifdef、#else、#endif、#ifndef条件编译的作用"></a>9. #ifdef、#else、#endif、#ifndef条件编译的作用</h2><ul>
+<li>借助条件编译，可以在需要的时候，将某些模块方便地包含进行程序中，而在不需要的时候，又能方便地屏蔽掉。</li>
+<li>条件编译也可以搭配一些宏定义（如NDEBUG）来调试和追踪程序。</li>
+</ul>
+<h2 id="10-int、bool、float、指针变量与“零值”比较的if语句"><a href="#10-int、bool、float、指针变量与“零值”比较的if语句" class="headerlink" title="10. int、bool、float、指针变量与“零值”比较的if语句"></a>10. int、bool、float、指针变量与“零值”比较的if语句</h2><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (n == <span class="number">0</span>) &#123;...&#125; <span class="comment">// int型</span></span><br><span class="line"><span class="keyword">if</span> (flag) &#123;...&#125; <span class="comment">// bool型</span></span><br><span class="line"><span class="comment">// float型</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">equal</span><span class="params">(<span class="type">float</span> a, <span class="type">float</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">fabs</span>(a-b) &lt; std::numeric_limits&lt;<span class="type">float</span>&gt;::<span class="built_in">epsilon</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (ptr == <span class="literal">nullptr</span>) &#123;...&#125; <span class="comment">// 指针型</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="11-结构体赋值"><a href="#11-结构体赋值" class="headerlink" title="11. 结构体赋值"></a>11. 结构体赋值</h2><ul>
+<li>结构体在声明时就可以赋予初始值，结构体的不同对象间也可以直接赋值。</li>
+<li>但当含有指针成员时，则赋值时一定要区分是深拷贝还是浅拷贝。</li>
+</ul>
+<h2 id="12-sizeof和strlen的区别"><a href="#12-sizeof和strlen的区别" class="headerlink" title="12. sizeof和strlen的区别"></a>12. sizeof和strlen的区别</h2><ul>
+<li>sizeof是操作符，其参数为数据类型或变量，且在编译时获得计算结果。</li>
+<li>strlen是函数，其参数只能是以&#39;\0&#39;字符结尾的字符串，且在程序运行时获得计算结果。</li>
+<li>sizeof的计算结果是对象所占用的内存大小（以字节为单位），而strlen的计算结果则是实际的字符串长度。</li>
+<li>若将一个字符数组名传递给sizeof，不会退化成指针，但若传递给strlen，则会退化成指针形式。</li>
+</ul>
+<h2 id="13-static在C和C-中的区别"><a href="#13-static在C和C-中的区别" class="headerlink" title="13. static在C和C++中的区别"></a>13. static在C和C++中的区别</h2><ul>
+<li>在C中，static可用于修饰局部变量、外部变量和函数，修饰局部变量时，可让同一函数在不同的调用时期进行数据通信。</li>
+<li>在C++中，static除了上述功能以外，还可以修饰成员变量和成员函数，从而实现同一个类的不同对象间的数据共享。</li>
+</ul>
+<h2 id="14-全局变量和局部变量的区别"><a href="#14-全局变量和局部变量的区别" class="headerlink" title="14. 全局变量和局部变量的区别"></a>14. 全局变量和局部变量的区别</h2><ul>
+<li>全局变量具有全局作用域，生命周期从程序运行开始一直持续到程序运行结束。</li>
+<li>局部变量只有局部作用域，一般在代码块或函数中定义，离开了代码块和函数就会被释放。</li>
+<li>编译器和OS通过内存的分配位置来区分两者，全局变量分配在全局数据段，而局部变量则分配在堆栈中。</li>
+</ul>
+<h2 id="15-strcpy、sprintf、memcpy的区别"><a href="#15-strcpy、sprintf、memcpy的区别" class="headerlink" title="15. strcpy、sprintf、memcpy的区别"></a>15. strcpy、sprintf、memcpy的区别</h2><ul>
+<li>三者的主要功能都是拷贝，但所操作的对象并不同。</li>
+<li>strcpy：操作对象为两个字符串，主要实现字符串的拷贝。</li>
+<li>sprintf：操作对象可以是多种数据类型，可以将多种数据以格式化的形式写入字符串。</li>
+<li>memcpy：操作对象是任意可访问的内存地址，不受类型限制，可以实现内存块间的拷贝。</li>
+</ul>
+<h2 id="16-指针和引用的区别"><a href="#16-指针和引用的区别" class="headerlink" title="16. 指针和引用的区别"></a>16. 指针和引用的区别</h2><ul>
+<li>指针是变量，具有内存空间，而引用不是，它只是变量的别名，因此可以定义元素类型为指针的数组，但不能定义元素类型为引用的数组。</li>
+<li>使用sizeof时，参数若为指针，则根据计算机字长返回固定大小（32位返回4，64位返回8）；参数若为引用，则返回被引用对象所占的内存大小。</li>
+<li>作为函数参数时，若想通过指针改变所指对象的值，则必须解引用；而参数为引用，则可直接修改并影响原对象。</li>
+<li>指针可以改变其指向，但引用不行，引用必须在定义时就通过初始化绑定到一个对象上，因此有const指针，但无const引用。</li>
+<li>指针可以是多级的，但引用只能是一级。</li>
+<li>对指针使用++运算符，则会将指针指向下一个元素位置，而对引用使用++运算符，则会递增被引用的对象的值。</li>
+<li>动态分配内存时所返回的对象，只能使用指针接收。</li>
+</ul>
+<h2 id="17-typedef和-define的区别"><a href="#17-typedef和-define的区别" class="headerlink" title="17. typedef和#define的区别"></a>17. typedef和#define的区别</h2><ul>
+<li>用法不同：typedef用于为类型起一个别名，从而提高程序的可读性；而#define一般用于定义常量或频繁使用的宏。</li>
+<li>执行不同：typedef在编译阶段执行，具有类型检查；而#define在预处理阶段进行代码替换，不具备类型检查。</li>
+<li>作用域不同：typedef具备明确的作用域；而#define定义后的所有引用都是合法的。</li>
+<li>typedef是一条语句，所以结尾要加分号；而#define不是语句，而且不能加分号；且两者定义指针时有很大的区别，如下：<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">int</span>* int_ptr;</span><br><span class="line">int_ptr a, b; <span class="comment">// a，b均为int\*</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> int* int_ptr</span></span><br><span class="line">int_ptr a, b; <span class="comment">// a为int\*，但b为\*</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="18-指针常量和常量指针的区别"><a href="#18-指针常量和常量指针的区别" class="headerlink" title="18. 指针常量和常量指针的区别"></a>18. 指针常量和常量指针的区别</h2><ul>
+<li>指针常量的意思是指针变量本身是一个常量，不可改变其指向，必须在定义时初始化，具有顶层const属性。</li>
+<li>常量指针的意思是指针指向的是一个只读变量，不可通过指针来改变其值，具有底层const属性。</li>
+<li>不管是指针常量还是常量指针，其最大的作用就是在修饰函数形参时，强调在函数内部实参的不可改变性。</li>
+</ul>
+<h2 id="19-栈区和堆区的异同"><a href="#19-栈区和堆区的异同" class="headerlink" title="19. 栈区和堆区的异同"></a>19. 栈区和堆区的异同</h2><ul>
+<li>栈区和堆区并非是指堆栈这两种数据结构，而是指不同的内存存储区域。</li>
+<li>栈区结构类似与栈，由编译器负责分配和释放，主要用于存放函数参数、局部变量等。</li>
+<li>堆区结构类似于链表，存取顺序随意，由程序员申请内存，并负责释放，或程序结束由OS回收。</li>
+</ul>
+<h2 id="20-C中的结构体和C-中的区别"><a href="#20-C中的结构体和C-中的区别" class="headerlink" title="20. C中的结构体和C++中的区别"></a>20. C中的结构体和C++中的区别</h2><ul>
+<li>C中结构体不能由函数成员，而C++可以。</li>
+<li>C中结构体没有访问限制，而C++具有private、public、protected访问说明符。</li>
+<li>C中结构体没有继承，而C++中具有丰富的继承体系。</li>
+</ul>
+<h2 id="21-避免野指针"><a href="#21-避免野指针" class="headerlink" title="21. 避免野指针"></a>21. 避免野指针</h2><ul>
+<li>在定义指针变量时就将指针初始化，或置为nullptr。</li>
+<li>在释放动态分配的内存后，将指针置为nullptr。</li>
+<li>当一个指针指向局部变量时，在离开局部变量作用域之前将指针置为nullptr。</li>
+</ul>
+<h2 id="22-句柄和指针的区别"><a href="#22-句柄和指针的区别" class="headerlink" title="22. 句柄和指针的区别"></a>22. 句柄和指针的区别</h2><ul>
+<li>句柄在Windows中标识的是可用的系统资源，并隐藏了系统信息，只需知道有这样的资源，然后申请使用即可。</li>
+<li>指针标识的某块物理内存的地址，两者在概念上是不同的。</li>
+</ul>
+<h2 id="23-extern-quot-C-quot"><a href="#23-extern-quot-C-quot" class="headerlink" title="23. extern &quot;C&quot;"></a>23. extern &quot;C&quot;</h2><ul>
+<li>extern &quot;C&quot;是链接指示，加上extern &quot;C&quot;则会指示编译器对当前代码按C而不是C++的方式编译。如C++中有函数重载机制，因此在编译时，会将函数的参数类型也加入到编译后的代码中，而C没有函数重载，因此编译时，一般只包含函数名。</li>
+<li>适用于多人协作开发时，一部分人擅长C，一部分人擅长C++的情况。</li>
+</ul>
+<h2 id="24-顶层const和底层const"><a href="#24-顶层const和底层const" class="headerlink" title="24. 顶层const和底层const"></a>24. 顶层const和底层const</h2><ul>
+<li>顶层const是指变量本身具备不可改变的属性，必须在定义时就完成初始化。</li>
+<li>底层const是指指针或引用所指向的对象具有不可改变的属性。</li>
+</ul>
+<h2 id="25-左指引用和右值引用"><a href="#25-左指引用和右值引用" class="headerlink" title="25. 左指引用和右值引用"></a>25. 左指引用和右值引用</h2><ul>
+<li>左值具有持久状态，而右值要么是字面常量，要么就是表达式求值过程中创建的临时对象。</li>
+<li>左值引用可以绑定到左值，常规的左值引用不能绑定到右值，但const左值引用可以绑定到右值上。</li>
+<li>可通过&amp;&amp;声明右值引用类型，可绑定到字面值或一个将要销毁的对象上，而不能绑定到左值。</li>
+<li>可以利用std::move函数显示地将一个左值转换为对应的右值引用类型。</li>
+<li>右值引用常用于模板转发实参，当函数参数定义为指向模板类型参数的右值引用时，可以保持实参的所有类型信息。</li>
+</ul>
+<h2 id="26-volatile的作用"><a href="#26-volatile的作用" class="headerlink" title="26. volatile的作用"></a>26. volatile的作用</h2><ul>
+<li>volatile可用于修饰一个中断服务子程序会访问到的非自动变量或者是多线程间被几个任务共享的变量。</li>
+<li>volatile对象只能调用使用volatile修饰的成员函数，volatile对象也不能使用合成的拷贝&#x2F;移动构造函数和赋值运算符，若想使用，必须自定义。</li>
+<li>可以用const和volatile同时修饰变量，表示变量在内部只读，只在程序外部条件变化下改变，且编译器不会优化该变量。因为const只是不允许程序代码修改变量，在编译期进行检查，并未实际禁止某段内存的读写特性。</li>
+</ul>
+<h2 id="27-静态链接和动态链接的区别"><a href="#27-静态链接和动态链接的区别" class="headerlink" title="27. 静态链接和动态链接的区别"></a>27. 静态链接和动态链接的区别</h2><ul>
+<li>静态链接是指在编译链接时，直接将需要执行的代码拷贝到调用处。<ul>
+<li>优点：程序发布时不需依赖库，可独立执行。</li>
+<li>缺点：程序体积相对较大，若静态函数库更新，则使用此函数库的程序都要重新编译。</li>
+</ul>
+</li>
+<li>动态链接是指在编译链接时，在程序里只有一个（指针）位置，而实际内容并不会整合到执行文件中，只有在运行时需要用到函数库功能时，程序才会去读取函数库，从而实现运行时链接。<ul>
+<li>优点：多个程序可共享同一个动态库，节省资源，且函数库更新，无需重新编译使用此函数库的程序。</li>
+<li>缺点：由于在运行时加载，可能会影响程序的前期执行性能。</li>
+</ul>
+</li>
+</ul>
+<h2 id="28-定义只能在栈或堆上生成对象"><a href="#28-定义只能在栈或堆上生成对象" class="headerlink" title="28. 定义只能在栈或堆上生成对象"></a>28. 定义只能在栈或堆上生成对象</h2><ul>
+<li>只在堆上生成对象：由于栈对象由编译器管理，在销毁时编译器会调用析构函数来释放对象所占用的空间，因此编译器在为类对象分配栈空间时，必须先检查类析构函数的可访问性。那么只要将析构函数声明为私有，即可阻止建立栈对象，但此时必须提供一个额外的destroy函数用于在类外手动销毁建立的堆对象。</li>
+<li>只在栈上生成对象：在类中将new和delete重载为类的私有成员，即可阻止在类外建立堆对象。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>C++</category>
+      </categories>
+      <tags>
+        <tag>语法基础</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>git常用指令</title>
+    <url>/2023/08/07/Tools/git%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4/</url>
+    <content><![CDATA[<h2 id="1-git-init"><a href="#1-git-init" class="headerlink" title="1. git init"></a>1. git init</h2><p>在项目的根目录下创建一个.git子目录，用于保存版本信息。</p>
+<h2 id="2-git-add-–all"><a href="#2-git-add-–all" class="headerlink" title="2. git add –all"></a>2. git add –all</h2><p>将文件保存为二进制对象和更新暂存区。</p>
+<h2 id="3-git-status"><a href="#3-git-status" class="headerlink" title="3. git status"></a>3. git status</h2><p>显示当前仓库状态，即输出哪些文件已修改，哪些文件已暂存等信息。</p>
+<h2 id="4-git-commit-m-“message”"><a href="#4-git-commit-m-“message”" class="headerlink" title="4. git commit -m “message”"></a>4. git commit -m “message”</h2><p>将暂存区的文件提交至版本历史记录中，并附带一条描述信息。同时提交目录结构和说明，生成快照（保存当前目录结构，以及每个文件对应的二进制对象）。</p>
+<h2 id="5-git-log"><a href="#5-git-log" class="headerlink" title="5. git log"></a>5. git log</h2><p>查看整个版本历史，即当前分支的所有快照。所谓分支就是指向某个快照的指针，分支名即指针名。git有一个特殊的指针HEAD，总是指向当前分支的最近一次快照。</p>
+<div align="center" style=transform:scale(1)>
+<img src="/images/git_log.png" />
+</div>
+
+<h2 id="6-git-clone-url"><a href="#6-git-clone-url" class="headerlink" title="6. git clone url"></a>6. git clone url</h2><p>复制url所指向的远程仓库的所有代码和历史记录，并在本地创建一个与远程仓库相同的仓库副本。</p>
+<h2 id="7-git-branch-dev"><a href="#7-git-branch-dev" class="headerlink" title="7. git branch [dev]"></a>7. git branch [dev]</h2><p>创建名为dev的分支，若不带参数，则git branch可以查看当前仓库的所有分支。</p>
+<h2 id="8-git-branch-d-dev"><a href="#8-git-branch-d-dev" class="headerlink" title="8. git branch -d dev"></a>8. git branch -d dev</h2><p>删除名为dev的分支</p>
+<h2 id="9-git-checkout-dev"><a href="#9-git-checkout-dev" class="headerlink" title="9. git checkout dev"></a>9. git checkout dev</h2><p>从当前分支切换到名为dev的分支，若携带-b参数（git checkout -b [dev]）则会先新建一个名为dev的分支并切换到该分支。相当于git branch dev + git checkout dev。</p>
+<h2 id="10-git-merge-dev"><a href="#10-git-merge-dev" class="headerlink" title="10. git merge dev"></a>10. git merge dev</h2><p>合并名为dev的分支到主分支上去，可能会出现合并冲突，需要手动去修改它。</p>
+<h2 id="11-git-remote-v"><a href="#11-git-remote-v" class="headerlink" title="11. git remote -v"></a>11. git remote -v</h2><p>列出当前仓库中已配置的远程仓库，并显示对应的url，不加-v，则只列出远程仓库名。</p>
+<div align="center" style=transform:scale(1)>
+<img src="/images/git_remote.png" />
+</div>
+
+<p>git remote show origin可显示指定的远程仓库（origin）的详细信息，包括url和跟踪分支。</p>
+<h2 id="12-git-remote-add-origin-url"><a href="#12-git-remote-add-origin-url" class="headerlink" title="12. git remote add origin url"></a>12. git remote add origin url</h2><p>向当前仓库添加一个名为origin的远程仓库，且对应的url为远程仓库的地址。</p>
+<h2 id="13-git-fetch-origin"><a href="#13-git-fetch-origin" class="headerlink" title="13. git fetch origin"></a>13. git fetch origin</h2><p>从名为origin的远程仓库拉取代码库，获取远程有而本地没有的数据。</p>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
       </tags>
   </entry>
 </search>
