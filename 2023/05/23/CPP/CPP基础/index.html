@@ -360,7 +360,7 @@
 <li>用法不同：typedef用于为类型起一个别名，从而提高程序的可读性；而#define一般用于定义常量或频繁使用的宏。</li>
 <li>执行不同：typedef在编译阶段执行，具有类型检查；而#define在预处理阶段进行代码替换，不具备类型检查。</li>
 <li>作用域不同：typedef具备明确的作用域；而#define定义后的所有引用都是合法的。</li>
-<li>typedef是一条语句，所以结尾要加分号；而#define不是语句，而且不能加分号；且两者定义指针时有很大的区别，如下：<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">int</span>* int_ptr;</span><br><span class="line">int_ptr a, b; <span class="comment">// a，b均为int\*</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> int* int_ptr</span></span><br><span class="line">int_ptr a, b; <span class="comment">// a为int\*，但b为\*</span></span><br></pre></td></tr></table></figure></li>
+<li>typedef是一条语句，所以结尾要加分号；而#define不是语句，而且不能加分号；且两者定义指针时有很大的区别，如下：<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">int</span>* int_ptr;</span><br><span class="line">int_ptr a, b; <span class="comment">// a，b均为int*</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> int* int_ptr</span></span><br><span class="line">int_ptr a, b; <span class="comment">// a为int*，但b为int</span></span><br></pre></td></tr></table></figure></li>
 </ul>
 <h2 id="18-指针常量和常量指针的区别"><a href="#18-指针常量和常量指针的区别" class="headerlink" title="18. 指针常量和常量指针的区别"></a>18. 指针常量和常量指针的区别</h2><ul>
 <li>指针常量的意思是指针变量本身是一个常量，不可改变其指向，必须在定义时初始化，具有顶层const属性。</li>
@@ -373,7 +373,7 @@
 <li>堆区结构类似于链表，存取顺序随意，由程序员申请内存，并负责释放，或程序结束由OS回收。</li>
 </ul>
 <h2 id="20-C中的结构体和C-中的区别"><a href="#20-C中的结构体和C-中的区别" class="headerlink" title="20. C中的结构体和C++中的区别"></a>20. C中的结构体和C++中的区别</h2><ul>
-<li>C中结构体不能由函数成员，而C++可以。</li>
+<li>C中结构体不能有函数成员，而C++可以。</li>
 <li>C中结构体没有访问限制，而C++具有private、public、protected访问说明符。</li>
 <li>C中结构体没有继承，而C++中具有丰富的继承体系。</li>
 </ul>
