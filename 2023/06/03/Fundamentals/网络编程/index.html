@@ -281,7 +281,7 @@
 </ul>
 <h2 id="2-主机字节序与网络字节序"><a href="#2-主机字节序与网络字节序" class="headerlink" title="2. 主机字节序与网络字节序"></a>2. 主机字节序与网络字节序</h2><ul>
 <li>大端序：优先保存高位字节，即低位地址存放高位字节，网络字节序统一为大端序。</li>
-<li>小端序：优先保存低位字节，即低位地址存放低位字节，Intel为小端，且Arm默认为小端，且可手动设置为大端。</li>
+<li>小端序：优先保存低位字节，即低位地址存放低位字节，x86为小端，arm默认为小端，且可手动设置为大端。</li>
 <li>大小端检测：</li>
 </ul>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">union</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="type">int</span> a;</span><br><span class="line">    <span class="type">char</span> b;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">union</span> <span class="title class_">test</span> t;</span><br><span class="line">    t.a = <span class="number">0x12345678</span>;</span><br><span class="line">    <span class="keyword">if</span> (t.b == <span class="number">0x12</span>) std::cout &lt;&lt; <span class="string">&quot;大端序&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    <span class="keyword">if</span> (t.b == <span class="number">0x78</span>) std::cout &lt;&lt; <span class="string">&quot;小端序&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -499,6 +499,12 @@
 <h2 id="16-TCP字节流和UDP数据报的区别"><a href="#16-TCP字节流和UDP数据报的区别" class="headerlink" title="16. TCP字节流和UDP数据报的区别"></a>16. TCP字节流和UDP数据报的区别</h2><ul>
 <li>TCP是面向连接的，数据在连接上流动，没有边界，发送方write的调用次数和接收方read的调用次数不必相同。</li>
 <li>UDP是无连接的，每个数据包都是独立的，存在边界，且每次只能读取一个报文，报文和报文是不会合并的，发送方wirte的调用次数和接收方read的调用次数必须一致。</li>
+</ul>
+<h2 id="17-GET和POST的区别"><a href="#17-GET和POST的区别" class="headerlink" title="17. GET和POST的区别"></a>17. GET和POST的区别</h2><ul>
+<li>GET相比POST更不安全，因为它的参数直接暴露在URL上，而POST则是放在请求报文的请求主体中。</li>
+<li>由于URL在不同的浏览器上会有不同的长度限制，因此GET可传递的数据也会受到长度限制，而POST则不会。</li>
+<li>GET的参数会被浏览器主动缓存，而POST不会；GET只能进行URL编码，而POST支持多种编码方式。</li>
+<li>在参数类型上，GET只支持ASCII字符，而POST无限制。浏览器回退时GET是无害的，POST会再次提交请求。</li>
 </ul>
 
         </div>
