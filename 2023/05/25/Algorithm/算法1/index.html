@@ -256,7 +256,7 @@
 
         <div class="post-content">
             <h2 id="查找算法"><a href="#查找算法" class="headerlink" title="查找算法"></a>查找算法</h2><h3 id="二分查找"><a href="#二分查找" class="headerlink" title="二分查找"></a>二分查找</h3><ul>
-<li><p>场景：常用于有序或部分有序区间（前提条件）查找目标元素，时间复杂度为$O(\log{N})$</p>
+<li><p>场景：常用于有序或部分有序区间（前提条件）查找目标元素，时间复杂度为$O(\log{N})$。</p>
 </li>
 <li><p>方法：可分为左闭右闭和左闭右开两种，重点是要正确处理边界条件。</p>
 </li>
@@ -266,19 +266,19 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 方法一：左闭右闭区间[left,right]</span></span><br><span class="line"><span class="type">int</span> left = <span class="number">0</span>, right = size - <span class="number">1</span>;</span><br><span class="line"><span class="comment">// 此时可通过判断是否处于合法区间定义来决定是&lt;还是&lt;=</span></span><br><span class="line"><span class="comment">// 当left = right时，在[left,right]中是有效的，所以可以是&lt;=</span></span><br><span class="line"><span class="keyword">while</span> (left &lt;= right) &#123;</span><br><span class="line">    mid = (left + right) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// 更新左区间的右边界</span></span><br><span class="line">    <span class="keyword">if</span> (nums[mid] &gt; target) &#123;</span><br><span class="line">        <span class="comment">// 此时继续根据区间定义来决定right更新为mid还是mid-1，由于此时nums[mid]不为target</span></span><br><span class="line">        <span class="comment">// 所以nums[mid]必定不在下一次查找范围中，因此right应该更新为mid-1</span></span><br><span class="line">        right = mid - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 更新右区间的左边界</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (nums[mid] &lt; target) &#123;</span><br><span class="line">        left = mid + <span class="number">1</span>; <span class="comment">// 更新原理与上面相同</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> mid;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 方法二：左闭右开区间[left,right)</span></span><br><span class="line"><span class="type">int</span> left = <span class="number">0</span>, right = size;</span><br><span class="line"><span class="comment">// 此时若left = right，那么在原合法区间[left,right)定义中就没有意义，所以应该为&lt;</span></span><br><span class="line"><span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">    mid = (left + right) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// 由于区间定义为左闭右开，所以下一次搜索中nums[mid]必定不包含在其中，因此right更新为mid</span></span><br><span class="line">    <span class="keyword">if</span> (nums[mid] &gt; target) &#123; right = mid; &#125;</span><br><span class="line">    <span class="comment">// 由于区间定义为左闭右开，所以下一次搜索中必定包含左边界</span></span><br><span class="line">    <span class="comment">// 而此处nums[mid]已经确定和target不同，所以left更新为mid+1</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (nums[mid] &lt; target) &#123; left = mid + <span class="number">1</span>; &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> mid;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> <span class="number">-1</span>;</span><br></pre></td></tr></table></figure>
 
 <h3 id="哈希查找"><a href="#哈希查找" class="headerlink" title="哈希查找"></a>哈希查找</h3><ul>
-<li><p>场景：常用于查找序列中的元素是否出现、出现频次以及出现位置，时间复杂度为$O(1)$</p>
+<li><p>场景：常用于查找序列中的元素是否出现、出现频次以及出现位置，时间复杂度为$O(1)$。</p>
 </li>
-<li><p>方法：可以使用原生数组、map&#x2F;unordered_map、set&#x2F;unordered_set进行处理，一般情况下，优先考虑使用unordered_map&#x2F;unordered_set（哈希表），效率更高，但若对元素顺序有要求，则使用map&#x2F;set（红黑树）。</p>
+<li><p>方法：可以使用原生数组、<code>map/unordered_map</code>、<code>set/unordered_set</code>进行处理，一般情况下，优先考虑使用<code>unordered_map/unordered_set</code>（哈希表），效率更高，但若对元素顺序有要求，则使用<code>map/set</code>（红黑树）。</p>
 <ul>
-<li>原生数组：效率高，但要求预分配的大小不能超过1000</li>
-<li>map&#x2F;unordered_map：用于查找元素出现频次或出现位置</li>
-<li>set&#x2F;unordered_set：用于查找元素是否出现</li>
+<li>原生数组：效率高，但要求预分配的大小不能超过$1000$；</li>
+<li><code>map/unordered_map</code>：用于查找元素出现频次或出现位置；</li>
+<li><code>set/unordered_set</code>：用于查找元素是否出现。</li>
 </ul>
 </li>
 </ul>
 <h2 id="栈与队列"><a href="#栈与队列" class="headerlink" title="栈与队列"></a>栈与队列</h2><h3 id="栈：先进后出"><a href="#栈：先进后出" class="headerlink" title="栈：先进后出"></a>栈：先进后出</h3><ul>
 <li>对序列中相邻元素进行处理或特殊判断（括号匹配，消除相邻元素）。</li>
-<li>栈实现队列：两个栈，固定stk1用于接收元素，stk2用于出元素。且只当stk2空时，才会将stk1中元素添加到stk2。</li>
+<li>栈实现队列：两个栈，<code>stk1</code>接收元素，<code>stk2</code>用于出元素。且只当<code>stk2</code>空时，才会将<code>stk1</code>中元素添加到<code>stk2</code>。</li>
 <li>逆波兰表达式（后缀表达式）：计算机处理表达式的方式，无需考虑括号，用栈处理即可。<ul>
 <li>逆波兰表达式转换：将常规表达式（中缀表达式）看作表达式树（二叉树），其后序遍历结果便是后缀表达式。</li>
 </ul>
@@ -292,7 +292,7 @@
 </li>
 <li>滑动窗口最大值<ul>
 <li>单调队列<ul>
-<li>使用deque作为底层容器，实现单调队列</li>
+<li>使用<code>deque</code>作为底层容器，实现单调队列。</li>
 <li>保证队列出口处元素始终为队列元素中的最大（最小）值，并维护队列中的元素单调递减（递增）。</li>
 </ul>
 </li>
@@ -301,49 +301,49 @@
 <li>若队列出口元素与该抛弃元素不同，则不做任何处理。</li>
 </ul>
 </li>
-<li>窗口每滑动一次就需要将新窗口的尾元素添加到队列中，<ul>
+<li>窗口每滑动一次就需要将新窗口的尾元素添加到队列中<ul>
 <li>先从队列中弹出所有小于该新元素的队列元素，再将该新元素添加到队列中，以维持队列单调递减。</li>
 </ul>
 </li>
-<li>每次从单调队列中获取的队首元素即为当前滑动窗口的最大值。</li>
+<li>每次从单调队列中获取的队首元素即为当前滑动窗口的最大值</li>
 </ul>
 </li>
 </ul>
 <h2 id="排序算法"><a href="#排序算法" class="headerlink" title="排序算法"></a>排序算法</h2><h3 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h3><ul>
-<li>时间复杂度为$O(N^2)$，最差情况$O(N^2)$，空间复杂度为$O(1)$</li>
-<li>Step1: 比较每对相邻元素，若第一个比第二个大，则交换</li>
-<li>Step2: 这样最大元素就像冒泡一样上浮至最后一个元素位置</li>
-<li>Step3: 在剩下的元素中重复上述步骤（Step1~2）</li>
+<li>时间复杂度为$O(N^2)$，最差情况$O(N^2)$，空间复杂度为$O(1)$。</li>
+<li>Step1: 比较每对相邻元素，若第一个比第二个大，则交换；</li>
+<li>Step2: 这样最大元素就像冒泡一样上浮至最后一个元素位置；</li>
+<li>Step3: 在剩下的元素中重复上述步骤（Step1~2）。</li>
 </ul>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">bubble_sort</span><span class="params">(<span class="type">int</span> *arr, <span class="type">int</span> len)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = len - <span class="number">1</span>; i &gt; <span class="number">0</span>; --i) &#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; i; ++j) &#123;</span><br><span class="line">			<span class="keyword">if</span> (arr[j] &gt; arr[j+<span class="number">1</span>]) std::<span class="built_in">swap</span>(arr[j], arr[j+<span class="number">1</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h3><ul>
-<li>时间复杂度为$O(N^2)$，最差情况$O(N^2)$，空间复杂度为$O(1)$</li>
-<li>Step1: 从头到尾定位最小元素，将最小元素与第一个元素交换位置</li>
-<li>Step2: 在剩下的元素中找最小元素，将其与第二个元素交换位置…</li>
+<li>时间复杂度为$O(N^2)$，最差情况$O(N^2)$，空间复杂度为$O(1)$。</li>
+<li>Step1: 从头到尾定位最小元素，将最小元素与第一个元素交换位置；</li>
+<li>Step2: 在剩下的元素中找最小元素，将其与第二个元素交换位置，重复处理即可。</li>
 </ul>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">select_sort</span><span class="params">(<span class="type">int</span> *arr, <span class="type">int</span> len)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; len - <span class="number">1</span>; ++i) &#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> j = i+<span class="number">1</span>; j &lt; len; ++j)</span><br><span class="line">			<span class="keyword">if</span> (arr[i] &gt; arr[j]) std::<span class="built_in">swap</span>(arr[i], arr[j]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h3><ul>
-<li>时间复杂度为$O(N^2)$，最差情况$O(N^2)$，空间复杂度为$O(1)$，适用于部分有序数组和小规模数组</li>
-<li>Step1: 对于未排序的元素，在已排序的元素中从后向前扫描，找到相应位置插入</li>
-<li>Step2: 为给待插入元素腾出空间，需将插入位置之后的已排序元素都后移一位</li>
+<li>时间复杂度为$O(N^2)$，最差情况$O(N^2)$，空间复杂度为$O(1)$，适用于部分有序数组和小规模数组。</li>
+<li>Step1: 对于未排序的元素，在已排序的元素中从后向前扫描，找到相应位置插入；</li>
+<li>Step2: 为给待插入元素腾出空间，需将插入位置之后的已排序元素都后移一位。</li>
 </ul>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">insert_sort</span><span class="params">(<span class="type">int</span> *arr, <span class="type">int</span> len)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; len - <span class="number">1</span>; ++i) &#123;</span><br><span class="line">		<span class="type">int</span> cur = i + <span class="number">1</span>, j = i;</span><br><span class="line">		<span class="keyword">while</span> (j &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">			<span class="keyword">if</span> (arr[j] &lt;= arr[cur]) <span class="keyword">break</span>;</span><br><span class="line">			--j;</span><br><span class="line">		&#125;</span><br><span class="line">		++j;</span><br><span class="line">		<span class="type">int</span> tmp = arr[cur];</span><br><span class="line">		<span class="keyword">while</span> (cur &gt; j) &#123;</span><br><span class="line">			arr[cur] = arr[cur<span class="number">-1</span>];</span><br><span class="line">			--cur;</span><br><span class="line">		&#125;</span><br><span class="line">		arr[j] = tmp;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h3><ul>
-<li>时间复杂度为$O(N\log{N})$，最差情况$O(N\log{N})$，空间复杂度为$O(N)$</li>
-<li>Step1: 将序列划分成子序列，通过递归完成，递归终止条件为子序列长度小于2</li>
-<li>Step2: 将排好序的子序列两两合并，从而获得一个更长的有序序列</li>
+<li>时间复杂度为$O(N\log{N})$，最差情况$O(N\log{N})$，空间复杂度为$O(N)$。</li>
+<li>Step1: 将序列划分成子序列，通过递归完成，递归终止条件为子序列长度小于$2$；</li>
+<li>Step2: 将排好序的子序列两两合并，从而获得一个更长的有序序列。</li>
 </ul>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">merge</span><span class="params">(<span class="type">int</span> *arr1, <span class="type">int</span> len1, <span class="type">int</span> *arr2, <span class="type">int</span> len2)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> *tmp = <span class="keyword">new</span> <span class="type">int</span>[len1+len2]; </span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>, k = <span class="number">0</span>; k &lt; len1+len2; ++k) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i == len1) tmp[k] = arr2[j++];</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (j == len2) tmp[k] = arr1[i++];</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (arr1[i] &lt; arr2[j]) tmp[k] = arr1[i++];</span><br><span class="line">        <span class="keyword">else</span> tmp[k] = arr2[j++];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; len1; ++i) arr1[i] = tmp[i];</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; len2; ++i) arr2[i] = tmp[len1+i];</span><br><span class="line">    <span class="keyword">delete</span> [] tmp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">merge_sort</span><span class="params">(<span class="type">int</span> *arr, <span class="type">int</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 递归终止条件</span></span><br><span class="line">    <span class="keyword">if</span> (len &lt; <span class="number">2</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// 划分子序列，划分成几个子序列就是几路归并</span></span><br><span class="line">    <span class="comment">// 这里选择划分成两个子序列，因此是二路归并</span></span><br><span class="line">    <span class="type">int</span> mid = len &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    <span class="type">int</span> *left_arr = arr;</span><br><span class="line">    <span class="type">int</span> *right_arr = arr + mid;</span><br><span class="line">    <span class="comment">// 对子序列进行排序</span></span><br><span class="line">    <span class="built_in">merge_sort</span>(left_arr, mid);</span><br><span class="line">    <span class="built_in">merge_sort</span>(right_arr, len - mid);</span><br><span class="line">    <span class="comment">// 合并有序的两个子序列</span></span><br><span class="line">    <span class="built_in">merge</span>(left_arr, mid, right_arr, len - mid);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h3><ul>
-<li>时间复杂度为$O(N\log{N})$，最差情况$O(N^2)$，空间复杂度为$O(1)$</li>
+<li>时间复杂度为$O(N\log{N})$，最差情况$O(N^2)$，空间复杂度为$O(1)$。</li>
 <li>分割函数：选择一个基准点，且分割函数使基准点左侧元素均小于等于基准点位置的元素，而基准点右侧元素均大于基准点位置的元素。<ul>
-<li>Step1: 随机选择一个基准点，并将基准点位置的元素与尾元素交换。</li>
-<li>Step2: 使用两个索引，分区索引（初始化为首前位置），遍历索引（首元素位置）。通过遍历索引遍历所有元素，若遍历索引的当前元素值小于等于尾元素，则分区索引右移，且若分区索引右移后仍在遍历索引左侧，则交换两个位置的元素；若遍历索引的当前元素值大于尾元素，则不做任何处理。</li>
-<li>Step3: 返回分区索引即可</li>
+<li>Step1: 随机选择一个基准点，并将基准点位置的元素与尾元素交换；</li>
+<li>Step2: 使用两个索引，分区索引（初始化为首前位置），遍历索引（首元素位置）。通过遍历索引遍历所有元素，若遍历索引的当前元素值小于等于尾元素，则分区索引右移，且若分区索引右移后仍在遍历索引左侧，则交换两个位置的元素；若遍历索引的当前元素值大于尾元素，则不做任何处理；</li>
+<li>Step3: 返回分区索引即可。</li>
 </ul>
 </li>
 </ul>
@@ -355,7 +355,7 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> __quick_sort(<span class="type">int</span> *arr, <span class="type">int</span> beg, <span class="type">int</span> end) &#123;</span><br><span class="line">	<span class="comment">// beg和end为左闭右开区间</span></span><br><span class="line">	<span class="keyword">if</span> (beg == end) <span class="keyword">return</span>;</span><br><span class="line">	<span class="type">int</span> idx = <span class="built_in">partition</span>(arr, beg, end);</span><br><span class="line">	<span class="keyword">if</span> (idx &gt; beg) __quick_sort(arr, beg, idx);</span><br><span class="line">	<span class="keyword">if</span> (idx &lt; end) __quick_sort(arr, idx + <span class="number">1</span>, end);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 统一测试接口</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">quick_sort</span><span class="params">(<span class="type">int</span> *arr, <span class="type">int</span> len)</span> </span>&#123;</span><br><span class="line">	__quick_sort(arr, <span class="number">0</span>, len);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h3><ul>
-<li>时间复杂度为$O(N\log{N})$，最差情况$O(N\log{N})$，空间复杂度为$O(1)$</li>
+<li>时间复杂度为$O(N\log{N})$，最差情况$O(N\log{N})$，空间复杂度为$O(1)$。</li>
 <li>下滤操作：将$i$处节点与其子节点比较，若子节点值大于$i$处节点值，则交换节点值，并将$i$更新为其子节点索引，持续下滤直至$i$节点值大于其子节点值或到达叶子节点。</li>
 </ul>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">shift_down</span><span class="params">(<span class="type">int</span> *arr, <span class="type">int</span> len, <span class="type">int</span> i)</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> hole_idx = i;</span><br><span class="line">	<span class="type">int</span> left_idx = i * <span class="number">2</span> + <span class="number">1</span>;</span><br><span class="line">	<span class="type">int</span> right_idx = left_idx + <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">if</span> (left_idx &lt; len &amp;&amp; arr[left_idx] &gt; arr[hole_idx])</span><br><span class="line">		hole_idx = left_idx;</span><br><span class="line">	<span class="keyword">if</span> (right_idx &lt; len &amp;&amp; arr[right_idx] &gt; arr[hole_idx])</span><br><span class="line">		hole_idx = right_idx;</span><br><span class="line">	<span class="keyword">if</span> (hole_idx ^ i) &#123;</span><br><span class="line">		std::<span class="built_in">swap</span>(arr[hole_idx], arr[i]);</span><br><span class="line">		<span class="built_in">shift_down</span>(arr, len, hole_idx);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -366,7 +366,7 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">build_heap</span><span class="params">(<span class="type">int</span> *arr, <span class="type">int</span> len)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = (len - <span class="number">2</span>) &gt;&gt; <span class="number">1</span>; i &gt;=<span class="number">0</span> ; --i) <span class="built_in">shift_down</span>(arr, len, i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>迭代法排序：首先构建一个大顶堆，再每次交换首元素与尾元素，并将数组长度减$1$后下滤首元素，循环终止条件为数组长度$\leq1$</li>
+<li>迭代法排序：首先构建一个大顶堆，再每次交换首元素与尾元素，并将数组长度减$1$后下滤首元素，循环终止条件为数组长度$\leq1$。</li>
 </ul>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">heap_sort</span><span class="params">(<span class="type">int</span> *arr, <span class="type">int</span> len)</span> </span>&#123;</span><br><span class="line">	<span class="built_in">build_heap</span>(arr, len);</span><br><span class="line">	<span class="keyword">while</span> (len &gt; <span class="number">1</span>) &#123;</span><br><span class="line">		std::<span class="built_in">swap</span>(arr[<span class="number">0</span>], arr[--len]);</span><br><span class="line">		<span class="built_in">shift_down</span>(arr, len, <span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
