@@ -260,13 +260,13 @@
 <h2 id="1-网络编程的一般步骤"><a href="#1-网络编程的一般步骤" class="headerlink" title="1. 网络编程的一般步骤"></a>1. 网络编程的一般步骤</h2><ul>
 <li>TCP<ul>
 <li>服务端<ul>
-<li>socket创建套接字、bind绑定IP和端口号、listen监听连接请求</li>
-<li>accept受理连接请求，并返回新的套接字、在新的套接字上用recv&#x2F;send收发数据、close关闭套接字</li>
+<li><code>socket</code>创建套接字、<code>bind</code>绑定IP和端口号、<code>listen</code>监听连接请求</li>
+<li><code>accept</code>受理连接请求，并返回新的套接字、在新的套接字上用<code>recv/send</code>收发数据、<code>close</code>关闭套接字</li>
 </ul>
 </li>
-<li>客户端：socket创建套接字、connect发起连接请求、recv&#x2F;send收发数据、close关闭套接字</li>
-<li>其中客户端的connect和服务端的accept可能会阻塞程序，且客户端connect会引发三次握手，而服务端在socket、bind、listen后（三次握手完成），会由accept会返回一个fd，所以accept发生在三次握手之后。</li>
-<li>避免connect方法长时间阻塞<ul>
+<li>客户端：<code>socket</code>创建套接字、<code>connect</code>发起连接请求、<code>recv/send</code>收发数据、<code>close</code>关闭套接字</li>
+<li>其中客户端的<code>connect</code>和服务端的<code>accept</code>可能会阻塞程序，且客户端<code>connect</code>会引发三次握手，而服务端在<code>socket</code>、<code>bind</code>、<code>listen</code>后（三次握手完成），<code>accept</code>会返回一个<code>fd</code>，所以<code>accept</code>发生在三次握手之后。</li>
+<li>避免<code>connect</code>方法长时间阻塞<ul>
 <li>最常用也是最有效的方式就是加定时器，或者设置为非阻塞模式。</li>
 <li>也可考虑采用异步传输机制，因为异步传输机制不同与同步传输，它可以立即返回。</li>
 </ul>
@@ -274,8 +274,8 @@
 </ul>
 </li>
 <li>UDP<ul>
-<li>服务端：socket创建套接字、bind绑定IP和端口号、recvfrom&#x2F;sendto收发数据、close关闭套接字</li>
-<li>客户端：socket创建套接字、recvfrom&#x2F;sendto收发数据、close关闭套接字</li>
+<li>服务端：<code>socket</code>创建套接字、<code>bind</code>绑定IP和端口号、<code>recvfrom/sendto</code>收发数据、<code>close</code>关闭套接字</li>
+<li>客户端：<code>socket</code>创建套接字、<code>recvfrom/sendto</code>收发数据、<code>close</code>关闭套接字</li>
 </ul>
 </li>
 </ul>
@@ -294,29 +294,29 @@
 
 <h2 id="3-IO多路复用"><a href="#3-IO多路复用" class="headerlink" title="3. IO多路复用"></a>3. IO多路复用</h2><ul>
 <li>IO多路复用的原理是在一个进程（线程）中同时监听多个IO事件，从而避免为每个请求都分配一个进程（线程）。</li>
-<li>在Linux中，IO复用的方式有select、poll、epoll这三个系统调用。</li>
-<li>select<ul>
-<li>将已连接的socket都放入一个文件描述符集合，通过遍历集合来检查是否有事件产生，时间复杂度为$O(N)$。</li>
-<li>底层使用BitMap实现，因此文件描述符的个数会受到限制（默认最大为1024）。</li>
+<li>在Linux中，IO复用的方式有<code>select</code>、<code>poll</code>、<code>epoll</code>这三个系统调用。</li>
+<li><code>select</code><ul>
+<li>将已连接的<code>socket</code>都放入一个文件描述符集合，通过遍历集合来检查是否有事件产生，时间复杂度为$O(N)$。</li>
+<li>底层使用<code>BitMap</code>实现，因此文件描述符的个数会受到限制（默认最大为$1024$）。</li>
 </ul>
 </li>
-<li>poll<ul>
-<li>本质上与select无太大区别，都是使用线性结构存储文件描述符</li>
-<li>但使用动态数组，从而突破了select的文件描述符个数限制，但仍会受到系统文件描述符个数限制。</li>
+<li><code>poll</code><ul>
+<li>本质上与<code>select</code>无太大区别，都是使用线性结构存储文件描述符</li>
+<li>但使用动态数组，从而突破了<code>select</code>的文件描述符个数限制，但仍会受到系统文件描述符个数限制。</li>
 </ul>
 </li>
-<li>epoll<ul>
-<li>epoll_create创建epoll对象epfd，再由epoll_ctl将需监听的socket添加到epfd，最后用epoll_wait等待事件。 </li>
-<li>内核使用红黑树跟踪所有待检测的文件描述符，每次只需通过epoll_ctl传入一个待检测的文件描述符，无需像select&#x2F;poll一样传入整个socket集合。</li>
-<li>epoll_wait采用回调的方式，内核检测到就绪事件，会触发回调函数来将其插入就绪事件队列，不需要像select&#x2F;poll一样轮询整个socket集合，时间复杂度为O(1)。</li>
-<li>epoll_wait效率未必比select&#x2F;poll高，当活动连接多时回调函数会被频繁触发，epoll_wait适用于连接多但活动少的情况。</li>
+<li><code>epoll</code><ul>
+<li><code>epoll_create</code>创建<code>epoll</code>对象<code>epfd</code>，<code>epoll_ctl</code>将需监听的<code>socket</code>添加到<code>epfd</code>，<code>epoll_wait</code>等待事件。 </li>
+<li>内核使用红黑树跟踪所有待检测的文件描述符，每次只需通过<code>epoll_ctl</code>传入一个待检测的文件描述符，无需像<code>select/poll</code>一样传入整个<code>socket</code>集合。</li>
+<li><code>epoll_wait</code>采用回调的方式，内核检测到就绪事件，会触发回调函数来将其插入就绪事件队列，不需要像<code>select/poll</code>一样轮询整个<code>socket</code>集合，时间复杂度为$O(1)$。</li>
+<li><code>epoll_wait</code>效率未必比<code>select/poll</code>高，当活动连接多时回调函数会被频繁触发，<code>epoll_wait</code>适用于连接多但活动少的情况。</li>
 </ul>
 </li>
 </ul>
 <h2 id="4-epoll中的LT和ET的区别"><a href="#4-epoll中的LT和ET的区别" class="headerlink" title="4. epoll中的LT和ET的区别"></a>4. epoll中的LT和ET的区别</h2><ul>
-<li>两种模式的事件通知方式不同，LT持续通知直到事件处理完毕，ET只通知一次，不管事件是否处理完毕。</li>
-<li>LT模式下，读事件触发，可以按需收取字节数，不用一次性把数据收取干净；ET模式下，必须把数据收取干净。</li>
-<li>LT可自由决定每次收取多少数据，但可能导致多次触发；ET触发次数少效率更高，但每次都必须将数据接收完。</li>
+<li>两种模式的事件通知方式不同，<code>LT</code>持续通知直到事件处理完毕，<code>ET</code>只通知一次，不管事件是否处理完毕。</li>
+<li><code>LT</code>模式下，读事件触发，可以按需收取字节数，不用一次性把数据收取干净；<code>ET</code>模式下，必须把数据收取干净。</li>
+<li><code>LT</code>可自由决定每次收取多少数据，但可能导致多次触发；<code>ET</code>触发次数少效率更高，但每次都必须将数据接收完。</li>
 </ul>
 <h2 id="5-IO模型（粗分两种，细分五种）"><a href="#5-IO模型（粗分两种，细分五种）" class="headerlink" title="5. IO模型（粗分两种，细分五种）"></a>5. IO模型（粗分两种，细分五种）</h2><ul>
 <li>同步IO：在IO事件发生后，由应用程序（用户）自行执行IO读写操作。<ul>
@@ -336,10 +336,10 @@
 <li>半同步&#x2F;半异步模式：<ul>
 <li>与IO同步&#x2F;异步概念不同，此处同步指程序完全按代码的顺序执行，异步则指程序的执行需由系统事件（中断&#x2F;信号等）驱动。异步效率高，实时性强，适合嵌入式，但复杂难调试，不适于大量并发。同步效率相对较低，但逻辑简单。因此对于服务器这种既要求实时性，又要求并发，就该同时使用同步线程和异步线程。</li>
 <li>在半同步&#x2F;半异步模式中，异步线程处理IO事件（监听客户请求）并插入请求队列，然后通过同步线程读取并处理请求对象。结合考虑事件处理模式（Reactor&#x2F;Proactor）和IO模型（同步&#x2F;异步IO），则半同步&#x2F;半异步模式就存在多种变体。<ul>
-<li>半同步&#x2F;半反应堆：异步线程只有主线程，负责监听socket事件并插入连接到请求队列，工作线程处理队列中的任务。  <div align="center" style=transform:scale(0.7)>
+<li>半同步&#x2F;半反应堆：异步线程只有主线程，负责监听<code>socket</code>事件并插入连接到请求队列，工作线程处理队列中的任务。  <div align="center" style=transform:scale(0.7)>
   <img src="/images/半同步半反应堆模式.png"/>
   </div></li>
-<li>高效半同步&#x2F;半异步模式：主线程只管理监听socket，连接socket由工作线程管理，无请求队列，因此没有对队列进行存取时的加锁操作，从而提高效率。每个线程都工作在异步模式，所以非严格意义上的半同步&#x2F;半异步模式。  <div align="center" style=transform:scale(0.7)>
+<li>高效半同步&#x2F;半异步模式：主线程只管理监听<code>socket</code>，连接<code>socket</code>由工作线程管理，无请求队列，因此没有对队列进行存取时的加锁操作，从而提高效率。每个线程都工作在异步模式，所以非严格意义上的半同步&#x2F;半异步模式。  <div align="center" style=transform:scale(0.7)>
   <img src="/images/高效的半同步半异步模式.png"/>
   </div></li>
 </ul>
@@ -370,74 +370,74 @@
 </ul>
 </li>
 <li>多任务程序优先使用线程，但线程也不是越多越好。<ul>
-<li>文件IO操作：文件IO对CPU使用率不高，因此可分时复用时间片，线程数&#x3D;2 * CPU核心数。</li>
-<li>处理复杂算法：CPU进行运算，压力大，线程数&#x3D;CPU核心数。</li>
+<li>文件IO操作：文件IO对CPU使用率不高，因此可分时复用时间片，$线程数&#x3D;2 * CPU核心数$。</li>
+<li>处理复杂算法：CPU进行运算，压力大，$线程数&#x3D;CPU核心数$。</li>
 </ul>
 </li>
-<li>两者各有优缺点，线程开销小，但不利于资源管理和保护，进程恰好相反。同时线程适合于在SMP（多处理器）机器上运行，而进程则可以跨机器迁移。</li>
-<li>使用fork函数后，得到的子进程将会拥有父进程的几乎一切资源，但是父子进程都拥有各自的全局变量，不能通用。而对于线程来说，各线程会共享全局变量。</li>
+<li>两者各有优缺点，线程开销小，但不利于资源管理和保护，进程恰好相反。同时线程适合于在多处理器机器上运行，而进程则可以跨机器迁移。</li>
+<li>使用<code>fork</code>函数后，得到的子进程将会拥有父进程的几乎一切资源，但是父子进程都拥有各自的全局变量，不能通用。而对于线程来说，各线程会共享全局变量。</li>
 </ul>
 <h2 id="9-线程的相关操作"><a href="#9-线程的相关操作" class="headerlink" title="9. 线程的相关操作"></a>9. 线程的相关操作</h2><ul>
 <li>线程创建函数<ul>
-<li>每个线程都有ID，类型为pthread_t，可通过pthread_self函数获得。</li>
-<li>pthread_create创建新线程，传入参数线程ID、线程属性（NULL）、回调函数、回调函数参数。</li>
+<li>每个线程都有<code>ID</code>，类型为<code>pthread_t</code>，可通过<code>pthread_self</code>函数获得。</li>
+<li><code>pthread_create</code>创建新线程，传入参数线程<code>ID</code>、线程属性（<code>NULL</code>）、回调函数、回调函数参数。</li>
 </ul>
 </li>
 <li>线程退出函数<ul>
-<li>pthread_exit让线程退出，但不释放虚拟地址空间（针对于主线程），且不影响其他线程。</li>
-<li>pthread_exit参数为void*，线程退出时可携带数据，主线程会得到该数据，若不要，则设置为NULL即可。</li>
-<li>若主线程调用pthread_exit，也不会影响尚未执行完的子线程，否则（主线程既不执行pthread_exit也不执行pthread_join）有可能主线程先抢到时间片，执行完后就立即释放了虚拟地址空间（子线程资源），那么子线程尚未执行就结束了。</li>
+<li><code>pthread_exit</code>让线程退出，但不释放虚拟地址空间（针对于主线程），且不影响其他线程。</li>
+<li><code>pthread_exit</code>参数为<code>void*</code>，线程退出时可携带数据，主线程会得到该数据，若不要，则设置为<code>NULL</code>即可。</li>
+<li>若主线程调用<code>pthread_exit</code>，也不会影响尚未执行完的子线程，否则（主线程既不执行<code>pthread_exit</code>也不执行<code>pthread_join</code>）有可能主线程先抢到时间片，执行完后就立即释放了虚拟地址空间（子线程资源），那么子线程尚未执行就结束了。</li>
 </ul>
 </li>
 <li>线程回收函数<ul>
-<li>pthread_join会阻塞等待线程退出，且每次只回收一个子线程。</li>
-<li>参数为pthread_t线程ID以及void**用于接受子线程通过pthread_exit退出时携带的参数（必须为全局变量&#x2F;堆变量&#x2F;主线程栈变量（得在创建子线程时设置回调函数参数），否则若为子线程栈变量则由子线程独享，子线程结束就会释放）。</li>
+<li><code>pthread_join</code>会阻塞等待线程退出，且每次只回收一个子线程。</li>
+<li>参数为<code>pthread_t</code>线程<code>ID</code>以及<code>void**</code>用于接受子线程通过<code>pthread_exit</code>退出时携带的参数（必须为全局变量&#x2F;堆变量&#x2F;主线程栈变量（得在创建子线程时设置回调函数参数），否则若为子线程栈变量则由子线程独享，子线程结束就会释放）。</li>
 </ul>
 </li>
 <li>线程分离函数<ul>
-<li>因为pthread_join会让主线程阻塞以回收子线程资源，而某些情况下可能不希望主线程阻塞。</li>
-<li>调用pthread_detach会让子线程和主线程分离，当子线程退出，其占用资源无需主线程回收，且主线程中使用pthread_join也回收不到子线程资源。</li>
-<li>若主线程结束，被分离出去的子线程也无法存活，因为主线程释放了虚拟地址空间，因此必须在主线程中调用pthread_exit进行退出，而不能直接retrun。</li>
+<li>因为<code>pthread_join</code>会让主线程阻塞以回收子线程资源，而某些情况下可能不希望主线程阻塞。</li>
+<li>调用<code>pthread_detach</code>会让子线程和主线程分离，当子线程退出，其占用资源无需主线程回收，且主线程中使用<code>pthread_join</code>也回收不到子线程资源。</li>
+<li>若主线程结束，被分离出去的子线程也无法存活，因为主线程释放了虚拟地址空间，因此必须在主线程中调用<code>pthread_exit</code>进行退出，而不能直接<code>retrun</code>。</li>
 </ul>
 </li>
 <li>线程取消函数<ul>
-<li>pthread_cancel通过参数（线程ID）指定要杀死的线程，返回值0或1。</li>
+<li><code>pthread_cancel</code>通过参数（线程<code>ID</code>）指定要杀死的线程，返回值<code>0</code>或<code>1</code>。</li>
 <li>但线程不会被立马杀死，通常需要满足指定条件，即将被杀死的线程中需进行一次系统调用（从用户区切换到内核区），否则该线程能一直运行。</li>
 </ul>
 </li>
 <li>线程比较函数<ul>
-<li>pthread_equal，参数为两个线程ID，相等则返回非零值，其实直接将ID做整型值比较也可以。</li>
+<li><code>pthread_equal</code>，参数为两个线程<code>ID</code>，相等则返回非零值，其实直接将<code>ID</code>做整型值比较也可以。</li>
 </ul>
 </li>
 </ul>
 <h2 id="10-线程同步"><a href="#10-线程同步" class="headerlink" title="10. 线程同步"></a>10. 线程同步</h2><ul>
 <li>概念：不是让线程并行地执行，而是线性（先后顺序）地执行。</li>
 <li>方式<ul>
-<li>互斥锁（pthread_mutex_t mutex）：锁的所有权只能被一个线程所拥有<ul>
-<li>pthread_mutex_init初始化互斥锁，参数分别为互斥锁地址（&amp;mutex）及其属性（一般为NULL）</li>
-<li>pthread_mutex_destroy释放互斥锁，参数为互斥锁地址（&amp;mutex）</li>
-<li>pthread_mutex_lock加锁操作，参数为互斥锁地址（&amp;mutex）</li>
-<li>pthread_mutex_unlock解锁操作，参数为互斥锁地址（&amp;mutex）</li>
-<li>pthread_mutex_trylock尝试加锁，若已经被其他线程锁上，则非阻塞，并返回错误号。</li>
+<li>互斥锁（<code>pthread_mutex_t mutex</code>）：锁的所有权只能被一个线程所拥有<ul>
+<li><code>pthread_mutex_init</code>初始化互斥锁，参数分别为互斥锁地址（<code>&amp;mutex</code>）及其属性（一般为<code>NULL</code>）</li>
+<li><code>pthread_mutex_destroy</code>释放互斥锁，参数为互斥锁地址（<code>&amp;mutex</code>）</li>
+<li><code>pthread_mutex_lock</code>加锁操作，参数为互斥锁地址（<code>&amp;mutex</code>）</li>
+<li><code>pthread_mutex_unlock</code>解锁操作，参数为互斥锁地址（<code>&amp;mutex</code>）</li>
+<li><code>pthread_mutex_trylock</code>尝试加锁，若已经被其他线程锁上，则非阻塞，并返回错误号。</li>
 </ul>
 </li>
 <li>死锁：所有线程被阻塞，且线程的阻塞无法解开（因为可以解锁的线程也被阻塞了）<ul>
 <li>场景1: 加锁后忘记解锁</li>
-<li>场景2: 临界区内部在解锁前有return操作（C++中可通过RAII的lock_guard来解决，return时会自动调用析构解锁；也可使用更灵活的unique_lock，lock_guard只有在超出对象作用域时，才会通过析构解锁；而unique_lock除了超出作用域时的自动析构解锁，还可以调用unlock成员函数手动解锁，且会unlock根据锁的状态来判断是否需要真的解锁。）</li>
+<li>场景2: 临界区内部在解锁前有<code>return</code>操作（C++中可通过<code>RAII</code>的<code>lock_guard</code>来解决，<code>return</code>时会自动调用析构解锁；也可使用更灵活的<code>unique_lock</code>，<code>lock_guard</code>只有在超出对象作用域时，才会通过析构解锁；而<code>unique_lock</code>除了超出作用域时的自动析构解锁，还可以调用<code>unlock</code>成员函数手动解锁，且会<code>unlock</code>根据锁的状态来判断是否需要真的解锁。）</li>
 <li>场景3: 重复加锁造成死锁</li>
 <li>场景4: 多个共享资源，多把锁，随意加锁（加锁顺序不对）导致相互被阻塞</li>
 </ul>
 </li>
 <li>死锁避免<ul>
 <li>避免多次锁定，多检查</li>
-<li>对共享资源访问完毕，一定要解锁，或者加锁时使用trylock</li>
+<li>对共享资源访问完毕，一定要解锁，或者加锁时使用<code>trylock</code></li>
 <li>若程序有多把锁，可以控制对锁的访问顺序，也可在对其他锁加锁前，先释放当前线程所拥有的互斥锁。</li>
 <li>可以引入一些专门用于死锁检测的模块。</li>
 </ul>
 </li>
 <li>读写锁：互斥锁的升级版本<ul>
 <li>在做读操作的时候可提高程序效率，若所有线程都做读操作，那么读是并行的，而互斥锁，读是串行的。</li>
-<li>读写锁类型为pthread_rwlock_t，是一把锁，但能既提供锁定读又能提供锁定写的操作。</li>
+<li>读写锁类型为<code>pthread_rwlock_t</code>，是一把锁，但能既提供锁定读又能提供锁定写的操作。</li>
 <li>若读锁锁定临界区，线程对临界区的访问是并行的，读锁是共享的。</li>
 <li>若写锁锁定临界区，线程对临界区的访问是串行的，写锁是独占的。</li>
 <li>使用读写锁对临界区分别加了读锁和写锁，两个线程同时访问临界区，访问写锁临界区的线程继续运行，访问读锁临界区的线程阻塞，因为写锁优先级比读锁高。</li>
@@ -446,27 +446,27 @@
 </li>
 <li>条件变量<ul>
 <li>严格意义上，条件变量的主要作用不是处理线程同步，而是进行线程阻塞。在多线程中必须搭配互斥锁才能实现线程同步。虽然条件变量和互斥锁都可执行线程阻塞，但二者效果是不一样的。互斥锁：一个线程加锁成功，其余线程均阻塞。条件变量：只有在满足指定条件下才会阻塞线程，若不满足则多个线程可同时进入临界区，同时读写临界资源。 这种情况下还是会出现共享资源数据的混乱。</li>
-<li>条件变量主要用于处理生产者&#x2F;消费者模型，并配合互斥锁使用，类型为pthread_cond_t。</li>
+<li>条件变量主要用于处理生产者&#x2F;消费者模型，并配合互斥锁使用，类型为<code>pthread_cond_t</code>。</li>
 <li>需要一个容器，若容器空，则阻塞所有消费者线程，生成者每向容器中添加一个元素，就可执行一次唤醒提醒消费者。若容器满，则阻塞所有生产者线程，消费者从容器中取元素，就可执行一次唤醒提醒生产者。</li>
-<li>pthread_cond_init和pthread_cond_destroy初始化和销毁条件变量，生产者和消费者不能使用同一个条件变量。</li>
-<li>pthread_cond_wait阻塞线程，若该线程是加锁状态，就会自动解锁，若线程解除阻塞，则再次加锁，加锁成功才会继续向下执行临界区，参数为条件变量和一个互斥锁。</li>
-<li>pthread_cond_timewait将线程阻塞一定时间长度，时间到达就解开阻塞，参数会多一个超时时长。</li>
-<li>pthread_cond_signal唤醒阻塞在条件变量上的线程，至少一个被解除阻塞。</li>
-<li>pthread_cond_broadcast唤醒阻塞在条件变量上的线程，被阻塞线程全部被解除阻塞。</li>
+<li><code>pthread_cond_init</code>和<code>pthread_cond_destroy</code>初始化和销毁条件变量，生产者和消费者不能使用同一个条件变量。</li>
+<li><code>pthread_cond_wait</code>阻塞线程，若该线程是加锁状态，就会自动解锁，若线程解除阻塞，则再次加锁，加锁成功才会继续向下执行临界区，参数为条件变量和一个互斥锁。</li>
+<li><code>pthread_cond_timewait</code>将线程阻塞一定时间长度，时间到达就解开阻塞，参数会多一个超时时长。</li>
+<li><code>pthread_cond_signal</code>唤醒阻塞在条件变量上的线程，至少一个被解除阻塞。</li>
+<li><code>pthread_cond_broadcast</code>唤醒阻塞在条件变量上的线程，被阻塞线程全部被解除阻塞。</li>
 </ul>
 </li>
 <li>信号量<ul>
 <li>比条件变量更简单，无需自己进行条件判定。生产者和消费者可拥有各自的信号量，也可拥有相同信号量。</li>
-<li>sem_init初始化信号量，参数为信号量，pshared（线程同步0，进程同步1），初始值（拥有资源数）。</li>
-<li>sem_destroy销毁信号量，参数为信号量。</li>
-<li>sem_wait相当于P操作-1，取资源，若信号量为0（资源耗尽）则阻塞，sem_trywait非阻塞式。</li>
-<li>sem_post相当于V操作+1，存资源。</li>
-<li>sem_getvalue获取信号量（资源数量），参数为信号量和保存资源数的地址（传出参数）。</li>
-<li>资源量为1时，可不加锁，若资源量&gt;1，则要加锁。且加锁操作只能在sem_wait下面，否则可能会死锁。</li>
+<li><code>sem_init</code>初始化信号量，参数为信号量，<code>pshared</code>（线程同步<code>0</code>，进程同步<code>1</code>），初始值（拥有资源数）。</li>
+<li><code>sem_destroy</code>销毁信号量，参数为信号量。</li>
+<li><code>sem_wait</code>相当于P操作<code>-1</code>，取资源，若信号量为<code>0</code>（资源耗尽）则阻塞，<code>sem_trywait</code>非阻塞式。</li>
+<li><code>sem_post</code>相当于V操作<code>+1</code>，存资源。</li>
+<li><code>sem_getvalue</code>获取信号量（资源数量），参数为信号量和保存资源数的地址（传出参数）。</li>
+<li>资源量为<code>1</code>时，可不加锁，若资源量<code>&gt;1</code>，则要加锁。且加锁操作只能在<code>sem_wait</code>下面，否则可能会死锁。</li>
 </ul>
 </li>
 <li>原子变量<ul>
-<li>C++11提供原子类型模板std::atomic，通过该原子类型所管理的变量就是原子变量，保证读写都互斥。</li>
+<li>C++11提供原子类型模板<code>std::atomic</code>，通过该原子类型所管理的变量就是原子变量，保证读写都互斥。</li>
 <li>原子操作不会被线程调度机制打断，中间不会有任何上下文切换，从而保证多线程访问共享资源不会出现数据混乱。</li>
 <li>原子操作是无锁类型，通过指令提供支持，因此性能优于锁和消息传递，且无需开发者处理加锁解锁问题。</li>
 <li>原子类型内部使用CAS（Compare And Swap）循环机制，通过不断赋值来竞争资源，若赋值成功，则表示竞争到了资源。</li>
@@ -477,16 +477,16 @@
 </ul>
 <h2 id="11-HTTP长连接和TCP长连接"><a href="#11-HTTP长连接和TCP长连接" class="headerlink" title="11. HTTP长连接和TCP长连接"></a>11. HTTP长连接和TCP长连接</h2><ul>
 <li>HTTP的Keep-Alive是由应用层（用户态）实现的，称为HTTP长连接，通过复用同一个TCP连接来收发多个HTTP请求&#x2F;应答，从而避免连接建立和释放的开销。</li>
-<li>从HTTP1.1开始是默认开启长连接的，若要手动管理，则需设置HTTP请求包头部中的Connection: keep-alive&#x2F;close字段，且必须保证服务端和客户端设置一致。</li>
+<li>从HTTP1.1开始是默认开启长连接的，若要手动管理，则需设置HTTP请求包头部中的<code>Connection: keep-alive/close</code>字段，且必须保证服务端和客户端设置一致。</li>
 <li>HTTP长连接由服务端的定时器管理，如设置超时时长为60秒，且客户端在60秒内未发起新请求，则会触发回调函数释放该连接。</li>
 <li>TCP的Keep-Alive是由TCP层（内核态）实现的，称为TCP保活机制，当客户端与服务端在一定时间内没有数据交互，内核为确保该连接是否有效，就会发送探测报文来检测对方是否在线，然后再决定是否要关闭该连接。</li>
 </ul>
 <h2 id="12-客户端突然掉线或重启"><a href="#12-客户端突然掉线或重启" class="headerlink" title="12. 客户端突然掉线或重启"></a>12. 客户端突然掉线或重启</h2><ul>
 <li>若客户端掉线或重启，服务端就会收到复位信号，由于每一种TCP&#x2F;IP的实现方式不一样，因此控制机制也不一样。</li>
-<li>可以在socket编程中使用定时器（适合有数据流动的情况），或使用socket选项中的SO_KEEPALIVE（适合没有数据流动的情况）来让服务器得知客户端状态。</li>
+<li>可以在<code>socket</code>编程中使用定时器（适合有数据流动的情况），或使用<code>socket</code>选项中的<code>SO_KEEPALIVE</code>（适合没有数据流动的情况）来让服务器得知客户端状态。</li>
 </ul>
 <h2 id="13-TTL的概念及用处"><a href="#13-TTL的概念及用处" class="headerlink" title="13. TTL的概念及用处"></a>13. TTL的概念及用处</h2><ul>
-<li>TTL时Time To Live，在每经过一个路由就会减去1，若减至0，数据包就被会丢掉。它的主要目的在于防止数据包在有回路的网路上死转，浪费网络资源，ping命令和traceroute会用到它。</li>
+<li>TTL时Time To Live，在每经过一个路由就会减去1，若减至0，数据包就被会丢掉。它的主要目的在于防止数据包在有回路的网路上死转，浪费网络资源，<code>ping</code>命令和<code>traceroute</code>会用到它。</li>
 </ul>
 <h2 id="14-TCP重传机制的实现"><a href="#14-TCP重传机制的实现" class="headerlink" title="14. TCP重传机制的实现"></a>14. TCP重传机制的实现</h2><ul>
 <li>使用滑动窗口机制来确定收发的边界，可以让发送方知道已经发送的（已确认）字节数，尚未确认的字节数、待发送的字节数；可以让接收方知道已经确认收到的字节数。</li>
@@ -497,8 +497,8 @@
 <li>而B收到请求报文后，会向A发起连接，那么此时两次握手完毕，B会认为此时已经建立了可以通信的连接，并一直等待A发送的连接请求，但此时A并不会处理已失效的报文的回复。因此B会陷入忙等的僵局，造成资源的浪费。</li>
 </ul>
 <h2 id="16-TCP字节流和UDP数据报的区别"><a href="#16-TCP字节流和UDP数据报的区别" class="headerlink" title="16. TCP字节流和UDP数据报的区别"></a>16. TCP字节流和UDP数据报的区别</h2><ul>
-<li>TCP是面向连接的，数据在连接上流动，没有边界，发送方write的调用次数和接收方read的调用次数不必相同。</li>
-<li>UDP是无连接的，每个数据包都是独立的，存在边界，且每次只能读取一个报文，报文和报文是不会合并的，发送方wirte的调用次数和接收方read的调用次数必须一致。</li>
+<li>TCP是面向连接的，数据在连接上流动，没有边界，发送方<code>write</code>的调用次数和接收方<code>read</code>的调用次数不必相同。</li>
+<li>UDP是无连接的，每个数据包都是独立的，存在边界，且每次只能读取一个报文，报文和报文是不会合并的，发送方<code>wirte</code>的调用次数和接收方<code>read</code>的调用次数必须一致。</li>
 </ul>
 <h2 id="17-GET和POST的区别"><a href="#17-GET和POST的区别" class="headerlink" title="17. GET和POST的区别"></a>17. GET和POST的区别</h2><ul>
 <li>GET相比POST更不安全，因为它的参数直接暴露在URL上，而POST则是放在请求报文的请求主体中。</li>
