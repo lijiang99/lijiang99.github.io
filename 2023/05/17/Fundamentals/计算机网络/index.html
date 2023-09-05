@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="li jiang">
+
+
+
+
+
+<title>计算机网络 | bd7xzz</title>
+
+
+
+    <link rel="icon" href="/favicon.jpg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="bd7xzz" type="application/atom+xml">
+</head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">计算机网络</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">li jiang</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">May 17, 2023&nbsp;&nbsp;0:00:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">计算机基础</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <span id="more"></span>
+
+<h2 id="1-分层体系结构"><a href="#1-分层体系结构" class="headerlink" title="1. 分层体系结构"></a>1. 分层体系结构</h2><ul>
+<li>OSI七层：物理层、数据链路层、网络层、传输层、会话层、表示层、应用层。</li>
+<li>因特网五层：物理层、链路层（ARP&#x2F;MTU–帧）、网络层（IP&#x2F;ICMP–数据包）、运输层（TCP&#x2F;UDP–报文段）、应用层（HTTP&#x2F;DNS&#x2F;SMTP&#x2F;FTP–报文）。</li>
+</ul>
+<h2 id="2-TCP首部字段"><a href="#2-TCP首部字段" class="headerlink" title="2. TCP首部字段"></a>2. TCP首部字段</h2><ul>
+<li>源端口号和目的端口号：用于多路复用来自上层应用的数据或多路分解数据送至上层应用。</li>
+<li>序号字段（$32bit$）：即字节在字节流中的编号，初始时会被设置为一个随机值作为初始序列号（$ISN$），后续的数据的序号会被设置为$ISN+数据在整个字节流中的偏移量$。</li>
+<li>确认号字段（$32bit$）：接收方对发送方TCP报文段的响应，其值为$收到的序号值+1$。</li>
+<li>首部长度字段（$4bit$）：标识首部长度，计算方式为$首部长度&#x3D;4字节\times首部长度字段值$，该值最大为$15$，即首部长度最大为$60字节$。</li>
+<li>标志字段（$16bit$）：<ul>
+<li>URG：标志紧急指针是否有效；</li>
+<li>ACK：标志确认号是否有效，用于解决丢包问题；</li>
+<li>PSH：提示接收方立即从缓冲中读取数据；</li>
+<li>RST：复位报文段，表示要求对方重新建立连接；</li>
+<li>SYN：连接报文段，表示请求建立一个连接（三次握手）；</li>
+<li>FIN：断开报文段，表示关闭连接（四次挥手）。</li>
+</ul>
+</li>
+<li>接收窗口字段（$16bit$）：告知对方，本方还能接收多少字节数据，用于流量控制。</li>
+<li>校验和字段（$16bit$）：接收方会使用CRC循环冗余校验来检验整个报文段是否损坏。</li>
+</ul>
+<h2 id="3-三次握手"><a href="#3-三次握手" class="headerlink" title="3. 三次握手"></a>3. 三次握手</h2><ul>
+<li>套接字连接的建立需要发送三个包，因此称为三次握手。</li>
+<li>第一次：客户端A发送<code>SYN</code>置位的数据包（$序号&#x3D;i$）到服务器B，并进入<code>SYN_SEND</code>状态，等待服务器B确认。</li>
+<li>第二次：服务器B收到<code>SYN</code>置位的数据包后，必须回发一个数据包（$序号&#x3D;j$），以表示确认收到客户A的数据包（$ACK&#x3D;i+1$），同时该数据包的<code>SYN</code>也应置位，即<code>SYN+ACK</code>置位的数据包，此时服务器B进入<code>SYN_RECV</code>状态。</li>
+<li>第三次：客户端A收到服务器B的<code>SYN＋ACK</code>置位的数据包后，向服务器B发送表示确认收到的数据包（$ACK&#x3D;j+1$），且<code>SYN</code>无需置位。此包发送完毕，客户端A和服务器B进入<code>ESTABLISHED</code>状态，完成三次握手。</li>
+</ul>
+<h2 id="4-四次挥手"><a href="#4-四次挥手" class="headerlink" title="4. 四次挥手"></a>4. 四次挥手</h2><ul>
+<li>套接字连接的拆除需要发送四个包，因此称为四次挥手，客户端或服务器均可主动发起挥手动作。</li>
+<li>第一次：客户端A发送一个<code>FIN</code>置位的数据包（$序号&#x3D;i$），用来关闭到服务器B的数据传送。客户端A进入<code>CLOSED_WAIT1</code>状态。</li>
+<li>第二次：服务器B收到这个<code>FIN</code>置位的数据包，回发一个数据包表示确认收到（$ACK&#x3D;i+1$），服务器B进入<code>CLOSED_WAIT2</code>状态。</li>
+<li>第三次：服务器B关闭与客户端A的连接，并发送一个<code>FIN</code>置位的数据包（$序号&#x3D;j$）给客户端A，服务器B进入<code>LAST_ACK</code>状态。</li>
+<li>第四次：客户端A回发数据包表示确认收到（$ACK&#x3D;j+1$），此时客户端A进入<code>TIME_WAIT</code>状态，需等待一段时间（$2MSL$）以确保数据包成功送达服务器B后，才会进入<code>CLOSED</code>状态。</li>
+</ul>
+<h2 id="5-TCP可靠传输实现"><a href="#5-TCP可靠传输实现" class="headerlink" title="5. TCP可靠传输实现"></a>5. TCP可靠传输实现</h2><ul>
+<li>建立连接：通过三次握手来确保通信前存在通信实体。</li>
+<li>序号机制：通过序号和确认号来保障数据按序、完整到达。</li>
+<li>数据校验：通过校验和字段以及循环冗余校验来保证数据的正确性。</li>
+<li>超时重传：通过定时器机制，保障丢失的数据包能够被多次重发。</li>
+<li>拥塞和窗口控制：提供流量控制，避免过量重发。</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"># 计算机网络</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/05/23/CPP/CPP%E8%AF%AD%E6%B3%95%E5%9F%BA%E7%A1%80/">C++语法基础</a>
+            
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© li jiang | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
