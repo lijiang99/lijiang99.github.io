@@ -456,7 +456,7 @@
 <li>场景：在堆中创建对象，但未显示释放；在构造函数中动态申请内存，但析构函数中未释放；多态调用时，未将基类析构函数声明为虚函数。</li>
 <li><code>mtrace</code>：内存追踪函数，会在每次动态申请内存的位置以及内存释放的位置记录下内存信息。只要包含头文件<code>mcheck.h</code>，并使用<code>mtrace</code>开启内存使用记录即可，且会记录到<code>MALLOC_TRACE</code>环境变量所指向的文件中。</li>
 <li><code>AddressSanitizer</code>：是C&#x2F;C++内存错误检测器，可以定位内存泄漏、释放后再次使用、堆内存溢出、栈内存溢出等错误，使用方式为编译时开启<code>-fsanitize=address</code>，得到的可执行文件在运行到内存错误的地方会显示错误信息。</li>
-<li>也可使用valgrind工具进行内存泄漏检测以及性能分析。</li>
+<li>gdb调试方式：在编译时使用<code>-g</code>参数生成调试信息，gdb调试时可使用<code>call malloc_stats()</code>命令来检查<code>in use bytes</code>的数据变化，从而反映内存的分配情况。也可使用valgrind工具进行内存泄漏检测以及性能分析。</li>
 </ul>
 <h2 id="34-结构体内存对齐"><a href="#34-结构体内存对齐" class="headerlink" title="34. 结构体内存对齐"></a>34. 结构体内存对齐</h2><ul>
 <li>内存对齐不仅可提高CPU访问内存的速度，还利用平台移植，因为某些平台遇到未进行内存对齐时会拒绝处理；而内存对齐时，会从偏移位置为$0$的位置，即第一个成员的位置，开始存储。</li>

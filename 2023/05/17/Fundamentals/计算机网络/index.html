@@ -267,36 +267,70 @@
 <li>确认号字段（$32bit$）：接收方对发送方TCP报文段的响应，其值为$收到的序号值+1$。</li>
 <li>首部长度字段（$4bit$）：标识首部长度，计算方式为$首部长度&#x3D;4字节\times首部长度字段值$，该值最大为$15$，即首部长度最大为$60字节$。</li>
 <li>标志字段（$16bit$）：<ul>
-<li>URG：标志紧急指针是否有效；</li>
-<li>ACK：标志确认号是否有效，用于解决丢包问题；</li>
-<li>PSH：提示接收方立即从缓冲中读取数据；</li>
-<li>RST：复位报文段，表示要求对方重新建立连接；</li>
-<li>SYN：连接报文段，表示请求建立一个连接（三次握手）；</li>
-<li>FIN：断开报文段，表示关闭连接（四次挥手）。</li>
+<li><code>URG</code>：标志紧急指针是否有效；</li>
+<li><code>ACK</code>：标志确认号是否有效，用于解决丢包问题；</li>
+<li><code>PSH</code>：提示接收方立即从缓冲中读取数据；</li>
+<li><code>RST</code>：复位报文段，表示要求对方重新建立连接；</li>
+<li><code>SYN</code>：连接报文段，表示请求建立一个连接（三次握手）；</li>
+<li><code>FIN</code>：断开报文段，表示关闭连接（四次挥手）。</li>
 </ul>
 </li>
 <li>接收窗口字段（$16bit$）：告知对方，本方还能接收多少字节数据，用于流量控制。</li>
 <li>校验和字段（$16bit$）：接收方会使用CRC循环冗余校验来检验整个报文段是否损坏。</li>
 </ul>
 <h2 id="3-三次握手"><a href="#3-三次握手" class="headerlink" title="3. 三次握手"></a>3. 三次握手</h2><ul>
-<li>套接字连接的建立需要发送三个包，因此称为三次握手。</li>
-<li>第一次：客户端A发送<code>SYN</code>置位的数据包（$序号&#x3D;i$）到服务器B，并进入<code>SYN_SEND</code>状态，等待服务器B确认。</li>
-<li>第二次：服务器B收到<code>SYN</code>置位的数据包后，必须回发一个数据包（$序号&#x3D;j$），以表示确认收到客户A的数据包（$ACK&#x3D;i+1$），同时该数据包的<code>SYN</code>也应置位，即<code>SYN+ACK</code>置位的数据包，此时服务器B进入<code>SYN_RECV</code>状态。</li>
-<li>第三次：客户端A收到服务器B的<code>SYN＋ACK</code>置位的数据包后，向服务器B发送表示确认收到的数据包（$ACK&#x3D;j+1$），且<code>SYN</code>无需置位。此包发送完毕，客户端A和服务器B进入<code>ESTABLISHED</code>状态，完成三次握手。</li>
+<li>套接字连接的建立需要发送三个包，因此称为三次握手。不仅可确定通信双方收发能力是否正常，还可指定初始序列号，为后面的可靠传输做准备，且第三次握手已经可以携带数据。</li>
+<li>第一次：客户端A发送<code>SYN</code>报文（$序号&#x3D;i$）到服务器B，并进入<code>SYN_SEND</code>状态，等待服务器B确认。</li>
+<li>第二次：服务器B收到<code>SYN</code>报文后，必须回发一个<code>ACK</code>报文，以表示确认收到（$序号&#x3D;j，确认号&#x3D;i+1$），同时该报文的<code>SYN</code>也应置位，即该报文为<code>SYN+ACK</code>报文，此时服务器B进入<code>SYN_RECV</code>状态。</li>
+<li>第三次：客户端A收到服务器B的<code>SYN+ACK</code>报文后，向服务器B发送表示确认收到的<code>ACK</code>报文（$确认号&#x3D;j+1$），且<code>SYN</code>无需置位。此报文发送完毕后，客户端A和服务器B进入<code>ESTABLISHED</code>状态，完成三次握手。</li>
 </ul>
 <h2 id="4-四次挥手"><a href="#4-四次挥手" class="headerlink" title="4. 四次挥手"></a>4. 四次挥手</h2><ul>
 <li>套接字连接的拆除需要发送四个包，因此称为四次挥手，客户端或服务器均可主动发起挥手动作。</li>
-<li>第一次：客户端A发送一个<code>FIN</code>置位的数据包（$序号&#x3D;i$），用来关闭到服务器B的数据传送。客户端A进入<code>CLOSED_WAIT1</code>状态。</li>
-<li>第二次：服务器B收到这个<code>FIN</code>置位的数据包，回发一个数据包表示确认收到（$ACK&#x3D;i+1$），服务器B进入<code>CLOSED_WAIT2</code>状态。</li>
-<li>第三次：服务器B关闭与客户端A的连接，并发送一个<code>FIN</code>置位的数据包（$序号&#x3D;j$）给客户端A，服务器B进入<code>LAST_ACK</code>状态。</li>
-<li>第四次：客户端A回发数据包表示确认收到（$ACK&#x3D;j+1$），此时客户端A进入<code>TIME_WAIT</code>状态，需等待一段时间（$2MSL$）以确保数据包成功送达服务器B后，才会进入<code>CLOSED</code>状态。</li>
+<li>第一次：客户端A发送一个<code>FIN</code>报文（$序号&#x3D;i$），来关闭到服务器B的数据传送，进入<code>FIN_WAIT1</code>状态。</li>
+<li>第二次：服务器B收到<code>FIN</code>报文，回发一个<code>ACK</code>报文表示确认（$确认号&#x3D;i+1$），并进入<code>CLOSED_WAIT</code>状态，而收到该<code>ACK</code>报文的客户端A会进入<code>FIN_WAIT2</code>状态。</li>
+<li>第三次：服务器B关闭与客户端A的连接，发送一个<code>FIN</code>报文（$序号&#x3D;j$）给客户端A，并进入<code>LAST_ACK</code>状态。</li>
+<li>第四次：客户端A回发<code>ACK</code>报文表示确认收到（$确认号&#x3D;j+1$），此时客户端A进入<code>TIME_WAIT</code>状态，需等待一段时间（$2MSL$）以确保报文成功送达服务器B后，客户端A和服务器B才会进入<code>CLOSED</code>状态。</li>
 </ul>
-<h2 id="5-TCP可靠传输实现"><a href="#5-TCP可靠传输实现" class="headerlink" title="5. TCP可靠传输实现"></a>5. TCP可靠传输实现</h2><ul>
+<div align="center" style=transform:scale(0.9)>
+<img src="/images/握手挥手.png"/>
+</div>
+
+<h2 id="5-TIME-WAIT状态"><a href="#5-TIME-WAIT状态" class="headerlink" title="5. TIME_WAIT状态"></a>5. TIME_WAIT状态</h2><ul>
+<li>概念：在第四次挥手时，主动关闭的一方会进入<code>TIME_WAIT</code>状态。<code>TIME_WAIT</code>状态将持续$2MSL$（Max Segment Lifetime），在Windows下默认为$4$分钟，在Linux下默认为$60$秒。</li>
+<li>意义：保证被动关闭连接的一方，能够被正确关闭。因为主动关闭方发送的最后一个<code>ACK</code>报文可能会丢失，这时被动方会重发<code>FIN</code>报文，若主动方处于<code>CLOSED</code>，就会响应<code>RST</code>报文而非<code>ACK</code>报文，所以主动方应处于<code>TIME_WAIT</code>状态。</li>
+<li>影响：<code>TIME_WAIT</code>状态下的<code>socket</code>无法被立即回收使用，具体现象是对于一个处理大量短连接的服务器，如果是由服务器主动关闭客户端的连接，将导致服务器端存在大量的处于<code>TIME_WAIT</code>状态的<code>socket</code>，这会严重影响服务器的处理能力，甚至耗尽可用的<code>socket</code>，停止服务。</li>
+<li>因素：HTTP未使用长连接或长连接超时，长连接达到数量上限，则服务端会主动断开连接，从而出现<code>TIME_WAIT</code>。</li>
+<li>措施：服务端不主动断开连接，让客户端断开；设置<code>socket</code>选项中的<code>SO_LINGER</code>，发送<code>RST</code>复位报文来终止连接。</li>
+</ul>
+<h2 id="6-CLOSED-WAIT状态"><a href="#6-CLOSED-WAIT状态" class="headerlink" title="6. CLOSED_WAIT状态"></a>6. CLOSED_WAIT状态</h2><ul>
+<li>概念：在第二次挥手时，被动关闭的一方会进入<code>CLOSED_WAIT</code>状态，而如果被动方没有调用<code>close</code>函数来关闭连接，就无法发出<code>FIN</code>报文，从而无法使<code>CLOSED_WAIT</code>状态转为<code>LAST_ACK</code>状态。</li>
+<li>因素：当服务端出现大量<code>CLOSED_WAIT</code>状态的连接时，通常都是代码问题，主要分析的方向就是服务端为什么没有调用<code>close</code>函数来关闭连接。</li>
+</ul>
+<h2 id="7-TCP可靠传输实现"><a href="#7-TCP可靠传输实现" class="headerlink" title="7. TCP可靠传输实现"></a>7. TCP可靠传输实现</h2><ul>
 <li>建立连接：通过三次握手来确保通信前存在通信实体。</li>
 <li>序号机制：通过序号和确认号来保障数据按序、完整到达。</li>
 <li>数据校验：通过校验和字段以及循环冗余校验来保证数据的正确性。</li>
 <li>超时重传：通过定时器机制，保障丢失的数据包能够被多次重发。</li>
 <li>拥塞和窗口控制：提供流量控制，避免过量重发。</li>
+</ul>
+<h2 id="8-拥塞控制原理"><a href="#8-拥塞控制原理" class="headerlink" title="8. 拥塞控制原理"></a>8. 拥塞控制原理</h2><ul>
+<li>TCP拥塞控制主要包含三部分：慢启动、拥塞避免、快速恢复，其中前两个为TCP强制部分，差异在于收到$ACK$时，拥塞窗口$cwnd$的增加方式。</li>
+<li>慢启动：$cwnd$以$1$个$MSS$开始且每当传输的报文被确认就会增加$1$个$MSS$，因此每经过一个$RTT$（往返时间），发送速率就翻一番，直到$cwnd$的值达到慢启动阈值$ssthresh&#x3D;cwnd&#x2F;2$，才会转为拥塞避免模式，或者出现$3$次冗余$ACK$（丢包事件），则会转为快速恢复，所以慢启动只是起始慢但却能指数增长。</li>
+<li>拥塞避免：每个$RTT$只将$cwnd$的值增加$1$个$MSS$，当出现丢包，设置$ssthresh&#x3D;cwnd&#x2F;2$，并转入快速恢复。</li>
+<li>快速恢复：每当收到冗余$ACK$，$cwnd$会增加$1$个$MSS$。最终当丢失报文的$ACK$到达，则设置$cwnd&#x3D;ssthresh$并转入拥塞避免模式。若出现超时，则设置$ssthresh&#x3D;cwnd&#x2F;2$并转入慢启动模式。</li>
+</ul>
+<h2 id="9-流量控制与拥塞控制的区别"><a href="#9-流量控制与拥塞控制的区别" class="headerlink" title="9. 流量控制与拥塞控制的区别"></a>9. 流量控制与拥塞控制的区别</h2><ul>
+<li>流量控制需要通信双方各维护⼀个发送窗口、⼀个接收窗口，对任意一方，接收窗口大小由自身决定，而发送窗口大小由接收方响应的TCP报文段中窗口值确定。</li>
+<li>拥塞控制由拥塞窗口决定，其大小变化由试探性发送⼀定量的数据来探查网络状况后自适应调整。</li>
+<li>$实际发送窗口&#x3D;\min\{流量控制发送窗口，拥塞窗口\}$。</li>
+</ul>
+<h2 id="10-TCP和UDP的区别"><a href="#10-TCP和UDP的区别" class="headerlink" title="10. TCP和UDP的区别"></a>10. TCP和UDP的区别</h2><ul>
+<li>TCP提供面向连接的可靠传输，UDP则提供无连接的不可靠传输。</li>
+<li>TCP基于字节流，没有数据边界，UDP基于数据报文，存在数据边界。</li>
+<li>TCP保证数据能够有序到达，UDP不保证数据的有序性。</li>
+<li>TCP有流量控制和拥塞控制，UDP则没有。</li>
+<li>TCP首部较长，有$20$字节，UDP首部较短，只有$8$字节。</li>
+<li>基于TCP的常用协议有：HTTP&#x2F;FTP&#x2F;SMTP，基于UDP的常用协议有：DNS&#x2F;TFTP&#x2F;SNMP。</li>
 </ul>
 
         </div>
