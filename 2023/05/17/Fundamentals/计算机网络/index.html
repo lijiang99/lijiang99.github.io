@@ -360,16 +360,27 @@
 <h2 id="14-HTTP状态码"><a href="#14-HTTP状态码" class="headerlink" title="14. HTTP状态码"></a>14. HTTP状态码</h2><ul>
 <li><code>1xx</code>：表示目前是协议的中间状态，还需要后续请求；如<code>101</code>表示切换请求协议，从HTTP切换到WebSocket。</li>
 <li><code>2xx</code>：表示请求成功；如<code>200</code>表示请求成功，有响应体。</li>
-<li><code>3xx</code>：表示重定向，需要重新请求；如<code>301</code>表示永久重定向（页面转移），会缓存，<code>302</code>表示临时重定向，不缓存。</li>
+<li><code>3xx</code>：表示重定向（页面转移），需要重新请求；如<code>301</code>表示永久重定向，会缓存，<code>302</code>表示临时重定向，不缓存。</li>
 <li><code>4xx</code>：表示客户端请求报文错误；如<code>400</code>表示请求错误，<code>403</code>表示服务器禁止访问，<code>404</code>表示资源未找到。</li>
 <li><code>5xx</code>：表示服务端错误；如<code>503</code>表示服务器繁忙。</li>
 </ul>
-<h2 id="15-HTTP方法"><a href="#15-HTTP方法" class="headerlink" title="15. HTTP方法"></a>15. HTTP方法</h2><ul>
+<h2 id="15-HTTP请求方法"><a href="#15-HTTP请求方法" class="headerlink" title="15. HTTP请求方法"></a>15. HTTP请求方法</h2><ul>
 <li><code>GET</code>：表示请求URL所标识的对象资源，网络中的绝大部分使用的都是<code>GET</code>。</li>
 <li><code>POST</code>：当用户提交表但时，通常会用<code>POST</code>方法传输实体主体。</li>
 <li><code>HEAD</code>：类似于<code>GET</code>方法，但服务器不返回请求对象，常用于调试跟踪。</li>
 <li><code>PUT</code>：允许用户上传对象到服务器上的指定路径中。</li>
 <li><code>DELETE</code>：允许用户或者应用程序删除服务器上的对象。</li>
+</ul>
+<h2 id="16-HTTP和HTTPS的区别"><a href="#16-HTTP和HTTPS的区别" class="headerlink" title="16. HTTP和HTTPS的区别"></a>16. HTTP和HTTPS的区别</h2><ul>
+<li>安全性：HTTP传输的时明文信息，而HTTPS是将明文信息加密后再进行传输。</li>
+<li>端口号：HTTP端口号为80，HTTPS端口号为443。</li>
+<li>连接方式：HTTP使用简单的无状态连接，而HTTPS是HTTP+TLS握手构建的可进行加密传输、身份认证的协议。</li>
+<li>成本：HTTPS需向CA申请证书，一般需要缴费，且由于需要加密，HTTPS也会消耗更多的CPU和内存资源。</li>
+</ul>
+<h2 id="17-Cookie和Session区别"><a href="#17-Cookie和Session区别" class="headerlink" title="17. Cookie和Session区别"></a>17. Cookie和Session区别</h2><ul>
+<li>首先两者目的都是用来跟踪用户状态的，但保存的方式不同。</li>
+<li>Session是服务端保存用户信息，数据可以保存在集群、数据库或文件中。</li>
+<li>Cookie是客户端保存用户信息，实际上大多数的应用都是用Cookie来实现Session跟踪，即在Cookie中记录Session ID，然后再根据这个ID去查询先前缓存的用户数据。</li>
 </ul>
 
         </div>
