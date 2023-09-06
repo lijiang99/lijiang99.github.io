@@ -259,7 +259,7 @@
 
 <h2 id="1-分层体系结构"><a href="#1-分层体系结构" class="headerlink" title="1. 分层体系结构"></a>1. 分层体系结构</h2><ul>
 <li>OSI七层：物理层、数据链路层、网络层、传输层、会话层、表示层、应用层。</li>
-<li>因特网五层：物理层、链路层（ARP&#x2F;MTU–帧）、网络层（IP&#x2F;ICMP–数据包）、运输层（TCP&#x2F;UDP–报文段）、应用层（HTTP&#x2F;DNS&#x2F;SMTP&#x2F;FTP–报文）。</li>
+<li>因特网五层：物理层、链路层（ARP–帧）、网络层（IP&#x2F;ICMP–数据包）、运输层（TCP&#x2F;UDP–报文段）、应用层（HTTP&#x2F;DNS&#x2F;SMTP&#x2F;FTP–报文）。</li>
 </ul>
 <h2 id="2-TCP首部字段"><a href="#2-TCP首部字段" class="headerlink" title="2. TCP首部字段"></a>2. TCP首部字段</h2><ul>
 <li>源端口号和目的端口号：用于多路复用来自上层应用的数据或多路分解数据送至上层应用。</li>
@@ -313,24 +313,63 @@
 <li>超时重传：通过定时器机制，保障丢失的数据包能够被多次重发。</li>
 <li>拥塞和窗口控制：提供流量控制，避免过量重发。</li>
 </ul>
-<h2 id="8-拥塞控制原理"><a href="#8-拥塞控制原理" class="headerlink" title="8. 拥塞控制原理"></a>8. 拥塞控制原理</h2><ul>
+<h2 id="8-MTU和MSS"><a href="#8-MTU和MSS" class="headerlink" title="8. MTU和MSS"></a>8. MTU和MSS</h2><ul>
+<li>$MTU$：最大链路层帧长度（最大传输单元），指的是数据链路层能够传输的最大数据帧的大小（$1500$字节）。</li>
+<li>$MSS$：最大报文段长度，一般是根据$MTU$来设置，因为链路层协议都具有$1500$字节的$MTU$，而TCP&#x2F;IP的首部长度为$40$字节，所以$MSS$的典型值为$1460$字节，TCP通常是将大文件划分成长度为$MSS$的若干块进行发送。</li>
+</ul>
+<h2 id="9-拥塞控制原理"><a href="#9-拥塞控制原理" class="headerlink" title="9. 拥塞控制原理"></a>9. 拥塞控制原理</h2><ul>
 <li>TCP拥塞控制主要包含三部分：慢启动、拥塞避免、快速恢复，其中前两个为TCP强制部分，差异在于收到$ACK$时，拥塞窗口$cwnd$的增加方式。</li>
 <li>慢启动：$cwnd$以$1$个$MSS$开始且每当传输的报文被确认就会增加$1$个$MSS$，因此每经过一个$RTT$（往返时间），发送速率就翻一番，直到$cwnd$的值达到慢启动阈值$ssthresh&#x3D;cwnd&#x2F;2$，才会转为拥塞避免模式，或者出现$3$次冗余$ACK$（丢包事件），则会转为快速恢复，所以慢启动只是起始慢但却能指数增长。</li>
 <li>拥塞避免：每个$RTT$只将$cwnd$的值增加$1$个$MSS$，当出现丢包，设置$ssthresh&#x3D;cwnd&#x2F;2$，并转入快速恢复。</li>
 <li>快速恢复：每当收到冗余$ACK$，$cwnd$会增加$1$个$MSS$。最终当丢失报文的$ACK$到达，则设置$cwnd&#x3D;ssthresh$并转入拥塞避免模式。若出现超时，则设置$ssthresh&#x3D;cwnd&#x2F;2$并转入慢启动模式。</li>
 </ul>
-<h2 id="9-流量控制与拥塞控制的区别"><a href="#9-流量控制与拥塞控制的区别" class="headerlink" title="9. 流量控制与拥塞控制的区别"></a>9. 流量控制与拥塞控制的区别</h2><ul>
-<li>流量控制需要通信双方各维护⼀个发送窗口、⼀个接收窗口，对任意一方，接收窗口大小由自身决定，而发送窗口大小由接收方响应的TCP报文段中窗口值确定。</li>
+<h2 id="10-流量控制与拥塞控制的区别"><a href="#10-流量控制与拥塞控制的区别" class="headerlink" title="10. 流量控制与拥塞控制的区别"></a>10. 流量控制与拥塞控制的区别</h2><ul>
+<li>流量控制利用滑动窗口机制来控制传输，需要通信双方各维护⼀个发送窗口、⼀个接收窗口，对任意一方，接收窗口大小由自身决定，而发送窗口大小由接收方响应的TCP报文段中窗口值确定。</li>
 <li>拥塞控制由拥塞窗口决定，其大小变化由试探性发送⼀定量的数据来探查网络状况后自适应调整。</li>
 <li>$实际发送窗口&#x3D;\min\{流量控制发送窗口，拥塞窗口\}$。</li>
 </ul>
-<h2 id="10-TCP和UDP的区别"><a href="#10-TCP和UDP的区别" class="headerlink" title="10. TCP和UDP的区别"></a>10. TCP和UDP的区别</h2><ul>
+<h2 id="11-TCP和UDP的区别"><a href="#11-TCP和UDP的区别" class="headerlink" title="11. TCP和UDP的区别"></a>11. TCP和UDP的区别</h2><ul>
 <li>TCP提供面向连接的可靠传输，UDP则提供无连接的不可靠传输。</li>
 <li>TCP基于字节流，没有数据边界，UDP基于数据报文，存在数据边界。</li>
 <li>TCP保证数据能够有序到达，UDP不保证数据的有序性。</li>
 <li>TCP有流量控制和拥塞控制，UDP则没有。</li>
 <li>TCP首部较长，有$20$字节，UDP首部较短，只有$8$字节。</li>
 <li>基于TCP的常用协议有：HTTP&#x2F;FTP&#x2F;SMTP，基于UDP的常用协议有：DNS&#x2F;TFTP&#x2F;SNMP。</li>
+</ul>
+<h2 id="12-HTTP请求-x2F-响应报文格式"><a href="#12-HTTP请求-x2F-响应报文格式" class="headerlink" title="12. HTTP请求&#x2F;响应报文格式"></a>12. HTTP请求&#x2F;响应报文格式</h2><ul>
+<li>HTTP请求报文格式：由请求行、首部行、空行和请求实体四部分组成。<ul>
+<li>请求行：三个字段，分别表示请求方法，请求资源的URL，所使用的HTTP版本号。</li>
+<li>首部行：主要有三个字段，<code>Host</code>表示服务器域名、<code>Content-Length</code>表示报文所携带的请求实体的长度、<code>Connection</code>表示连接管理方式（长&#x2F;短连接–<code>close/keep-alive</code>）。</li>
+<li>空行：请求报文即使没有请求实体，也必须有空行，用回车加换行<code>\r\n</code>表示。</li>
+<li>请求实体：用于<code>POST</code>请求时，向服务器提供数据。</li>
+</ul>
+</li>
+<li>HTTP响应报文格式：由状态行、首部行、空行、响应实体四部分组成。<ul>
+<li>状态行：由HTTP版本号、状态码、状态消息三个字段组成。</li>
+<li>首部行：主要有两个字段，<code>Content-Length</code>表示响应实体的长度、<code>Connection</code>表示连接管理方式（长&#x2F;短连接–<code>close/keep-alive</code>），以及一些其他字段，如<code>Date</code>日期等。</li>
+<li>空行：首部行后面必须接空行，用回车加换行<code>\r\n</code>表示。</li>
+<li>响应实体：服务器返回给客户端的文本数据（html），由浏览器完成解析。</li>
+</ul>
+</li>
+</ul>
+<h2 id="13-HTTP1-0、1-1、2-0的区别"><a href="#13-HTTP1-0、1-1、2-0的区别" class="headerlink" title="13. HTTP1.0、1.1、2.0的区别"></a>13. HTTP1.0、1.1、2.0的区别</h2><ul>
+<li>HTTP1.0：采用非持续连接，浏览器每次请求都需与服务器建立$1$个TCP连接，服务器完成请求处理后就断开连接。</li>
+<li>HTTP1.1：采用持续连接，即TCP连接默认不关闭，可以被多个请求复用。</li>
+<li>HTTP2.0：采用帧交错技术，将每个报文分割为更小的帧，并在相同的TCP连接上交错发送请求和响应报文，实现请求和响应的多路复用，以减少用户的感知时延。</li>
+</ul>
+<h2 id="14-HTTP状态码"><a href="#14-HTTP状态码" class="headerlink" title="14. HTTP状态码"></a>14. HTTP状态码</h2><ul>
+<li><code>1xx</code>：表示目前是协议的中间状态，还需要后续请求；如<code>101</code>表示切换请求协议，从HTTP切换到WebSocket。</li>
+<li><code>2xx</code>：表示请求成功；如<code>200</code>表示请求成功，有响应体。</li>
+<li><code>3xx</code>：表示重定向，需要重新请求；如<code>301</code>表示永久重定向（页面转移），会缓存，<code>302</code>表示临时重定向，不缓存。</li>
+<li><code>4xx</code>：表示客户端请求报文错误；如<code>400</code>表示请求错误，<code>403</code>表示服务器禁止访问，<code>404</code>表示资源未找到。</li>
+<li><code>5xx</code>：表示服务端错误；如<code>503</code>表示服务器繁忙。</li>
+</ul>
+<h2 id="15-HTTP方法"><a href="#15-HTTP方法" class="headerlink" title="15. HTTP方法"></a>15. HTTP方法</h2><ul>
+<li><code>GET</code>：表示请求URL所标识的对象资源，网络中的绝大部分使用的都是<code>GET</code>。</li>
+<li><code>POST</code>：当用户提交表但时，通常会用<code>POST</code>方法传输实体主体。</li>
+<li><code>HEAD</code>：类似于<code>GET</code>方法，但服务器不返回请求对象，常用于调试跟踪。</li>
+<li><code>PUT</code>：允许用户上传对象到服务器上的指定路径中。</li>
+<li><code>DELETE</code>：允许用户或者应用程序删除服务器上的对象。</li>
 </ul>
 
         </div>
