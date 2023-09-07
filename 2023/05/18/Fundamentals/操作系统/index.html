@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="li jiang">
+
+
+
+
+
+<title>操作系统 | bd7xzz</title>
+
+
+
+    <link rel="icon" href="/favicon.jpg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="bd7xzz" type="application/atom+xml">
+</head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">操作系统</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">li jiang</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">May 18, 2023&nbsp;&nbsp;0:00:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">计算机基础</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <span id="more"></span>
+
+<h2 id="1-同步、异步、阻塞和非阻塞的概念"><a href="#1-同步、异步、阻塞和非阻塞的概念" class="headerlink" title="1. 同步、异步、阻塞和非阻塞的概念"></a>1. 同步、异步、阻塞和非阻塞的概念</h2><ul>
+<li>同步：是指在进行功能调用时，在没有得到结果之前，该调用就不返回。也就是事情必须一件一件做，等前一件事情做完了才能做下一件事情。</li>
+<li>异步：当一个异步过程调用发出后，调用者不能立刻得到结果。而实际处理这个调用的部件在完成后，会通过状态、通知和回调的方式来通知调用者。</li>
+<li>阻塞：是指调用结果返回前，当前线程会被挂起，即阻塞。</li>
+<li>非阻塞：是指即使调用结果没返回，当前线程也能继续执行。</li>
+</ul>
+<h2 id="2-进程的状态转换"><a href="#2-进程的状态转换" class="headerlink" title="2. 进程的状态转换"></a>2. 进程的状态转换</h2><ul>
+<li>进程包括三种状态：就绪态、运行态、阻塞态。</li>
+<li>就绪：进程调度算法会从就绪队列中选中一个就绪进程，并为其分配CPU时间片，其状态就由就绪转为运行。</li>
+<li>运行：正在执行的进程因为等待某些事件而无法执行，如文件IO操作，则会转为阻塞状态；而若CPU时间片用完，就会被暂停执行让出处理机，并转为就绪状态。</li>
+<li>阻塞：若阻塞状态的进程所等待的事件已经完成，那么就会进入就绪队列，转入就绪状态。</li>
+</ul>
+<h2 id="3-进程间通信"><a href="#3-进程间通信" class="headerlink" title="3. 进程间通信"></a>3. 进程间通信</h2><ul>
+<li>进程间通信（IPC）是指在不同的进程间传递数据或交换信息，其方式有共享存储、消息传递、管道通信、信号量、Socket，其中Socket用于网络编程中不同主机上的两个进程之间进行通信。</li>
+<li>共享存储：指两个或多个进程共享⼀个公共的存储区，是最快的一种IPC方式，因为进程可对内存直接存取。但其缺点在于数据收发双方都不可见，存在安全隐患。</li>
+<li>消息传递：有两种方式，第一种是点到点发送的直接通信，发送和接收时都需指明双方对进程<code>ID</code>，每个进程维护一个消息队列，然后从消息队列中接收数据；第二种时通过广播信箱的间接通信，以信箱为媒介，作为中间实体，发进程将消息发送到信箱，收进程从信箱中读取。</li>
+<li>管道通信：可看作用于连接读&#x2F;写进程的共享文件（pipe文件），本质上是内存中固定大小（$4K$）的缓冲区，以先进先出方式（FIFO有名管道）组织数据传输。它是半双工通信，全双工需要两个管道，通过<code>read/write</code>进行读写。</li>
+<li>信号量：用于实现进程间的互斥与同步，而非用于存储进程间通信数据，若要在进程间传递数据需要结合共享内存。</li>
+</ul>
+<h2 id="4-进程调度算法"><a href="#4-进程调度算法" class="headerlink" title="4. 进程调度算法"></a>4. 进程调度算法</h2><ul>
+<li>处理机使用调度算法来进行进程调度，常见的有$6$种：先来先服务、短作业优先、高响应比优先调度、优先级调度、时间片轮转调度、多级反馈队列调度。</li>
+<li>先来先服务：按进程到达就绪队列的顺序服务。</li>
+<li>短作业优先：优先服务平均周转时间最少的进程。</li>
+<li>高响应比优先：计算进程等待时间和服务时间的响应比，高的优先调度。</li>
+<li>优先级调度：按照进程的优先级进行调度，并且优先级是根据实际需要动态调整的。</li>
+<li>时间片轮转：按进程到达就绪队列顺序，公平、轮流地为每个进程分配一个时间片去执行，时间片用完就剥夺。</li>
+<li>多级反馈队列：设置按多个优先级排序的就绪队列，优先级从高到低，时间片从小到大。新进程采用队列降级法，先进入第一级队列，按先来先服务分时间片，若没有执行完，就移到第二级队列。第二级队列会得到更多的时间片，但优先级有所降低，若还未执行完，就移入第三级队列，以此类推。</li>
+</ul>
+<h2 id="5-fork函数"><a href="#5-fork函数" class="headerlink" title="5. fork函数"></a>5. fork函数</h2><ul>
+<li><code>pid_t fork(void);</code>，对于父进程而言，返回新建的子进程的<code>pid</code>；对于子进程则返回<code>0</code>；出错则返回<code>-1</code>。</li>
+<li><code>fork</code>函数创造的子进程是父进程的完整副本，复制了父进程的资源。但是两者都拥有各自的全局变量，不能通用。</li>
+</ul>
+<h2 id="6-守护进程"><a href="#6-守护进程" class="headerlink" title="6. 守护进程"></a>6. 守护进程</h2><ul>
+<li>概念：是一种运⾏在后台的特殊进程，它独立于控制终端并且周期性地执⾏某种任务。</li>
+<li>启动：可在Linux系统启动时从启动脚本<code>/etc/rc.d</code>启动，可由作业规划进程<code>crond</code>启动，还可由用户在终端启动。</li>
+<li>实现：在父进程中执行<code>fork</code>并<code>exit</code>退出；在子进程中调用<code>setsid</code>创建新的会话；在子进程中调用<code>chdir</code>，让根目录成为工作目录；在子进程中调用<code>umask</code>，设置进程的<code>umask</code>为<code>0</code>；在子进程中关闭任何不需要的文件描述符。</li>
+</ul>
+<h2 id="7-孤儿进程和僵尸进程"><a href="#7-孤儿进程和僵尸进程" class="headerlink" title="7. 孤儿进程和僵尸进程"></a>7. 孤儿进程和僵尸进程</h2><ul>
+<li>孤儿进程：子进程是由父进程创建，而父&#x2F;子进程的退出是无顺序的。通常父进程先结束会调用<code>wait/waitpid</code>等待子进程完成再退出，若父进程先结束且不等待直接退出，则子进程会被<code>init</code>进程（<code>pid=1</code>）接收，成为孤儿进程。</li>
+<li>僵尸进程：如果子进程先结束，父进程还未结束并且没有调用<code>wait/waitpid</code>函数获取子进程的状态信息，则子进程残留的状态信息会由操作系统一直保存，从而使得子进程长时间处于僵尸进程状态。</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/"># 操作系统</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/05/23/CPP/CPP%E8%AF%AD%E6%B3%95%E5%9F%BA%E7%A1%80/">C++语法基础</a>
+            
+            
+            <a class="next" rel="next" href="/2023/05/17/Fundamentals/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© li jiang | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
