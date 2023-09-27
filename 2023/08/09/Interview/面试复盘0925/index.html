@@ -374,6 +374,12 @@
 <img src="/images/用户态内核态2.svg"/>
 </div>
 
+<h4 id="切换方式"><a href="#切换方式" class="headerlink" title="切换方式"></a>切换方式</h4><p>用户态到内核态的切换（申请外部资源）主要有以下三种方式：</p>
+<ul>
+<li>系统调用<code>syscall</code>：最常用的切换方式，可以用<code>man syscalls</code>来查看所有可用的系统调用</li>
+<li>中断：分为硬中断（键盘输入、断电），软中断（32位Linux操作系统发起的<code>int 0x80</code>中断）</li>
+<li>异常</li>
+</ul>
 <h2 id="二面"><a href="#二面" class="headerlink" title="二面"></a>二面</h2><h3 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h3><h3 id="数据包传输"><a href="#数据包传输" class="headerlink" title="数据包传输"></a>数据包传输</h3>
         </div>
 
