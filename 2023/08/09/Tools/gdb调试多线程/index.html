@@ -13,7 +13,7 @@
 
 
 
-<title>git常用指令 | bd7xzz</title>
+<title>gdb调试多线程 | bd7xzz</title>
 
 
 
@@ -230,7 +230,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">git常用指令</h1>
+            <h1 class="post-title">gdb调试多线程</h1>
             
                 <div class="post-meta">
                     
@@ -239,7 +239,7 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">August 7, 2023&nbsp;&nbsp;0:00:00</a>
+                        Date: <a href="#">August 9, 2023&nbsp;&nbsp;0:00:00</a>
                         </span>
                     
                     
@@ -255,30 +255,72 @@
         </header>
 
         <div class="post-content">
-            <h2 id="1-git-init"><a href="#1-git-init" class="headerlink" title="1. git init"></a>1. git init</h2><p>在项目的根目录下创建一个<code>.git</code>子目录，用于保存版本信息。</p>
-<h2 id="2-git-add"><a href="#2-git-add" class="headerlink" title="2. git add"></a>2. git add</h2><p>将文件保存为二进制对象并更新暂存区，<code>git add --all</code>可保存当前工作目录的所有文件。</p>
-<h2 id="3-git-status"><a href="#3-git-status" class="headerlink" title="3. git status"></a>3. git status</h2><p>显示当前仓库状态，即输出哪些文件已修改，哪些文件已暂存等信息。</p>
-<h2 id="4-git-commit"><a href="#4-git-commit" class="headerlink" title="4. git commit"></a>4. git commit</h2><p><code>git commit -m &quot;message&quot;</code>将暂存区的文件提交至版本历史记录中，并附带一条描述信息。同时提交目录结构和说明，生成快照（保存当前目录结构，以及每个文件对应的二进制对象）。</p>
-<h2 id="5-git-log"><a href="#5-git-log" class="headerlink" title="5. git log"></a>5. git log</h2><p>查看整个版本历史，即当前分支的所有快照。所谓分支就是指向某个快照的指针，分支名即指针名。其中有一个特殊的指针<code>HEAD</code>，总是指向当前分支的最近一次快照。</p>
-<div align="center" style=transform:scale(1)>
-<img src="/images/git_log.png" />
+            <h2 id="调试多线程"><a href="#调试多线程" class="headerlink" title="调试多线程"></a>调试多线程</h2><h3 id="创建线程"><a href="#创建线程" class="headerlink" title="创建线程"></a>创建线程</h3><div align="center" style=transform:scale(0.9)>
+<img src="/images/gdb1.png"/>
 </div>
 
-<h2 id="6-git-clone"><a href="#6-git-clone" class="headerlink" title="6. git clone"></a>6. git clone</h2><p><code>git clone https://***</code>复制URL所指的远程仓库的所有代码和历史记录，并在本地创建与远程仓库相同的仓库副本。</p>
-<h2 id="7-git-branch"><a href="#7-git-branch" class="headerlink" title="7. git branch"></a>7. git branch</h2><p><code>git branch dev</code>创建名为<code>dev</code>的分支，若不带参数，则<code>git branch</code>可以查看当前仓库的所有分支。<br><code>git branch -d dev</code>删除名为dev的分支。</p>
-<h2 id="8-git-checkout"><a href="#8-git-checkout" class="headerlink" title="8. git checkout"></a>8. git checkout</h2><p><code>git checkout dev</code>从当前分支切换到名为<code>dev</code>的分支，若携带<code>-b</code>参数（<code>git checkout -b dev</code>）则会先新建一个名为<code>dev</code>的分支并切换到该分支。相当于<code>git branch dev</code> +  <code>git checkout dev</code>。</p>
-<h2 id="9-git-merge"><a href="#9-git-merge" class="headerlink" title="9. git merge"></a>9. git merge</h2><p><code>git merge dev</code>合并名为<code>dev</code>的分支到主分支上去，可能会出现合并冲突，需要手动去修改它。</p>
-<h2 id="10-git-remote"><a href="#10-git-remote" class="headerlink" title="10. git remote"></a>10. git remote</h2><p><code>git remote -v</code>列出当前仓库中已配置的远程仓库，并显示对应的URL，不加<code>-v</code>，则只列出远程仓库名。</p>
-<div align="center" style=transform:scale(1)>
-<img src="/images/git_remote.png" />
+<p>两个线程分别对同一个变量进行递增操作，预期结果应该为<code>200000</code>，但由于没有进行线程同步，所以会造成临界区共享资源<code>value</code>混乱，无法获得预期结果。</p>
+<h3 id="断点设置"><a href="#断点设置" class="headerlink" title="断点设置"></a>断点设置</h3><p>使用<code>b func1</code>和<code>b func2</code>分别在两个线程所调用的线程函数处设置断点，然后<code>r</code>运行程序。</p>
+<div align="center" style=transform:scale(0.9)>
+<img src="/images/gdb2.png"/>
 </div>
 
-<p><code>git remote show origin</code>可显示指定名为<code>origin</code>的远程仓库的详细信息，包括URL和跟踪分支。<br><code>git remote add origin https://***</code>向当前仓库添加一个名为<code>origin</code>的远程仓库，且对应的URL为远程仓库的地址。</p>
-<h2 id="11-git-fetch"><a href="#11-git-fetch" class="headerlink" title="11. git fetch"></a>11. git fetch</h2><p><code>git fetch origin</code>从名为<code>origin</code>的远程仓库拉取代码库，获取远程有而本地没有的数据。</p>
-<h2 id="12-git-pull"><a href="#12-git-pull" class="headerlink" title="12. git pull"></a>12. git pull</h2><p>用于从远程获取代码并合并本地的版本，相当于<code>git fetch origin</code> + <code>git merge origin/master</code>的简写。<br><code>git pull origin master:dev</code>将远程仓库<code>origin</code>的<code>master</code>分支拉取过来，并与本地的<code>dev</code>分支合并。<br><code>git pull origin master</code>省略冒号时，默认将远程仓库<code>origin</code>的<code>master</code>分支与本地的当前分支合并。</p>
-<h2 id="13-git-push"><a href="#13-git-push" class="headerlink" title="13. git push"></a>13. git push</h2><p>使用方式为<code>git push &lt;远程仓库名&gt; &lt;本地分支名&gt;:&lt;远程分支名&gt;</code>，如<code>git push origin master:master</code>，将本地<code>master</code>分支推送到<code>origin</code>远程仓库的<code>master</code>分支，也可简写为<code>git push origin master</code>。</p>
-<h2 id="14-git-rm"><a href="#14-git-rm" class="headerlink" title="14. git rm"></a>14. git rm</h2><p><code>git rm 1.txt</code>从暂存区和工作区删除<code>1.txt</code>文件。<br><code>git rm -f 1.txt</code>若删除之前修改过且已经存放到暂存区，则必须用<code>-f</code>强制删除。<br><code>git rm --cached 1.txt</code>将文件从暂存区移除，但仍保留在当前工作目录中，仅从跟踪清单中删除。</p>
-<h2 id="15-git-reset"><a href="#15-git-reset" class="headerlink" title="15. git reset"></a>15. git reset</h2><p>用于回退版本，可以指定回退到某一次提交的版本。<br><code>git reset HEAD^</code>回退所有内容至上一个版本。<br><code>git reset HEAD^2</code>回退所有内容至上上一个版本。<br><code>git reset HEAD^ 1.txt</code>回退<code>1.txt</code>到上一个版本。<br><code>git reset --hard HEAD</code>使用<code>--hard</code>参数可以撤销工作区中所有未提交的修改内容，将暂存区和工作区都回到上一个版本，并删除之前的所有提交信息。</p>
+<h3 id="查看进程-x2F-线程信息"><a href="#查看进程-x2F-线程信息" class="headerlink" title="查看进程&#x2F;线程信息"></a>查看进程&#x2F;线程信息</h3><p>使用<code>info inferiors/threads</code>查看进程和线程的描述信息，并利用<code>where/bt</code>查看当前堆栈调用信息。以下结果显示当前有一个进程和两个线程，程序执行到了第二个线程，且堆栈调用信息显示会最先执行的是<code>clone3</code>，最后执行<code>func1</code>。</p>
+<div align="center" style=transform:scale(0.9)>
+<img src="/images/gdb3.png"/>
+</div>
+
+<h3 id="切换线程"><a href="#切换线程" class="headerlink" title="切换线程"></a>切换线程</h3><p>使用<code>thread 2</code>来切换到第二个线程，并使用<code>watch value</code>来观察变量<code>value</code>在第二个线程中的变化，结果显示每次使用<code>c</code>运行得到的数值不符合预期（有时递增1，有时递增2）。</p>
+<div align="center" style=transform:scale(0.9)>
+<img src="/images/gdb4.png"/>
+</div>
+
+<p>也可用<code>thread apply all watch value</code>查看变量<code>value</code>在所有线程中的变化，结果表明数值并未连续变化。</p>
+<div align="center" style=transform:scale(0.9)>
+<img src="/images/gdb5.png"/>
+</div>
+
+<h3 id="单线程执行"><a href="#单线程执行" class="headerlink" title="单线程执行"></a>单线程执行</h3><p>使用<code>set scheduler-locking on</code>设置只运行当前线程，此时再使用<code>c</code>即可观察到<code>value</code>连续变化，符合预期的结果。而使用<code>set scheduler-locking off</code>让多线程并发执行，则<code>value</code>值又会非连续变化，说明共享资源出现数据混乱。</p>
+<h3 id="多线程调试命令总结"><a href="#多线程调试命令总结" class="headerlink" title="多线程调试命令总结"></a>多线程调试命令总结</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>info threads</code></td>
+<td>显示可调试的所有线程，每个线程会有一个<code>ID</code>，<code>*</code>号表示当前调试的线程。</td>
+</tr>
+<tr>
+<td><code>thread ID</code></td>
+<td>切换当前调试的线程为指定<code>ID</code>的线程</td>
+</tr>
+<tr>
+<td><code>where/bt</code></td>
+<td>查看当前堆栈调用信息</td>
+</tr>
+<tr>
+<td><code>watch value</code></td>
+<td>可用于查看指定变量<code>value</code>在运行过程中的数值变化</td>
+</tr>
+<tr>
+<td><code>thread apply ID1 ID2 command</code></td>
+<td>让指定<code>ID</code>的线程来执行命令<code>command</code></td>
+</tr>
+<tr>
+<td><code>thread apply all command</code></td>
+<td>让所有线程执行命令<code>command</code></td>
+</tr>
+<tr>
+<td><code>set scheduler-locking off</code></td>
+<td>不锁定任何线程，也就是所有线程都执行，这是默认值。</td>
+</tr>
+<tr>
+<td><code>set scheduler-locking on</code></td>
+<td>只有当前被调试的线程会执行</td>
+</tr>
+</tbody></table>
 
         </div>
 
@@ -297,7 +339,7 @@
                 <span class="tag">
                     
                     
-                        <a href="/tags/git/"># git</a>
+                        <a href="/tags/gdb/"># gdb</a>
                     
                         
                 </span>
@@ -310,10 +352,8 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2023/08/09/Tools/gdb%E8%B0%83%E8%AF%95%E5%A4%9A%E7%BA%BF%E7%A8%8B/">gdb调试多线程</a>
             
-            
-            <a class="next" rel="next" href="/2023/08/01/Project/WebServer2/">C++轻量级多线程Web服务器（下篇）</a>
+            <a class="next" rel="next" href="/2023/08/07/Tools/git%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4/">git常用指令</a>
             
         </section>
 
