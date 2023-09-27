@@ -13,7 +13,7 @@
 
 
 
-<title>gdb调试多线程 | bd7xzz</title>
+<title>9月26日面试复盘 | bd7xzz</title>
 
 
 
@@ -230,7 +230,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">gdb调试多线程</h1>
+            <h1 class="post-title">9月26日面试复盘</h1>
             
                 <div class="post-meta">
                     
@@ -246,7 +246,7 @@
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/%E5%B7%A5%E5%85%B7/">工具</a>
+                                <a href="/categories/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/">面试复盘</a>
                             
                         </span>
                     
@@ -255,22 +255,22 @@
         </header>
 
         <div class="post-content">
-            <h2 id="调试多线程"><a href="#调试多线程" class="headerlink" title="调试多线程"></a>调试多线程</h2><h3 id="创建线程"><a href="#创建线程" class="headerlink" title="创建线程"></a>创建线程</h3><div align="center" style=transform:scale(0.9)>
+            <h2 id="一面"><a href="#一面" class="headerlink" title="一面"></a>一面</h2><h3 id="gdb调试多线程"><a href="#gdb调试多线程" class="headerlink" title="gdb调试多线程"></a>gdb调试多线程</h3><h4 id="创建线程"><a href="#创建线程" class="headerlink" title="创建线程"></a>创建线程</h4><div align="center" style=transform:scale(0.9)>
 <img src="/images/gdb1.png"/>
 </div>
 
 <p>两个线程分别对同一个变量进行递增操作，预期结果应该为<code>200000</code>，但由于没有进行线程同步，所以会造成临界区共享资源<code>value</code>混乱，无法获得预期结果。</p>
-<h3 id="断点设置"><a href="#断点设置" class="headerlink" title="断点设置"></a>断点设置</h3><p>使用<code>b func1</code>和<code>b func2</code>分别在两个线程所调用的线程函数处设置断点，然后<code>r</code>运行程序。</p>
+<h4 id="断点设置"><a href="#断点设置" class="headerlink" title="断点设置"></a>断点设置</h4><p>使用<code>b func1</code>和<code>b func2</code>分别在两个线程所调用的线程函数处设置断点，然后<code>r</code>运行程序。</p>
 <div align="center" style=transform:scale(0.9)>
 <img src="/images/gdb2.png"/>
 </div>
 
-<h3 id="查看进程-x2F-线程信息"><a href="#查看进程-x2F-线程信息" class="headerlink" title="查看进程&#x2F;线程信息"></a>查看进程&#x2F;线程信息</h3><p>使用<code>info inferiors/threads</code>查看进程和线程的描述信息，并利用<code>where/bt</code>查看当前堆栈调用信息。以下结果显示当前有一个进程和两个线程，程序执行到了第二个线程，且堆栈调用信息显示会最先执行的是<code>clone3</code>，最后执行<code>func1</code>。</p>
+<h4 id="查看进程-x2F-线程信息"><a href="#查看进程-x2F-线程信息" class="headerlink" title="查看进程&#x2F;线程信息"></a>查看进程&#x2F;线程信息</h4><p>使用<code>info inferiors/threads</code>查看进程和线程的描述信息，并利用<code>where/bt</code>查看当前堆栈调用信息。以下结果显示当前有一个进程和两个线程，程序执行到了第二个线程，且堆栈调用信息显示会最先执行的是<code>clone3</code>，最后执行<code>func1</code>。</p>
 <div align="center" style=transform:scale(0.9)>
 <img src="/images/gdb3.png"/>
 </div>
 
-<h3 id="切换线程"><a href="#切换线程" class="headerlink" title="切换线程"></a>切换线程</h3><p>使用<code>thread 2</code>来切换到第二个线程，并使用<code>watch value</code>来观察变量<code>value</code>在第二个线程中的变化，结果显示每次使用<code>c</code>运行得到的数值不符合预期（有时递增1，有时递增2）。</p>
+<h4 id="切换线程"><a href="#切换线程" class="headerlink" title="切换线程"></a>切换线程</h4><p>使用<code>thread 2</code>来切换到第二个线程，并使用<code>watch value</code>来观察变量<code>value</code>在第二个线程中的变化，结果显示每次使用<code>c</code>运行得到的数值不符合预期（有时递增1，有时递增2）。</p>
 <div align="center" style=transform:scale(0.9)>
 <img src="/images/gdb4.png"/>
 </div>
@@ -280,8 +280,8 @@
 <img src="/images/gdb5.png"/>
 </div>
 
-<h3 id="单线程执行"><a href="#单线程执行" class="headerlink" title="单线程执行"></a>单线程执行</h3><p>使用<code>set scheduler-locking on</code>设置只运行当前线程，此时再使用<code>c</code>即可观察到<code>value</code>连续变化，符合预期的结果。而使用<code>set scheduler-locking off</code>让多线程并发执行，则<code>value</code>值又会非连续变化，说明共享资源出现数据混乱。</p>
-<h3 id="多线程调试命令总结"><a href="#多线程调试命令总结" class="headerlink" title="多线程调试命令总结"></a>多线程调试命令总结</h3><table>
+<h4 id="单线程执行"><a href="#单线程执行" class="headerlink" title="单线程执行"></a>单线程执行</h4><p>使用<code>set scheduler-locking on</code>设置只运行当前线程，此时再使用<code>c</code>即可观察到<code>value</code>连续变化，符合预期的结果。而使用<code>set scheduler-locking off</code>让多线程并发执行，则<code>value</code>值又会非连续变化，说明共享资源出现数据混乱。</p>
+<h4 id="多线程调试命令总结"><a href="#多线程调试命令总结" class="headerlink" title="多线程调试命令总结"></a>多线程调试命令总结</h4><table>
 <thead>
 <tr>
 <th>命令</th>
@@ -321,7 +321,60 @@
 <td>只有当前被调试的线程会执行</td>
 </tr>
 </tbody></table>
+<h3 id="用户态和内核态"><a href="#用户态和内核态" class="headerlink" title="用户态和内核态"></a>用户态和内核态</h3><h4 id="概念与区别"><a href="#概念与区别" class="headerlink" title="概念与区别"></a>概念与区别</h4><div align="center" style=transform:scale(0.9)>
+<img src="/images/用户态内核态1.svg"/>
+</div>
 
+<ul>
+<li>用户态：只能执行一部分机器指令，不可以运行IO命令或者影响机器控制的命令，操作系统提供的用户接口程序和应用程序运行在用户态。</li>
+<li>内核态：可以访问所有的硬件设备，也可以执行硬件上能够运行的各种指令，操作系统是运行在内核态的。</li>
+</ul>
+<h4 id="切换流程"><a href="#切换流程" class="headerlink" title="切换流程"></a>切换流程</h4><p>glibc的库函数和内核中都会维护一张系统调用映射表，这样用户态和内核态就可以通过系统调用号进行通信。</p>
+<table>
+<thead>
+<tr>
+<th>系统调用号</th>
+<th>用户态系统调用方法</th>
+<th>内核态系统调用方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>write</td>
+<td>sys_write</td>
+</tr>
+<tr>
+<td>2</td>
+<td>open</td>
+<td>sys_open</td>
+</tr>
+<tr>
+<td>3</td>
+<td>close</td>
+<td>sys_close</td>
+</tr>
+</tbody></table>
+<p>以输出<code>Hello, World!</code>为例，其流程如下</p>
+<ul>
+<li><code>printf</code>会调用<code>glibc</code>函数库中封装的<code>write</code>函数；</li>
+<li><code>write</code>函数完成的工作：<ul>
+<li>将参数保存至寄存器，并根据系统调用名从系统调用表中找到系统调用号；</li>
+<li>通过<code>syscall</code>指令将用户态陷入内核态。</li>
+</ul>
+</li>
+<li>进入内核态后完成的工作：<ul>
+<li>根据系统调用号查找对应的内核态系统调用方法；</li>
+<li>从寄存器中获取传递的参数；</li>
+<li>通过特权指令（out）来操作硬件设备（将数据真正地输出到控制台）</li>
+<li>将执行结果保存到寄存器，并返回到用户态。</li>
+</ul>
+</li>
+</ul>
+<div align="center" style=transform:scale(0.9)>
+<img src="/images/用户态内核态2.svg"/>
+</div>
+
+<h2 id="二面"><a href="#二面" class="headerlink" title="二面"></a>二面</h2><h3 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h3><h3 id="数据包传输"><a href="#数据包传输" class="headerlink" title="数据包传输"></a>数据包传输</h3>
         </div>
 
         
@@ -338,10 +391,6 @@
                 <span>Tag(s):</span>
                 <span class="tag">
                     
-                    
-                        <a href="/tags/gdb/"># gdb</a>
-                    
-                        
                 </span>
             </div>
             <div>
