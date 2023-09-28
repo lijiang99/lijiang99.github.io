@@ -421,7 +421,28 @@
 </ul>
 </li>
 </ul>
-<h3 id="数据包传输"><a href="#数据包传输" class="headerlink" title="数据包传输"></a>数据包传输</h3>
+<h3 id="数据包传输"><a href="#数据包传输" class="headerlink" title="数据包传输"></a>数据包传输</h3><h4 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h4><p>Web页面的请求历程从下至上可分为：</p>
+<ul>
+<li>准备阶段1：DHCP、UDP、IP和以太网</li>
+<li>准备阶段2：DNS和ARP</li>
+<li>准备阶段3：域内路由选择到DNS服务器</li>
+<li>Web客户-服务器交互：TCP和HTTP</li>
+</ul>
+<h4 id="准备阶段1"><a href="#准备阶段1" class="headerlink" title="准备阶段1"></a>准备阶段1</h4><p>首先需要将主机与网络相连，由于没有IP地址就不能做其他任何事情，所以会运行DHCP协议，从本地的DHCP服务器获得一个IP地址以及其他信息，其流程如下：</p>
+<ul>
+<li>源主机的操作系统生成一个DHCP请求报文，并将该报文放入具有目的端口<code>67</code>（DHCP服务器）和源端口<code>68</code>（DHCP客户）的UDP报文段。该UDP报文段则被放置在一个具有广播IP目的地址（<code>255.255.255.255</code>）和源IP地址（<code>0.0.0.0</code>，因为目前主机尚无IP地址）的IP数据报中。</li>
+<li>包含DHCP请求报文的IP数据报被放置在以太网帧中，该以太网帧具有目的MAC地址<code>FF:FF:FF:FF:FF:FF</code>，并会被广播到与交换机连接的所有设备，该帧的源MAC地址就是源主机的唯一MAC地址。</li>
+<li>路由器收到该广播以太网帧，帧中包含DHCP请求，并从该帧中抽取出IP数据报。该广播IP目的地址指示了这个IP数据报应该由当前节点的高层协议处理，因此该数据报的载荷（一个UDP报文段）被分解向上到达UDP，DHCP请求报文从此UDP报文段中被抽取出来，那么此时DHCP服务器就有了DHCP请求报文。</li>
+<li>DHCP服务器会生成一个包含分配给源主机的IP地址、DNS服务器的IP地址、默认网关路由的IP地址和子网块（网络掩码）的DHCP ACK报文。并将其从上至下逐层封装：DHCP ACK报文-&gt;UDP报文段-&gt;IP数据报-&gt;以太网帧中，再转发给源主机。</li>
+<li>源主机在收到包含DHCP ACK的以太网帧后，会从下至上逐层抽取：IP数据报-&gt;UDP报文段-&gt;DHCP ACK报文。而源主机就会记录下它的IP地址，以及DNS服务器的IP地址，并在自己的IP转发表中安装默认的网关地址。</li>
+</ul>
+<h4 id="准备阶段2"><a href="#准备阶段2" class="headerlink" title="准备阶段2"></a>准备阶段2</h4><p>以将<code>www.baidu.com</code>的URL键入Web浏览器为例，源主机需要知道<code>www.baidu.com</code>的IP地址，那么就需要用到DNS协议来完成域名到IP地址的转换。</p>
+<ul>
+<li>源主机生成一个DNS查询报文，该报文被放置在一个具有<code>53</code>号目的端口的UDP报文段中，该UDP报文段则会被放入具有目的IP为DNS服务器地址和源IP为自身地址的IP数据报中。</li>
+<li>DNS请求报文会放入一个以太网帧中，该帧将发送到网关路由中，但由于先前的DHCP ACK报文只得到了网关路由的IP地址，仍不知道网关路由的MAC地址，所以需要先通过ARP协议来获得网关路由的MAC地址。</li>
+<li>当源主机获得网关路由的MAC地址后，便可让包含DNS查询报文的以太网帧寻址到网关路由器。</li>
+</ul>
+
         </div>
 
         
