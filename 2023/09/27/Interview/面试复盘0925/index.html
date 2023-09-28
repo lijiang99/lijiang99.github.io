@@ -425,7 +425,6 @@
 <ul>
 <li>准备阶段1：DHCP、UDP、IP和以太网</li>
 <li>准备阶段2：DNS和ARP</li>
-<li>准备阶段3：域内路由选择到DNS服务器</li>
 <li>Web客户-服务器交互：TCP和HTTP</li>
 </ul>
 <h4 id="准备阶段1"><a href="#准备阶段1" class="headerlink" title="准备阶段1"></a>准备阶段1</h4><p>首先需要将主机与网络相连，由于没有IP地址就不能做其他任何事情，所以会运行DHCP协议，从本地的DHCP服务器获得一个IP地址以及其他信息，其流程如下：</p>
@@ -441,6 +440,15 @@
 <li>源主机生成一个DNS查询报文，该报文被放置在一个具有<code>53</code>号目的端口的UDP报文段中，该UDP报文段则会被放入具有目的IP为DNS服务器地址和源IP为自身地址的IP数据报中。</li>
 <li>DNS请求报文会放入一个以太网帧中，该帧将发送到网关路由中，但由于先前的DHCP ACK报文只得到了网关路由的IP地址，仍不知道网关路由的MAC地址，所以需要先通过ARP协议来获得网关路由的MAC地址。</li>
 <li>当源主机获得网关路由的MAC地址后，便可让包含DNS查询报文的以太网帧寻址到网关路由器。</li>
+<li>网关路由器会将数据报转发给DNS服务器，当包含DNS查询的IP数据报到达DNS服务器，DNS服务器会抽取出DNS查询报文，并在DNS数据库中查找域名<code>www.baidu.com</code>，找到其对应的IP地址的DNS源记录。</li>
+<li>DNS服务器生成一个包含主机名到IP地址映射的DNS回答报文并封装：，回答报文-&gt;UDP报文段-&gt;IP数据报，并反向转发给源主机，那么源主机最终获得<code>www.baidu.com</code>的IP地址后，就可以准备连接<code>wwww.baidu.com</code>服务器了。</li>
+</ul>
+<h4 id="Web客户-服务器交互"><a href="#Web客户-服务器交互" class="headerlink" title="Web客户-服务器交互"></a>Web客户-服务器交互</h4><p>既然已经获得了<code>www.baidu.com</code>的IP地址，就能够生成TCP套接字，该套接字将用于向<code>www.baidu.com</code>发送HTTP GET报文，但源主机中的TCP必须与<code>www.baidu.com</code>中的TCP执行三次握手。</p>
+<ul>
+<li>源主机首先生成一个具有目的端口<code>80</code>（针对于HTTP）的TCP SYN报文段，该报文会被封装为IP（目的IP为<code>www.baidu.com</code>）数据报，该IP数据报会被封装成以太网帧（MAC地址为网关路由）。</li>
+<li>网关路由通过BGP（边界网关）协议将TCP SYN数据报送达<code>www.baidu.com</code>，服务器会从TCP SYN报文分解得到与端口<code>80</code>相联系的欢迎套接字，接下来就是三次握手流程。</li>
+<li>当三次握手完成，源主机的浏览器生成包含URL的HTTP请求报文，并将其写入套接字，成为TCP报文段的有效载荷，接下来逐层封装：TCP报文段-&gt;IP数据报-&gt;以太网帧，并交付到<code>www.baidu.com</code>，如前面两个步骤所述。</li>
+<li>服务器收到HTTP请求报文后，会生成HTTP响应报文，将请求的Web页面放入HTTP响应体中，并将其发送进TCP套接字，再反向转发至源主机。而源主机浏览器就会从HTTP响应报文中抽取Web页面，并完成页面渲染。</li>
 </ul>
 
         </div>
