@@ -410,6 +410,17 @@
 <li>ARP协议（跨层的两边协议）用于完成网络层的IP地址到链路层的MAC地址的映射，每台主机或路由器都会在自己的内存中建立⼀个ARP表，以表示IP地址和MAC地址的映射关系。</li>
 <li>当源主机需要将⼀个数据报发送到目的主机时，会首先检查自己的ARP表中是否存在该IP地址对应的MAC地址。如果有，就直接将数据报发送到这个MAC地址；如果没有，就向子网发起⼀个ARP查询分组。</li>
 <li>ARP查询分组中包含源主机的IP地址、MAC地址以及目的主机的IP地址，该查询分组在广播帧中发送，子网中所有主机收到该ARP查询分组后，会检查其目的IP地址和自己的IP地址是否⼀致。若不同，就忽略此分组；若相同，则发出一个包含自己MAC地址的ARP响应分组给源主机，该响应分组在标准帧中发送。最后源主机收到响应ARP分组，并将目的主机的IP地址和MAC地址的映射关系更新到自己的ARP表中。</li>
+<li>使用tcpdump观察ARP通信过程<ul>
+<li>首先使用<code>arp</code>命令查看缓存表已有的映射关系，并使用<code>arp -d</code>来删除<code>192.168.0.107</code>对应的记录。<div align="center" style=transform:scale(0.9)>
+<img src="/images/ARP1.png"/>
+</div></li>
+<li>使用<code>ssh</code>来连接<code>192.168.0.107</code>，并通过<code>tcpdump</code>命令来抓去以太网帧。<div align="center" style=transform:scale(0.9)>
+<img src="/images/ARP2.png"/>
+</div></li>
+<li>第一个数据包显示MAC地址为<code>a0:78:17:6e:73:27</code>的源主机会发送MAC地址为<code>ff:ff:ff:ff:ff:ff</code>的广播帧到子网中。其中<code>0x0806</code>是以太网帧头部的类型字段的值，表示分用的目标是ARP模块。该以太网帧的长度为42字节，其中数据部分长度为28字节，<code>Request</code>表示这是一个ARP查询分组。</li>
+<li>第二个数据包显示ARP源端的MAC地址为<code>64:49:7d:7d:8d:ea</code>，目的端MAC地址为<code>a0:78:17:6e:73:27</code>（源主机的物理地址）。<code>Replay</code>表示这是一个ARP响应分组。</li>
+</ul>
+</li>
 </ul>
 
         </div>
