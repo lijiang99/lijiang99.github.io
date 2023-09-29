@@ -291,6 +291,10 @@
 <td>查看所有断点</td>
 </tr>
 <tr>
+<td><code>d(delete) [断点编号]</code></td>
+<td>删除指定断点，若不指定编号，则默认删除所有断点</td>
+</tr>
+<tr>
 <td><code>n(next)</code></td>
 <td>执行下一行语句</td>
 </tr>
@@ -303,8 +307,16 @@
 <td>打印表达式的值，且可通过表达式修改变量值或调用函数</td>
 </tr>
 <tr>
+<td><code>p(print) *arr@10</code></td>
+<td>打印数组从arr[0]开始的10个元素值</td>
+</tr>
+<tr>
 <td><code>set [变量=值]</code></td>
 <td>修改变量的值</td>
+</tr>
+<tr>
+<td><code>set args [...]</code></td>
+<td>设置程序的启动参数（命令行参数）</td>
 </tr>
 <tr>
 <td><code>bt(backtrace)/where</code></td>
