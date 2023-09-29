@@ -40,6 +40,31 @@
   </entry>
   
   <entry>
+    <title>gdb调试</title>
+    <link href="http://example.com/2023/08/08/Tools/gdb%E8%B0%83%E8%AF%95/"/>
+    <id>http://example.com/2023/08/08/Tools/gdb%E8%B0%83%E8%AF%95/</id>
+    <published>2023-08-07T16:00:00.000Z</published>
+    <updated>2023-09-29T06:35:11.977Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;常用命令&quot;&gt;&lt;a href=&quot;#常用命令&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="工具" scheme="http://example.com/categories/%E5%B7%A5%E5%85%B7/"/>
+    
+    
+    <category term="gdb" scheme="http://example.com/tags/gdb/"/>
+    
+  </entry>
+  
+  <entry>
     <title>git常用指令</title>
     <link href="http://example.com/2023/08/07/Tools/git%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4/"/>
     <id>http://example.com/2023/08/07/Tools/git%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4/</id>
