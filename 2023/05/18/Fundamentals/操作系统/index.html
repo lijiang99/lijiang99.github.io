@@ -304,7 +304,7 @@
 <li>处理策略：死锁预防–破坏四个必要条件；死锁避免–使用安全性算法，如系统安全状态（安全状态一定不会出现死锁，不安全状态可能会出现死锁）和银行家算法（系统预判进程请求是否会导致不安全，是则拒绝请求）；死锁检测–利用资源分配图，当且仅当资源分配图不可完全简化时（类似于拓扑排序）；死锁解除–资源剥夺、撤销进程、进程回退。</li>
 </ul>
 <h2 id="9-递归锁和自旋锁"><a href="#9-递归锁和自旋锁" class="headerlink" title="9. 递归锁和自旋锁"></a>9. 递归锁和自旋锁</h2><ul>
-<li>递归锁：递归锁也叫可重入锁，非递归锁则不可重入。二者的唯一区别是，同一个线程可以多次获得同一个递归锁，且不会产生死锁；而对于非递归锁则会产生死锁。</li>
+<li>递归锁：递归锁也叫可重入锁，非递归锁则不可重入。二者的唯一区别是，同一个线程可以多次获得同一个递归锁，且不会产生死锁；而对于非递归锁则会产生死锁。<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建并初始化互斥锁属性</span></span><br><span class="line"><span class="type">pthread_mutexattr_t</span> attr;</span><br><span class="line"><span class="built_in">pthread_mutexattr_init</span>(&amp;attr);</span><br><span class="line"><span class="comment">// 设置互斥锁属性为递归锁</span></span><br><span class="line"><span class="built_in">pthread_mutexattr_settype</span>(&amp;attr, PTHREAD_MUTEX_RECURSIVE_NP);</span><br></pre></td></tr></table></figure></li>
 <li>自旋锁：若线程无法取得锁，不会立刻放弃CPU时间片，而是⼀直循环尝试获取锁，直到获取为止。⼀般应用于加锁时间很短的场景，这时效率较高。若别的线程长时期占有锁，那么自旋就是在浪费CPU做无用功。</li>
 </ul>
 <h2 id="10-页和段的区别"><a href="#10-页和段的区别" class="headerlink" title="10. 页和段的区别"></a>10. 页和段的区别</h2><ul>
