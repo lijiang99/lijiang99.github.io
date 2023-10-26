@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="li jiang">
+
+
+
+
+
+<title>MQTT主题订阅树 | bd7xzz</title>
+
+
+
+    <link rel="icon" href="/favicon.jpg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="bd7xzz" type="application/atom+xml">
+</head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">MQTT主题订阅树</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">li jiang</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">September 30, 2023&nbsp;&nbsp;0:00:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E9%A1%B9%E7%9B%AE/">项目</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <span id="more"></span>
+
+
+<h2 id="MQTT主题"><a href="#MQTT主题" class="headerlink" title="MQTT主题"></a>MQTT主题</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>“主题”在MQTT通信中是一个非常重要的概念，客户端发布信息以及订阅信息都是围绕“主题”来进行的，并且MQTT服务端在管理MQTT信息时，也是使用“主题”来控制的。客户端发布消息时需要为消息指定一个“主题”，表示将消息发布到该主题；而对于订阅消息的客户端而言，可通过订阅“主题”来订阅消息，这样当其它客户端或自己（当前客户端）向该主题发布消息时，MQTT服务端就会将该主题的信息发送给该主题的订阅者（客户端）。这一概念类似于B站的关注，比如关注了一个up主后，up发布一个新的动态，那么服务端就会向关注该up的粉丝推送这条动态。</p>
+<h3 id="主题过滤器结构"><a href="#主题过滤器结构" class="headerlink" title="主题过滤器结构"></a>主题过滤器结构</h3><p>订阅的主题过滤器可以包含分割符，使得主题具备结构化特性，此外还可以包含特殊的通配符，允许一次订阅多个主题。</p>
+<h4 id="主题层级分隔符"><a href="#主题层级分隔符" class="headerlink" title="主题层级分隔符"></a>主题层级分隔符</h4><p>斜杠（<code>&#39;/&#39;</code>）用于分割主题的每个层级，为主题名提供分层结构（因此很自然地联想到文件目录，那么就可以用树形结构对主题层级进行管理）。当客户端订阅指定的主题过滤器包含通配符时，主题层级分隔符就很有用了，主题层级分隔符可以出现在主题过滤器或主题名字的任何位置。</p>
+<h4 id="多层通配符"><a href="#多层通配符" class="headerlink" title="多层通配符"></a>多层通配符</h4><p>数字标志（<code>&#39;#&#39;</code>）是用于匹配主题中任意层级的通配符。多层通配符表示它的父级和任意数量的子层级。多层通配符必须位于它自己的层级或者跟在主题层级分隔符后面。不管哪种情况，它都必须是主题过滤器的最后一个字符。</p>
+<p>例如，如果客户端订阅主题<code>&quot;sport/tennis/player1/#&quot;</code>，它会收到使用以下主题名发布的消息。</p>
+<ul>
+<li><code>&quot;sport/tennis/player1&quot;</code></li>
+<li><code>&quot;sport/tennis/player1/ranking&quot;</code></li>
+<li><code>&quot;sport/tennis/player1/score/wimbledon&quot;</code></li>
+</ul>
+<p>此外，<code>&quot;sport/#&quot;</code>也可以匹配单独的<code>&quot;sport&quot;</code>，因为<code>&#39;#&#39;</code>也包含它的父级，但<code>&quot;sport/tennis#&quot;</code>是无效的。</p>
+<h4 id="单层通配符"><a href="#单层通配符" class="headerlink" title="单层通配符"></a>单层通配符</h4><p>加号（<code>&#39;+&#39;</code>）是只能用于单个主题层级匹配的通配符。在主题过滤器的任意层级都可以使用单层通配符，包括第一个和最后一个层级。然而它必须占据主题过滤器的整个层级。可以在主题过滤器的多个层级中使用它，也可以配合多层过滤器一起使用。</p>
+<p>例如，<code>&quot;sport/tennis/+&quot;</code>匹配<code>&quot;sport/tennis/player1&quot;</code>和<code>&quot;sport/tennis/player2&quot;</code>，但不匹配<code>&quot;sport/tennis/player1/ranking&quot;</code>。同时，由于单层通配符只能匹配一个层级，所以<code>&quot;sport/+&quot;</code>不匹配<code>&quot;sport&quot;</code>但却匹配<code>&quot;sport/&quot;</code>。</p>
+<ul>
+<li><code>&quot;+&quot;</code>是有效的，<code>&quot;+/tennis/#&quot;</code>也是有效的，但<code>&quot;sport+&quot;</code>是无效的；</li>
+<li><code>&quot;sport/+/player1&quot;</code>是有效的，<code>&quot;/finance&quot;</code>匹配<code>&quot;+/+&quot;</code>和<code>&quot;/+&quot;</code>，但是不匹配<code>&quot;+&quot;</code>。</li>
+</ul>
+<h4 id="以-开头的主题"><a href="#以-开头的主题" class="headerlink" title="以$开头的主题"></a>以$开头的主题</h4><p>服务端不能将<code>&#39;$&#39;</code>字符开头的主题名匹配通配符（<code>&#39;#&#39;</code>或<code>&#39;+&#39;</code>）开头的主题过滤器，服务端应该阻止客户端使用这种主题名与其他客户端交换消息。服务端实现可以将<code>&#39;$&#39;</code>开头的主题名用作其他目的，如<code>&quot;$SYS/&quot;</code>被广泛用于包含服务器特定信息或控制接口的主题的前缀。</p>
+<h4 id="主题语义和用法"><a href="#主题语义和用法" class="headerlink" title="主题语义和用法"></a>主题语义和用法</h4><p>主题名和主题过滤器必须符合以下规则：</p>
+<ul>
+<li>主题名和主题过滤器必须至少包含一个字符，只包含<code>&quot;/&quot;</code>的主题名或主题过滤器是合法的；</li>
+<li>主题名和主题过滤器区分大小写，且可以包含空格，但不能包含空字符；</li>
+<li>主题名和主题过滤器是UTF-8编码的字符串，不能超过65535字节；</li>
+<li>主题可能是在服务端预先定义好的，也可能是服务端收到的第一个订阅或使用那个主题名的应用消息时动态添加的。</li>
+</ul>
+<h2 id="主题订阅树"><a href="#主题订阅树" class="headerlink" title="主题订阅树"></a>主题订阅树</h2><p>经过先前的分析，不难发现主题名和主题过滤器的层级结构与文件目录的层级结构十分类似，所以可使用树形结构来对主题名&#x2F;主题过滤器进行统一管理。其基本结构定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="title function_">void</span><span class="params">(*match_cb)</span><span class="params">(<span class="type">tmq_broker_t</span>* broker, <span class="type">char</span>* client_id,</span></span><br><span class="line"><span class="params">                        <span class="type">char</span>* topic, <span class="type">uint8_t</span> required_qos, tmq_message* message)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 主题订阅树，对主题名/主题过滤器进行统一管理</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">tmq_topics_s</span> &#123;</span></span><br><span class="line">    <span class="comment">// 所有客户端的主题名/主题过滤器的根节点</span></span><br><span class="line">    topic_tree_node* topic_tree_root;</span><br><span class="line">    <span class="comment">// 以&quot;$SYS/&quot;开头的主题，作为包含服务器特定信息或控制接口的主题的前缀</span></span><br><span class="line">    topic_tree_node* sys_topic_tree_root;</span><br><span class="line">    <span class="comment">// 回调函数，当主题过滤器与主题订阅树中的路径匹配时会调用该函数向客户端（订阅者）发布消息</span></span><br><span class="line">    match_cb on_match;</span><br><span class="line">    <span class="type">tmq_broker_t</span>* broker; <span class="comment">// 主题订阅树所归属的服务器Broker</span></span><br><span class="line">&#125; <span class="type">tmq_topics_t</span>;</span><br></pre></td></tr></table></figure>
+<p>其中客户端所订阅或发布的主题名&#x2F;主题过滤器和以<code>&quot;$SYS/&quot;</code>开头的主题分别用不同的树形结构（根节点不同）进行管理，节点类型都为<code>topic_tree_node</code>。订阅树的整体结构如下图所示：</p>
+<div align="center" style=transform:scale(0.9)>
+<img src="/images/主题订阅树.png"/>
+</div>
+
+<p>从图中可以看出，整个树形结构由一个根节点进行维护，而根节点中处理<code>childs</code>字段外，其余字段并不存放实际数据，所以该根节点类似于链表中的<code>dummyHead</code>的作用。</p>
+<h3 id="层级节点"><a href="#层级节点" class="headerlink" title="层级节点"></a>层级节点</h3><p>对于树中某一层级的单个节点来说，首先具有一个层级名<code>level_name</code>，用于与同层级的其他节点进行区分。此外还有一个父级指针<code>parent</code>用于指向当前节点的父级节点，而又由于当前节点的子节点个数是未知的，所以使用<code>map</code>结构（<code>childs</code>）来存放所有的子节点，该<code>map</code>的映射关系为<code>(level_name:topic_tree_node*)</code>，即可以通过下一级的层级名快速定位子节点。另外，还需要一个<code>map</code>（<code>subscribers</code>）来存放客户端的信息，表示匹配到当前层级为止（不再继续向下匹配了），所对应的主题的订阅者id和最大QoS等级。最后，还需要一个<code>retain_message_t</code>类型的数据用来存放当前层级的保留消息。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 主题名可能会被&quot;/&quot;分割为多个层级，类似与文件的目录结构</span></span><br><span class="line"><span class="comment">// 因此使用树形结构对主题的不同层级进行管理</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">topic_tree_node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">tmq_str_t</span> level_name; <span class="comment">// 当前层级的名字</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">topic_tree_node</span>* <span class="title">parent</span>;</span> <span class="comment">// 父级</span></span><br><span class="line">    <span class="comment">// 子级由map表示，其映射关系为子级名:子级节点，类似一个多叉树结构</span></span><br><span class="line">    tmq_map(<span class="type">char</span>*, <span class="keyword">struct</span> topic_tree_node*) childs;</span><br><span class="line">    <span class="comment">// 匹配到当前层级的所有订阅者（客户端）的id:QoS级别要求</span></span><br><span class="line">    <span class="comment">// QoS级别要求是指服务端向客户端发送应用消息所允许的最大QoS等级</span></span><br><span class="line">    tmq_map(<span class="type">char</span>*, <span class="type">uint8_t</span>) subscribers;</span><br><span class="line">    <span class="comment">// 表示匹配到当前层级的主题的保留消息</span></span><br><span class="line">    <span class="type">retain_message_t</span>* retain_message;</span><br><span class="line">&#125; topic_tree_node;</span><br></pre></td></tr></table></figure>
+
+<h3 id="相关操作"><a href="#相关操作" class="headerlink" title="相关操作"></a>相关操作</h3><h4 id="主题订阅树初始化"><a href="#主题订阅树初始化" class="headerlink" title="主题订阅树初始化"></a>主题订阅树初始化</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建一个新的层级节点，并初始化其数据（父级节点、当前层级名）</span></span><br><span class="line"><span class="type">static</span> topic_tree_node* <span class="title function_">topic_tree_node_new</span><span class="params">(topic_tree_node* parent, <span class="type">char</span>* level_name)</span> &#123;</span><br><span class="line">    topic_tree_node* node = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(topic_tree_node));</span><br><span class="line">    <span class="keyword">if</span>(!node) fatal_error(<span class="string">&quot;malloc() error: out of memory&quot;</span>);</span><br><span class="line">    node-&gt;parent = parent;</span><br><span class="line">    node-&gt;level_name = tmq_str_new(level_name);</span><br><span class="line">    node-&gt;retain_message = <span class="literal">NULL</span>;</span><br><span class="line">    tmq_map_str_init(&amp;node-&gt;childs, topic_tree_node*, MAP_DEFAULT_CAP, MAP_DEFAULT_LOAD_FACTOR);</span><br><span class="line">    tmq_map_str_init(&amp;node-&gt;subscribers, <span class="type">uint8_t</span>, MAP_DEFAULT_CAP, MAP_DEFAULT_LOAD_FACTOR);</span><br><span class="line">    <span class="keyword">return</span> node;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化一个主题管理器（主题订阅树），树中的节点具有相同的根层级</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">tmq_topics_init</span><span class="params">(<span class="type">tmq_topics_t</span>* topics, <span class="type">tmq_broker_t</span>* broker, match_cb on_match)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span>(!topics) <span class="keyword">return</span>;</span><br><span class="line">    topics-&gt;topic_tree_root = topic_tree_node_new(<span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">    topics-&gt;sys_topic_tree_root = topic_tree_node_new(<span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">    topics-&gt;on_match = on_match;</span><br><span class="line">    topics-&gt;broker = broker;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="向主题订阅树中添加订阅"><a href="#向主题订阅树中添加订阅" class="headerlink" title="向主题订阅树中添加订阅"></a>向主题订阅树中添加订阅</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 向主题订阅树中添加订阅（主题过滤器），并将与该主题匹配的所有保留消息提取出来，保存到保留消息清单中</span></span><br><span class="line"><span class="comment">// 因为客户端发起一个新订阅时，服务端需要将与该订阅匹配的主题的保留消息发送给客户端</span></span><br><span class="line">retain_message_list <span class="title function_">tmq_topics_add_subscription</span><span class="params">(<span class="type">tmq_topics_t</span>* topics, <span class="type">char</span>* topic_filter,</span></span><br><span class="line"><span class="params">        <span class="type">char</span>* client_id, <span class="type">uint8_t</span> qos)</span> &#123;</span><br><span class="line">    retain_message_list retain_messages = tmq_vec_make(<span class="type">retain_message_t</span>*);</span><br><span class="line">    <span class="comment">// 若主题过滤器无实际内容，则直接返回</span></span><br><span class="line">    <span class="keyword">if</span>(!topic_filter || <span class="built_in">strlen</span>(topic_filter) &lt; <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> retain_messages;</span><br><span class="line">    <span class="comment">// 将主题过滤器添加到主题订阅树中，且path中保存按&quot;/&quot;分割好后的主题过滤器的各层级名</span></span><br><span class="line">    topic_path path = tmq_vec_make(topic_tree_node*);</span><br><span class="line">    topic_tree_node* node = add_topic_or_find(topics, topic_filter, <span class="number">1</span>, &amp;path);</span><br><span class="line">    <span class="comment">// 在该条路径中的最后一个层级节点中添加订阅者id:QoS级别要求</span></span><br><span class="line">    tmq_map_put(node-&gt;subscribers, client_id, qos);</span><br><span class="line">    <span class="type">size_t</span> i = <span class="number">0</span>; topic_tree_node* next;</span><br><span class="line">    <span class="comment">// 利用循环定位path中第一个通配符</span></span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        next = *tmq_vec_at(path, i + <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">strcmp</span>(next-&gt;level_name, <span class="string">&quot;+&quot;</span>) != <span class="number">0</span></span><br><span class="line">                &amp;&amp; <span class="built_in">strcmp</span>(next-&gt;level_name, <span class="string">&quot;#&quot;</span>) != <span class="number">0</span>) &#123; ++i; &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">break</span>;</span><br><span class="line">    &#125; <span class="keyword">while</span>(i &lt; tmq_vec_size(path) - <span class="number">1</span>);</span><br><span class="line">    <span class="comment">// 若path中不存在通配符，且当前path所表示的主题存在保留消息</span></span><br><span class="line">    <span class="keyword">if</span>(i == tmq_vec_size(path) - <span class="number">1</span> &amp;&amp; (*tmq_vec_at(path, i))-&gt;retain_message)</span><br><span class="line">        tmq_vec_push_back(retain_messages, (*tmq_vec_at(path, i))-&gt;retain_message);</span><br><span class="line">    <span class="comment">// 否则若path中存在通配符，或path所表示的主题不存在保留消息</span></span><br><span class="line">    <span class="keyword">else</span> find_retain_messages(*tmq_vec_at(path, i), i + <span class="number">1</span>, &amp;path, &amp;retain_messages);</span><br><span class="line">    tmq_vec_free(path);</span><br><span class="line">    <span class="keyword">return</span> retain_messages;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用到的辅助函数的定义如下所示：</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 在当前层级的下一子级（非递归）中查找匹配的层级名，若查到，就返回层级名所对应的节点</span></span><br><span class="line"><span class="comment">// 若未查到，且create为0，则直接返回NULL，否则若create为1，则创建一个新的子级节点</span></span><br><span class="line"><span class="comment">// 并将子级名:子级节点的映射关系添加到当前层级的子级map中，且返回新节点</span></span><br><span class="line"><span class="type">static</span> topic_tree_node* <span class="title function_">find_or_create</span><span class="params">(topic_tree_node* cur, <span class="type">tmq_str_t</span> level, <span class="type">int</span> create)</span> &#123;</span><br><span class="line">    topic_tree_node** next = tmq_map_get(cur-&gt;childs, level);</span><br><span class="line">    <span class="keyword">if</span>(next) <span class="keyword">return</span> *next;</span><br><span class="line">    <span class="keyword">if</span>(!create) <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    topic_tree_node* new_next = topic_tree_node_new(cur, level);</span><br><span class="line">    tmq_map_put(cur-&gt;childs, level, new_next);</span><br><span class="line">    <span class="keyword">return</span> new_next;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="title function_">tmq_vec</span><span class="params">(topic_tree_node*)</span> topic_path;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 根据指定的主题过滤器，在一个主题订阅树中查找匹配的各层级名</span></span><br><span class="line"><span class="comment">// 若path不为NULL，则表示需将所查找到的层级节点依次存入查询路径path中</span></span><br><span class="line"><span class="comment">// path相当于按&quot;/&quot;符分割好的主题过滤器，add表示是否需要在未查到的情况下创建一个新的层级节点</span></span><br><span class="line"><span class="comment">// 最后返回最后一个匹配的层级名的节点来明确一条匹配路径，或返回NULL</span></span><br><span class="line"><span class="type">static</span> topic_tree_node* <span class="title function_">add_topic_or_find</span><span class="params">(<span class="type">tmq_topics_t</span>* topics, <span class="type">char</span>* topic_filter,</span></span><br><span class="line"><span class="params">        <span class="type">int</span> add, topic_path* path)</span> &#123;</span><br><span class="line">    <span class="type">char</span>* lp = topic_filter, *rp = lp;</span><br><span class="line">    topic_tree_node* node = topics-&gt;topic_tree_root;</span><br><span class="line">    <span class="keyword">if</span>(path) tmq_vec_push_back(*path, node);</span><br><span class="line">    <span class="type">tmq_str_t</span> level = tmq_str_empty();</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="comment">// rp用于定位下一个&quot;/&quot;的出现位置，lp至rp之间的字符就是一个层级名</span></span><br><span class="line">        <span class="keyword">while</span>(*rp &amp;&amp; *rp != <span class="string">&#x27;/&#x27;</span>) rp++;</span><br><span class="line">        <span class="keyword">if</span>(rp == lp) &#123; <span class="comment">// 若层级名为空</span></span><br><span class="line">            level = tmq_str_assign(level, <span class="string">&quot;&quot;</span>);</span><br><span class="line">            node = find_or_create(node, level, add);</span><br><span class="line">            <span class="keyword">if</span>(!node) <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">if</span>(path) tmq_vec_push_back(*path, node);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123; <span class="comment">// 层级名存在</span></span><br><span class="line">            level = tmq_str_assign_n(level, lp, rp - lp);</span><br><span class="line">            node = find_or_create(node, level, add);</span><br><span class="line">            <span class="keyword">if</span>(!node) <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">if</span>(path) tmq_vec_push_back(*path, node);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 如果到了最后一个字符，那么退出循环</span></span><br><span class="line">        <span class="keyword">if</span>(!*rp) <span class="keyword">break</span>;</span><br><span class="line">        lp = rp + <span class="number">1</span>; rp = lp;</span><br><span class="line">        <span class="keyword">if</span>(!*lp) &#123;</span><br><span class="line">            level = tmq_str_assign(level, <span class="string">&quot;&quot;</span>);</span><br><span class="line">            node = find_or_create(node, level, add);</span><br><span class="line">            <span class="keyword">if</span>(path) tmq_vec_push_back(*path, node);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    tmq_str_free(level);</span><br><span class="line">    <span class="keyword">return</span> node;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 从一个指定的层级节点开始，以递归调用的形式，将该层级节点及其子层级节点中的保留消息保存到保留消息清单中</span></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">get_all_retain</span><span class="params">(topic_tree_node* node, retain_message_list* retain_msg)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span>(node-&gt;retain_message) tmq_vec_push_back(*retain_msg, node-&gt;retain_message);</span><br><span class="line">    <span class="type">tmq_map_iter_t</span> it = tmq_map_iter(node-&gt;childs);</span><br><span class="line">    <span class="keyword">for</span>(; tmq_map_has_next(it); tmq_map_next(node-&gt;childs, it)) &#123;</span><br><span class="line">        <span class="type">char</span>* next_level = it.first;</span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(next_level, <span class="string">&quot;+&quot;</span>) || !<span class="built_in">strcmp</span>(next_level, <span class="string">&quot;#&quot;</span>)) <span class="keyword">continue</span>;</span><br><span class="line">        topic_tree_node* next = *(topic_tree_node**) it.second;</span><br><span class="line">        get_all_retain(next, retain_msg); <span class="comment">// 递归调用</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 从指定层级节点开始，并依据指定路径（被分割好的主题过滤器）来提取出所有匹配的子主题的保留消息</span></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">find_retain_messages</span><span class="params">(topic_tree_node* node, <span class="type">size_t</span> i, topic_path* path,</span></span><br><span class="line"><span class="params">        retain_message_list* retain_msg)</span> &#123;</span><br><span class="line">    <span class="comment">// 若已经处理完了路径中的所有节点，那么返回即可</span></span><br><span class="line">    <span class="keyword">if</span>(i == tmq_vec_size(*path)) &#123;</span><br><span class="line">        <span class="keyword">if</span>(node-&gt;retain_message) tmq_vec_push_back(*retain_msg, node-&gt;retain_message);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 表示当前需要处理的路径中的某一个节点</span></span><br><span class="line">    topic_tree_node* path_node = *tmq_vec_at(*path, i);</span><br><span class="line">    <span class="comment">// 若当前节点的层级名为单层通配符&quot;+&quot;，那么就需要从其同层级的兄弟节点开始查找</span></span><br><span class="line">    <span class="comment">// 且兄弟节点的后续路径必须与path的后续路径匹配</span></span><br><span class="line">    <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(path_node-&gt;level_name, <span class="string">&quot;+&quot;</span>)) &#123;</span><br><span class="line">        <span class="type">tmq_map_iter_t</span> it = tmq_map_iter(node-&gt;childs);</span><br><span class="line">        <span class="keyword">for</span>(; tmq_map_has_next(it); tmq_map_next(node-&gt;childs, it)) &#123;</span><br><span class="line">            <span class="type">char</span>* next_level = it.first;</span><br><span class="line">            <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(next_level, <span class="string">&quot;+&quot;</span>) || !<span class="built_in">strcmp</span>(next_level, <span class="string">&quot;#&quot;</span>)) <span class="keyword">continue</span>;</span><br><span class="line">            topic_tree_node* next = *(topic_tree_node**) it.second;</span><br><span class="line">            find_retain_messages(next, i + <span class="number">1</span>, path, retain_msg);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 若当前节点的层级名为多层通配符&quot;#&quot;，则需要将当前同一层级的所有节点</span></span><br><span class="line">    <span class="comment">// 及所有同层级的所有子层级节点中的保留消息全提取出来</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(path_node-&gt;level_name, <span class="string">&quot;#&quot;</span>)) get_all_retain(node, retain_msg);</span><br><span class="line">    <span class="comment">// 若不为通配符，就只是一个普通的层级名，那么以递归调用的形式提取保留消息即可</span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        topic_tree_node** next = tmq_map_get(node-&gt;childs, path_node-&gt;level_name);</span><br><span class="line">        <span class="keyword">if</span>(next) find_retain_messages(*next, i + <span class="number">1</span>, path, retain_msg);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="从主题订阅树中移除订阅"><a href="#从主题订阅树中移除订阅" class="headerlink" title="从主题订阅树中移除订阅"></a>从主题订阅树中移除订阅</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 从一个主题订阅树中自下而上地移除订阅，且每个被移除的层级节点需满足以下条件</span></span><br><span class="line"><span class="comment">// 该层级节点没有订阅者、没有子主题（子级节点）、没有保留消息</span></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">try_remove_topic</span><span class="params">(<span class="type">tmq_topics_t</span>* topics, topic_tree_node* node)</span> &#123;</span><br><span class="line">    <span class="keyword">while</span>(tmq_map_size(node-&gt;subscribers) == <span class="number">0</span></span><br><span class="line">          &amp;&amp; tmq_map_size(node-&gt;childs) == <span class="number">0</span></span><br><span class="line">          &amp;&amp; !node-&gt;retain_message) &#123;</span><br><span class="line">        topic_tree_node* parent = node-&gt;parent;</span><br><span class="line">        tmq_map_erase(parent-&gt;childs, node-&gt;level_name);</span><br><span class="line">        topic_tree_node_free(node);</span><br><span class="line">        node = parent;</span><br><span class="line">        <span class="keyword">if</span>(node == topics-&gt;topic_tree_root || node == topics-&gt;sys_topic_tree_root) <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 从主题订阅树中移除指定的客户端id，相当于取消订阅</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">tmq_topics_remove_subscription</span><span class="params">(<span class="type">tmq_topics_t</span>* topics, <span class="type">char</span>* topic_filter,</span></span><br><span class="line"><span class="params">        <span class="type">char</span>* client_id)</span> &#123;</span><br><span class="line">    <span class="comment">// 在主题订阅树中查找是否存在指定的主题过滤器</span></span><br><span class="line">    topic_tree_node* node = add_topic_or_find(topics, topic_filter, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span>(!node) &#123;</span><br><span class="line">        tlog_warn(<span class="string">&quot;topic filter doesn&#x27;t exist: %s&quot;</span>, topic_filter);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 从该主题过滤器中移除对应的订阅者，并尝试将该主题过滤器自下而上地从主题订阅树中移除</span></span><br><span class="line">    tmq_map_erase(node-&gt;subscribers, client_id);</span><br><span class="line">    try_remove_topic(topics, node);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="向订阅者发布消息"><a href="#向订阅者发布消息" class="headerlink" title="向订阅者发布消息"></a>向订阅者发布消息</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 用于在主题订阅树中向下查找是否存在与主题过滤器匹配的订阅，并将消息发送给对应的客户端</span></span><br><span class="line"><span class="comment">// 参数说明：</span></span><br><span class="line">    <span class="comment">// topics：主题管理器（主题订阅树）</span></span><br><span class="line">    <span class="comment">// node：主题订阅树中的任意一个层级节点</span></span><br><span class="line">    <span class="comment">// n：表示当前正在处理levels中的第几个层级名</span></span><br><span class="line">    <span class="comment">// is_any_wildcard：用于标记当前处理的是否是&quot;#&quot;多层（任意）通配符</span></span><br><span class="line">    <span class="comment">// levels：按主题过滤器中的层级名所组成的vector（按&quot;/&quot;分割后的结果）</span></span><br><span class="line">    <span class="comment">// topic：原始的主题过滤器（未按&quot;/&quot;进行分割）</span></span><br><span class="line">    <span class="comment">// message：需要发送给客户端（订阅者）的消息</span></span><br><span class="line">    <span class="comment">// retain：用于标记当前的消息是否为保留消息</span></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">match</span><span class="params">(<span class="type">tmq_topics_t</span>* topics, topic_tree_node* node, <span class="type">int</span> n, <span class="type">int</span> is_any_wildcard,</span></span><br><span class="line"><span class="params">                  str_vec* levels, <span class="type">char</span>* topic, tmq_message* message, <span class="type">int</span> retain)</span> &#123;</span><br><span class="line">    <span class="comment">// 递归终止条件：已经处理完levels中的所有层级名或遇到了一个&quot;#&quot;多层（任意）通配符</span></span><br><span class="line">    <span class="comment">// 因为&quot;#&quot;多层（任意）通配符永远只能是主题过滤器的最后一个字符</span></span><br><span class="line">    <span class="keyword">if</span>(n == tmq_vec_size(*levels) || is_any_wildcard) &#123;</span><br><span class="line">        <span class="comment">// 首先对于当前的层级节点，将消息发送给该节点对应的所有客户端（订阅者）</span></span><br><span class="line">        <span class="type">tmq_map_iter_t</span> it = tmq_map_iter(node-&gt;subscribers);</span><br><span class="line">        <span class="keyword">for</span>(; tmq_map_has_next(it); tmq_map_next(node-&gt;subscribers, it)) &#123;</span><br><span class="line">            <span class="type">char</span>* client_id = it.first;</span><br><span class="line">            <span class="type">uint8_t</span> required_qos = *(<span class="type">uint8_t</span>*) it.second;</span><br><span class="line">            topics-&gt;on_match(topics-&gt;broker, client_id, topic, required_qos, message);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 如果主题过滤器最后一个层级名不是&quot;#&quot;通配符，而是普通层级名</span></span><br><span class="line">        <span class="keyword">if</span>(n == tmq_vec_size(*levels)) &#123;</span><br><span class="line">            <span class="comment">// 如果是精确匹配且当前消息是一个保留消息，那么就需要更新对应主题的保留消息</span></span><br><span class="line">            <span class="keyword">if</span>(retain) &#123;</span><br><span class="line">                <span class="keyword">if</span>(!node-&gt;retain_message) &#123;</span><br><span class="line">                    node-&gt;retain_message = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="type">retain_message_t</span>));</span><br><span class="line">                    node-&gt;retain_message-&gt;retain_msg.message = tmq_str_empty();</span><br><span class="line">                    node-&gt;retain_message-&gt;retain_topic = tmq_str_empty();</span><br><span class="line">                &#125;</span><br><span class="line">                node-&gt;retain_message-&gt;retain_msg.message = \</span><br><span class="line">                    tmq_str_assign(node-&gt;retain_message-&gt;retain_msg.message,</span><br><span class="line">                            message-&gt;message);</span><br><span class="line">                node-&gt;retain_message-&gt;retain_msg.qos = message-&gt;qos;</span><br><span class="line">                node-&gt;retain_message-&gt;retain_topic = \</span><br><span class="line">                    tmq_str_assign(node-&gt;retain_message-&gt;retain_topic, topic);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 如果当前层级节点存在子级节点，且子级节点中有一个&quot;#&quot;通配符</span></span><br><span class="line">            <span class="comment">// 那么就需要将消息也发送到含有&quot;#&quot;通配符的子节点对应的客户端中，因为&quot;#&quot;可以匹配父层级</span></span><br><span class="line">            topic_tree_node** next = tmq_map_get(node-&gt;childs, <span class="string">&quot;#&quot;</span>);</span><br><span class="line">            <span class="keyword">if</span>(next) &#123;</span><br><span class="line">                it = tmq_map_iter((*next)-&gt;subscribers);</span><br><span class="line">                <span class="keyword">for</span>(; tmq_map_has_next(it); tmq_map_next((*next)-&gt;subscribers, it)) &#123;</span><br><span class="line">                    <span class="type">char</span>* client_id = it.first;</span><br><span class="line">                    <span class="type">uint8_t</span> required_qos = *(<span class="type">uint8_t</span>*) it.second;</span><br><span class="line">                    topics-&gt;on_match(topics-&gt;broker, client_id, topic,</span><br><span class="line">                            required_qos, message);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    topic_tree_node** next;</span><br><span class="line">    <span class="type">char</span>* level = *tmq_vec_at(*levels, n);</span><br><span class="line">    <span class="comment">// 如果子层级中存在层级名与当前层级名相同的子节点，就继续递归向下查找</span></span><br><span class="line">    <span class="keyword">if</span>((next = tmq_map_get(node-&gt;childs, level)) != <span class="literal">NULL</span>)</span><br><span class="line">        match(topics, *next, n + <span class="number">1</span>, <span class="number">0</span>, levels, topic, message, retain);</span><br><span class="line">    <span class="comment">// 否则，如果查找不到，表示主题管理器（主题订阅树）中不存在当前的层级名</span></span><br><span class="line">    <span class="comment">// 如果当前的消息是一条保留消息，那么就需要将它添加到主题订阅树中</span></span><br><span class="line">    <span class="comment">// 即将当前层级名作为新节点添加到主题订阅树中，并以递归调用的形式处理levels后续的层级名</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(retain) &#123;</span><br><span class="line">        topic_tree_node* new_next = topic_tree_node_new(node, level);</span><br><span class="line">        tmq_map_put(node-&gt;childs, level, new_next);</span><br><span class="line">        match(topics, new_next, n + <span class="number">1</span>, <span class="number">0</span>, levels, topic, message, retain);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 如果子层级中还存在&quot;+&quot;层通配符或&quot;#&quot;多层通配符</span></span><br><span class="line">    <span class="comment">// 那么就要递归处理，并将消息也一并发送给相应的客户端（订阅者）</span></span><br><span class="line">    <span class="keyword">if</span>((next = tmq_map_get(node-&gt;childs, <span class="string">&quot;+&quot;</span>)) != <span class="literal">NULL</span>)</span><br><span class="line">        match(topics, *next, n + <span class="number">1</span>, <span class="number">0</span>, levels, topic, message, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span>((next = tmq_map_get(node-&gt;childs, <span class="string">&quot;#&quot;</span>)) != <span class="literal">NULL</span>)</span><br><span class="line">        match(topics, *next, n + <span class="number">1</span>, <span class="number">1</span>, levels, topic, message, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将消息发送给主题订阅树中与指定主题过滤器匹配的客户端（订阅者）</span></span><br><span class="line"><span class="comment">// 并用retain标记当前消息是否为保留消息，如果是，且当前主题过滤器是精确匹配（不含通配符）</span></span><br><span class="line"><span class="comment">// 就需要更新主题订阅树中相应的主题过滤器中的保留消息</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">tmq_topics_publish</span><span class="params">(<span class="type">tmq_topics_t</span>* topics, <span class="type">int</span> sys, <span class="type">char</span>* topic,</span></span><br><span class="line"><span class="params">        tmq_message* message, <span class="type">int</span> retain)</span> &#123;</span><br><span class="line">    <span class="type">char</span>* lp = topic, *rp = lp;</span><br><span class="line">    <span class="type">tmq_str_t</span> level;</span><br><span class="line">    <span class="comment">// 用于存放层级名的vector</span></span><br><span class="line">    str_vec levels = tmq_vec_make(<span class="type">tmq_str_t</span>);</span><br><span class="line">    <span class="comment">// 通过&#x27;/&#x27;对主题过滤器进行分割，并将分割好的层级名存入levels</span></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">while</span>(*rp &amp;&amp; *rp != <span class="string">&#x27;/&#x27;</span>) rp++;</span><br><span class="line">        <span class="keyword">if</span>(rp == lp) &#123;</span><br><span class="line">            level = tmq_str_new(<span class="string">&quot;&quot;</span>);</span><br><span class="line">            tmq_vec_push_back(levels, level);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            level = tmq_str_new_len(lp, rp - lp);</span><br><span class="line">            tmq_vec_push_back(levels, level);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(!*rp) <span class="keyword">break</span>;</span><br><span class="line">        lp = rp + <span class="number">1</span>; rp = lp;</span><br><span class="line">        <span class="keyword">if</span>(!*lp) &#123;</span><br><span class="line">            level = tmq_str_new(<span class="string">&quot;&quot;</span>);</span><br><span class="line">            tmq_vec_push_back(levels, level);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 判断当前发布的是客户端订阅的普通主题，还是以&quot;$SYS&quot;开头的主题</span></span><br><span class="line">    topic_tree_node* root = sys ? topics-&gt;sys_topic_tree_root : topics-&gt;topic_tree_root;</span><br><span class="line">    match(topics, root, <span class="number">0</span>, <span class="number">0</span>, &amp;levels, topic, message, retain);</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">tmq_str_t</span>* it = tmq_vec_begin(levels); it != tmq_vec_end(levels); it++)</span><br><span class="line">        tmq_str_free(*it);</span><br><span class="line">    tmq_vec_free(levels);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/MQTT/"># MQTT</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2023/09/29/Project/Executor/">线程池（按优先级进行任务调度）</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© li jiang | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
