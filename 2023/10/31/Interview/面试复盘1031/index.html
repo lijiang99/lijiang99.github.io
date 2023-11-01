@@ -281,7 +281,7 @@
 <h3 id="内省排序"><a href="#内省排序" class="headerlink" title="内省排序"></a>内省排序</h3><p>在小数据量的情况下，使用简单的插入排序可能快过快速排序，因为快速排序会为了极小的子序列产生许多的函数递归调用。鉴于这种情况，STL会适度评估序列大小，然后再决定采用快速排序还是插入排序。该序列大小的阈值一般在$5\sim20$之间，SGI STL中采用的阈值是$16$。即便在大数据量的情况下，快速排序也可能由于分割层次过多，从而造成递归调用层级过深，对此可以采用堆排序，以循环的方式代替递归调用，而分割层级的阈值通过以下算法进行判定：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">Size</span>&gt;</span><br><span class="line"><span class="keyword">inline</span> Size __lg(Size n) &#123;</span><br><span class="line">    Size k;</span><br><span class="line">    <span class="keyword">for</span> (k = <span class="number">0</span>; n &gt; <span class="number">1</span>; n &gt;&gt;= <span class="number">1</span>) ++k;</span><br><span class="line">    <span class="keyword">return</span> k;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>该算法相当于求$\log{N}$，而最大分割层级为$2\times\log{N}$，所以如果序列长度为$40$，那么所允许的最大分割层级为$5\times2&#x3D;10$。而所谓的内省排序，其行为在大部分情况下几乎与采用三点中值法的快速排序完全相同，但当分割行为有恶化为二次行为的倾向时，能够自我侦测，转而该用堆排序（分割层次<code>&gt;2*__lg(n)</code>）或插入排序（序列长度<code>&lt;16</code>）。</p>
-
+<h2 id="可靠UDP"><a href="#可靠UDP" class="headerlink" title="可靠UDP"></a>可靠UDP</h2><h2 id="公共祖先"><a href="#公共祖先" class="headerlink" title="公共祖先"></a>公共祖先</h2><h2 id="Excel列名转换"><a href="#Excel列名转换" class="headerlink" title="Excel列名转换"></a>Excel列名转换</h2>
         </div>
 
         
