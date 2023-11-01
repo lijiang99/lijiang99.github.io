@@ -281,7 +281,37 @@
 <h3 id="内省排序"><a href="#内省排序" class="headerlink" title="内省排序"></a>内省排序</h3><p>在小数据量的情况下，使用简单的插入排序可能快过快速排序，因为快速排序会为了极小的子序列产生许多的函数递归调用。鉴于这种情况，STL会适度评估序列大小，然后再决定采用快速排序还是插入排序。该序列大小的阈值一般在$5\sim20$之间，SGI STL中采用的阈值是$16$。即便在大数据量的情况下，快速排序也可能由于分割层次过多，从而造成递归调用层级过深，对此可以采用堆排序，以循环的方式代替递归调用，而分割层级的阈值通过以下算法进行判定：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">Size</span>&gt;</span><br><span class="line"><span class="keyword">inline</span> Size __lg(Size n) &#123;</span><br><span class="line">    Size k;</span><br><span class="line">    <span class="keyword">for</span> (k = <span class="number">0</span>; n &gt; <span class="number">1</span>; n &gt;&gt;= <span class="number">1</span>) ++k;</span><br><span class="line">    <span class="keyword">return</span> k;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>该算法相当于求$\log{N}$，而最大分割层级为$2\times\log{N}$，所以如果序列长度为$40$，那么所允许的最大分割层级为$5\times2&#x3D;10$。而所谓的内省排序，其行为在大部分情况下几乎与采用三点中值法的快速排序完全相同，但当分割行为有恶化为二次行为的倾向时，能够自我侦测，转而该用堆排序（分割层次<code>&gt;2*__lg(n)</code>）或插入排序（序列长度<code>&lt;16</code>）。</p>
-<h2 id="可靠UDP"><a href="#可靠UDP" class="headerlink" title="可靠UDP"></a>可靠UDP</h2><h2 id="公共祖先"><a href="#公共祖先" class="headerlink" title="公共祖先"></a>公共祖先</h2><h2 id="Excel列名转换"><a href="#Excel列名转换" class="headerlink" title="Excel列名转换"></a>Excel列名转换</h2>
+<h2 id="可靠UDP"><a href="#可靠UDP" class="headerlink" title="可靠UDP"></a>可靠UDP</h2><p>虽然TCP协议本身就具备可靠传输的属性，但TCP协议仍然存在四个方面的缺陷：</p>
+<ul>
+<li>升级TCP的工作很困难；</li>
+<li>TCP建立连接存在延迟；</li>
+<li>TCP存在队头阻塞问题；</li>
+<li>网络迁移需重建TCP连接。<br>而这些问题可以在基于UDP协议实现的可靠传输协议中得到改进，目前QUIC就是一种基于UDP协议实现可靠传输的成熟解决方案，已被应用在了HTTP&#x2F;3中。</li>
+</ul>
+<h3 id="可靠传输"><a href="#可靠传输" class="headerlink" title="可靠传输"></a>可靠传输</h3><p>要基于UDP实现的可靠传输协议，那么就要在应用层模拟TCP协议的工作原理，首先QUIC也需三次握手来建立连接，其目的是确定连接<code>ID</code>。建立连接时，连接<code>ID</code>是由服务器根据客户端的源连接<code>ID</code>（<code>Source Connection ID</code>）字段生成的，而后续传输时，双方只需固定住目标连接<code>ID</code>（<code>Destination Connection ID</code>）即可。</p>
+<p>而对于数据的有序性，QUIC通过<code>Packet Number</code>来实现，<code>Packet Number</code>是每个报文独一无二的编号，它是严格递增的，也就是说假设第$N$个报文的<code>Packet Number</code>为<code>N</code>，如果该报文丢失了，那么后续重传的第$N$个报文的<code>Packet Number</code>就不再是<code>N</code>，而是一个比<code>N</code>更大的值。之所以这么设计的原因是因为在TCP中，重传报文时的序列号和原始报文的序列号是一样的，也正是由于这个特性，引入了TCP重传的歧义问题。</p>
+<div align="center" style=transform:scale(1)>
+<img src="/images/TCP重传歧义.png"/>
+</div>
+以上图为例，当TCP传输发生超时后，由客户端发起重传，然后收到了服务端的ACK响应。由于客户端原始报文和重传报文序列号都是一样的，那么服务端针对这两个报文响应的也是相同的ACK。这样就使得客户端无法判断出是原始报文的响应还是重传报文的响应，那么在计算RTT（往返时间）时就会出现歧义，即应该选择从发送原始报文时开始计算，还是选择从重传原始报文时开始计算。
+
+<ul>
+<li>若算成重传报文的响应，但实际上是原始报文的响应（上图左），会导致采样RTT过小;</li>
+<li>若算成原始报文的响应，但实际上是重传报文的响应（上图右），会导致采样RTT变大。</li>
+</ul>
+<p>若RTT计算不精确的话，那么RTO（超时时间）也会不精确，因为RTO是基于RTT来计算的，RTO计算不准确可能会增加重传事件的概率。对此，QUIC所采取的方案时严格递增报文中的<code>Pakcet Number</code>，即使是重传报文，它的<code>Pakcet Number</code>也是递增的，这样就能更加精确计算出报文的RTT。</p>
+<p>另外，还有一个好处，QUIC使用的严格递增的<code>Packet Number</code>，可以让数据包不再像TCP那样必须有序确认，从而支持乱序确认。例如当编号为<code>N</code>的数据包丢失后，只要有新的已接收数据包被确认，当前窗口就会继续向右滑动。待发送端超过一定时间没收到编号为<code>N</code>的数据包的确认报文后，会将需要重传的数据包放到待发送队列，重新编号为<code>N+M</code>后重新发送给接收端，对重传数据包的处理跟发送新的数据包类似，这样就不会因为丢包重传将当前发送窗口阻塞在原地，从而解决了队头阻塞问题。</p>
+<h3 id="流量控制"><a href="#流量控制" class="headerlink" title="流量控制"></a>流量控制</h3><p>TCP流量控制是通过让接收方告诉发送方，它的接收窗口有多大，从而让发送方根据接收方的实际接收能力来控制发送的数据量。而QUIC则实现了两种级别的流量控制，分别为Stream和Connection，并且其滑动窗口的滑动条件也和TCP有所差别。</p>
+<ul>
+<li>Stream级别：每个Stream都有独立的滑动窗口，所以每个Stream都可以做流量控制，以防止单个Stream消耗连接（Connection）中的全部接收缓冲。</li>
+<li>Connection级别：限制连接中所有Stream相加起来的总字节数，以防止发送方发送超过连接缓冲容量的数据。</li>
+</ul>
+<p>对于Stream级别，其滑动窗口的移动仅取决于接收到的最大字节偏移（尽管期间可能有部分数据未被接收），而对于TCP而言，窗口滑动必须保证此前的数据包都有序的接收到了，否则一个数据包丢失就会导致窗口等待。而对于Connection级别的流量窗口，其接收窗口大小就是各个Stream接收窗口大小之和。</p>
+<h3 id="拥塞控制"><a href="#拥塞控制" class="headerlink" title="拥塞控制"></a>拥塞控制</h3><p>虽然QUIC协议当前默认使用的是TCP的拥塞控制算法（慢启动、拥塞避免、快速恢复），但由于QUIC处于应用层，因此不需要操作系统，不需要内核支持就可以实现不同的拥塞算法。而传统的TCP拥塞控制，必须要端到端的网络协议栈支持，才能实现控制效果，加上内核和操作系统的部署成本非常高，升级周期长，所以TCP拥塞控制算法迭代速度非常慢。而QUIC的拥塞控制可以随浏览器更新，具有较快的迭代速度，并且还可以针对不同的应用设置不同的拥塞控制算法，这样同时也具备了更高的灵活性。</p>
+<h3 id="连接迁移"><a href="#连接迁移" class="headerlink" title="连接迁移"></a>连接迁移</h3><p>TCP协议通过四元组（源IP地址、源端口号、目的IP地址、目的端口号）确定一条TCP连接，当移动设备的网络从4G切换到WIFI时，由于IP地址发生变化，那么就必须要断开连接，然后重新建立TCP连接。而建立连接的过程包含TCP三次握手以及TCP慢启动的时延，给用户的感觉就是网络突然卡顿了一下，因此连接迁移的成本相对较高。而QUIC协议通过连接<code>ID</code>来标记通信的两个端点，客户端和服务器可以各自选择一组<code>ID</code>来标记自己，因此即使移动设备的网络变化后，导致IP地址发生改变，但只要仍保留有上下文信息（比如连接<code>ID</code>、TLS密钥等），就可以无缝地复用原连接，从而消除重连的成本，不会为用户造成丝毫的卡顿。</p>
+<h2 id="公共祖先"><a href="#公共祖先" class="headerlink" title="公共祖先"></a>公共祖先</h2><h2 id="Excel列名转换"><a href="#Excel列名转换" class="headerlink" title="Excel列名转换"></a>Excel列名转换</h2><p>实质上就类似于进制转换，只不过这里的基数变为了26，转换函数如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::<span class="type">size_t</span> <span class="title">convert</span><span class="params">(<span class="type">const</span> std::string &amp;column)</span> </span>&#123;</span><br><span class="line">	std::<span class="type">size_t</span> idx = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">char</span> c : column) &#123;</span><br><span class="line">		idx *= <span class="number">26</span>;</span><br><span class="line">		idx += (c - <span class="string">&#x27;A&#x27;</span>) + <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> idx;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
         </div>
 
         
