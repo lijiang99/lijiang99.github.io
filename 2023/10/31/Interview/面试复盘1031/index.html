@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="li jiang">
+
+
+
+
+
+<title>10月31日面试复盘 | bd7xzz</title>
+
+
+
+    <link rel="icon" href="/favicon.jpg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="bd7xzz" type="application/atom+xml">
+</head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">10月31日面试复盘</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">li jiang</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">October 31, 2023&nbsp;&nbsp;0:00:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/">面试复盘</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="内存分区中堆栈区别"><a href="#内存分区中堆栈区别" class="headerlink" title="内存分区中堆栈区别"></a>内存分区中堆栈区别</h2><p>堆与栈实际上是操作系统对进程占用的内存空间的两种管理方式（非数据结构中的堆栈），主要有如下几种区别：</p>
+<ul>
+<li>管理方式：栈由操作系统自动分配释放，无需手动控制；堆的申请和释放工作由程序员控制，容易产生内存泄漏。</li>
+<li>空间大小：进程拥有的栈大小要远小于堆大小。理论上，进程可申请的堆大小为虚拟内存大小，而栈大小在$64$位的Windows下默认为$1MB$，在$64$位的Linux下默认在$8\sim10MB$之间，可通过<code>ulimit -s</code>命令进行配置和修改。</li>
+<li>生长方向：堆的生长方向向上，内存地址由低到高；栈的生长方向向下，内存地址由高到低。</li>
+<li>分配方式：堆都是动态分配的，而栈有2种分配方式：静态分配和动态分配。静态分配是由操作系统完成的，比如局部变量的分配。动态分配由<code>alloca</code>函数分配，但是栈的动态分配和堆是不同的，它的动态分配是由操作系统进行释放，无需程序员手工释放。且由于函数栈大小是有限制的，一旦申请的空间超过了函数栈的大小，该函数不会像<code>malloc</code>函数那样返回空指针，而是会导致栈溢出。</li>
+<li>分配效率：栈由操作系统自动分配，会在硬件层级对栈提供支持，即分配专门的寄存器存放栈的地址，压栈出栈都有专门的指令执行，这就决定了栈的效率比较高。堆则是由C&#x2F;C++提供的库函数或运算符来完成申请与管理，实现机制较为复杂，频繁的内存申请容易产生内存碎片，并且会引发用户态到内核态的切换，效率较低。</li>
+<li>存放内容：栈存放函数返回地址、相关参数、局部变量和寄存器内容等。当主函数调用另外一个函数的时候，需要使用栈来保存当前的执行断点，首先入栈的是主函数下一条语句的地址，即扩展指令指针寄存器的内容（EIP），然后是当前栈帧的底部地址，即扩展基址指针寄存器内容（EBP），再然后是被调函数的实参等，一般情况下是按照从右向左的顺序入栈，之后是被调函数的局部变量（注意静态变量是存放在数据段或者BSS段是不入栈的）。出栈的顺序正好相反，最终栈顶指向主函数下一条语句的地址，主程序又从该地址开始执行。而从堆中申请的内存，一般分为两个部分，首部的一个字节会用来存放所申请的内存的大小（因此<code>free</code>释放动态分配的内存时无需指定大小），而剩余部分存放的内容是由程序员来进行填充。<div align="center" style=transform:scale(1)>
+<img src="/images/函数调用栈.svg"/>
+</div></li>
+</ul>
+<h2 id="STL中的sort"><a href="#STL中的sort" class="headerlink" title="STL中的sort"></a>STL中的sort</h2><p>STL的<code>sort</code>算法，在数据量大时会采用快速排序来进行分段递归排序。一旦分段后的数据量小于某个阈值，为避免快速排序递归调用带来过高的额外开销，就会该用插入排序。当然，如果递归层次过深还会该用堆排序。</p>
+<h3 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h3><p>快速排序的思想在于将大区间分割为小区间，每一个小区间排序完成后，串起来的大区间也就完成了排序，其步骤描述如下，假设<code>S</code>代表被处理的序列：</p>
+<ul>
+<li>Step1: 如果<code>S</code>的元素个数为0或1，结束；</li>
+<li>Step2: 取<code>S</code>中任意一个元素，当作枢轴<code>v</code>；</li>
+<li>Step3: 将<code>S</code>分割为<code>L</code>和<code>R</code>两段，使<code>L</code>中所有元素<code>&lt;=v</code>，<code>R</code>中元素<code>&gt;=v</code>；</li>
+<li>Step4: 对<code>L</code>和<code>R</code>递归执行快速排序；</li>
+</ul>
+<p>对于Step2而言，最坏的情况是在分割时产生出一个空的子区间，那就完全没有达到分割的预期效果。并且快速排序并不是一个稳定的排序算法，其平均复杂度为$O(N\log{N})$，但如果输入元素不够随机，存在有序或者部分有序的情况，那么最坏情况下将达到$O(N^2)$。因此虽然任何一个元素都可以被选作枢轴，但是其是否适合却会影响快速排序的效率。所以，STL采用三点中值法来选取枢轴值，即取整个序列的头、尾、中央三个位置的元素，以其中值作为枢轴。</p>
+<p>对于Step3而言，分割方法不只一种，其中一个简单并富有成效的做法是令首部迭代器<code>first</code>向尾部移动，而尾部迭代器<code>last</code>向头部移动。当<code>*first&gt;=</code>枢轴时就停下，当<code>*last&lt;=</code>枢轴时也停下，然后检验两个迭代器位置是否交错。如果<code>first</code>仍然在左且<code>last</code>仍然在右，就将两者所指向的元素互换，然后各自调整一个位置（向中央逼近），再继续进行相同的行为。具体的算法实现如下所示：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">    <span class="keyword">while</span> (*first &lt; piovt) ++first;</span><br><span class="line">    --last;</span><br><span class="line">    <span class="keyword">while</span> (piovt &lt; *last) --last;</span><br><span class="line">    <span class="keyword">if</span> (!(first &lt; last)) <span class="keyword">return</span> first; <span class="comment">// 交错，结束循环，且此时first就指向枢轴值位置</span></span><br><span class="line">    <span class="built_in">iter_swap</span>(first, last);</span><br><span class="line">    ++first;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="内省排序"><a href="#内省排序" class="headerlink" title="内省排序"></a>内省排序</h3><p>在小数据量的情况下，使用简单的插入排序可能快过快速排序，因为快速排序会为了极小的子序列产生许多的函数递归调用。鉴于这种情况，STL会适度评估序列大小，然后再决定采用快速排序还是插入排序。该序列大小的阈值一般在$5\sim20$之间，SGI STL中采用的阈值是$16$。即便在大数据量的情况下，快速排序也可能由于分割层次过多，从而造成递归调用层级过深，对此可以采用堆排序，以循环的方式代替递归调用，而分割层级的阈值通过以下算法进行判定：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">Size</span>&gt;</span><br><span class="line"><span class="keyword">inline</span> Size __lg(Size n) &#123;</span><br><span class="line">    Size k;</span><br><span class="line">    <span class="keyword">for</span> (k = <span class="number">0</span>; n &gt; <span class="number">1</span>; n &gt;&gt;= <span class="number">1</span>) ++k;</span><br><span class="line">    <span class="keyword">return</span> k;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该算法相当于求$\log{N}$，而最大分割层级为$2\times\log{N}$，所以如果序列长度为$40$，那么所允许的最大分割层级为$5\times2&#x3D;10$。而所谓的内省排序，其行为在大部分情况下几乎与采用三点中值法的快速排序完全相同，但当分割行为有恶化为二次行为的倾向时，能够自我侦测，转而该用堆排序（分割层次<code>&gt;2*__lg(n)</code>）或插入排序（序列长度<code>&lt;16</code>）。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2023/09/30/Project/Topic/">MQTT主题订阅树</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© li jiang | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
