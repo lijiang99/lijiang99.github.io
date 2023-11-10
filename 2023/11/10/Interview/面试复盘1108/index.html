@@ -255,7 +255,74 @@
         </header>
 
         <div class="post-content">
-            <h2 id="数据库三范式"><a href="#数据库三范式" class="headerlink" title="数据库三范式"></a>数据库三范式</h2><h2 id="索引失效"><a href="#索引失效" class="headerlink" title="索引失效"></a>索引失效</h2><p>使用索引可快速定位表中的某条记录，从而提高数据库的查询效率。但在实际开发中，常会遇到一些情况导致索引失效，致使查询变得非常缓慢，甚至无法使用索引来优化查询，造成索引失效的主要原因有：未遵循最左匹配原则、使用函数、计算操作、<code>like %</code>在左边、使用<code>or</code>、<code>in</code>使用不当、<code>order by</code>。</p>
+            <h2 id="数据库三范式"><a href="#数据库三范式" class="headerlink" title="数据库三范式"></a>数据库三范式</h2><h3 id="第一范式：原子性"><a href="#第一范式：原子性" class="headerlink" title="第一范式：原子性"></a>第一范式：原子性</h3><p>所谓原子性是指表中所存储的数据应该具有“不可再分性”，以下表为例，<code>student</code>一列有多项信息存放在一起，不再具备原子性，应该分开：</p>
+<table>
+<thead>
+<tr>
+<th>学生</th>
+<th>课程</th>
+<th>学分</th>
+<th>成绩</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>张三，男，山东</td>
+<td>语文</td>
+<td>2</td>
+<td>80</td>
+</tr>
+<tr>
+<td>李四，女，大连</td>
+<td>数学</td>
+<td>4</td>
+<td>90</td>
+</tr>
+<tr>
+<td>王五，男，江苏</td>
+<td>英语</td>
+<td>3</td>
+<td>85</td>
+</tr>
+</tbody></table>
+<p>遵循原子性进行修改后的结果如下：</p>
+<table>
+<thead>
+<tr>
+<th>学生</th>
+<th>性别</th>
+<th>籍贯</th>
+<th>课程</th>
+<th>学分</th>
+<th>成绩</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>张三</td>
+<td>男</td>
+<td>山东</td>
+<td>语文</td>
+<td>2</td>
+<td>80</td>
+</tr>
+<tr>
+<td>李四</td>
+<td>女</td>
+<td>大连</td>
+<td>数学</td>
+<td>4</td>
+<td>90</td>
+</tr>
+<tr>
+<td>王五</td>
+<td>男</td>
+<td>江苏</td>
+<td>英语</td>
+<td>3</td>
+<td>85</td>
+</tr>
+</tbody></table>
+<h3 id="第二范式：唯一性"><a href="#第二范式：唯一性" class="headerlink" title="第二范式：唯一性"></a>第二范式：唯一性</h3><p>所谓唯一性是指消除非主键部分依赖联合主键中的部分字段，即需要实现每一行数据具有唯一可区分的特性，并不能有部分依赖关系，且前提条件是必须已经满足第一范式。通常给一个表加主键，就可以做到“唯一可区分”。</p>
+<h2 id="索引失效"><a href="#索引失效" class="headerlink" title="索引失效"></a>索引失效</h2><p>使用索引可快速定位表中的某条记录，从而提高数据库的查询效率。但在实际开发中，常会遇到一些情况导致索引失效，致使查询变得非常缓慢，甚至无法使用索引来优化查询，造成索引失效的主要原因有：未遵循最左匹配原则、使用函数、计算操作、<code>like %</code>在左边、使用<code>or</code>、<code>in</code>使用不当、<code>order by</code>。</p>
 <h3 id="最左匹配原则"><a href="#最左匹配原则" class="headerlink" title="最左匹配原则"></a>最左匹配原则</h3><h3 id="使用函数"><a href="#使用函数" class="headerlink" title="使用函数"></a>使用函数</h3><h3 id="计算操作"><a href="#计算操作" class="headerlink" title="计算操作"></a>计算操作</h3><h3 id="like"><a href="#like" class="headerlink" title="like %"></a>like %</h3><h3 id="使用or"><a href="#使用or" class="headerlink" title="使用or"></a>使用<code>or</code></h3><h3 id="in使用不当"><a href="#in使用不当" class="headerlink" title="in使用不当"></a>in使用不当</h3><h3 id="order-by"><a href="#order-by" class="headerlink" title="order by"></a>order by</h3><h2 id="线程间通信"><a href="#线程间通信" class="headerlink" title="线程间通信"></a>线程间通信</h2><h2 id="RB-Tree和AVL-Tree"><a href="#RB-Tree和AVL-Tree" class="headerlink" title="RB-Tree和AVL-Tree"></a>RB-Tree和AVL-Tree</h2><h2 id="epoll内核实现"><a href="#epoll内核实现" class="headerlink" title="epoll内核实现"></a>epoll内核实现</h2><h2 id="stdcall、thiscall"><a href="#stdcall、thiscall" class="headerlink" title="stdcall、thiscall"></a>stdcall、thiscall</h2>
         </div>
 
